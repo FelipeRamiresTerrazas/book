@@ -12,10 +12,18 @@ livro de regras. Planejamento em `notas/`.
 
 ## O texto é do Felipe
 
-- O livro é escrito na voz do Felipe. Não escreva capítulos inteiros por conta própria:
-  ajude a planejar, revisar, sugerir estrutura e redigir trechos quando ele pedir.
+- O livro é escrito na voz do Felipe. Em 2026-11-19 ele pediu que o Claude escreva o
+  texto dos capítulos a partir das notas do autor, pesquisando e trazendo referências; o
+  Felipe revisa e ajusta. Ao escrever uma seção, a nota `\rascunho{}` dela sai e o texto
+  entra no lugar.
 - Relatos de projetos (`relato`) vêm da experiência dele. Nunca invente um relato,
-  um número de projeto ou uma situação vivida.
+  um número de projeto ou uma situação vivida: no lugar do relato fica um `\rascunho{}`
+  dizendo que história caberia ali.
+- Os outros repositórios do Felipe servem só de contexto (domínios, ferramentas, tipo de
+  trabalho). Nada deles entra no livro como fato sobre ele, nem nome de empresa, cliente,
+  sistema interno ou número.
+- Voz: explicações em tom direto, falando com o leitor (você); opiniões do autor em
+  primeira pessoa, com moderação.
 - Relatos não nomeiam empresas, clientes, colegas nem sistemas internos, e números de
   operação aparecem só em ordem de grandeza.
 - Nunca invente referência. Entrada nova no `referencias.bib` leva `note = {CONFERIR}`

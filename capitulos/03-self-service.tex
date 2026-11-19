@@ -2,28 +2,139 @@
 \chapter{Self-service e a era dos dashboards}
 \label{cap:self-service}
 
-\rascunho{
-  \textbf{Ideia do capítulo.} Quando a ferramenta de visualização chegou na mesa do analista e o BI saiu da TI.
-  \begin{itemize}
-    \item Ferramentas de visualização self-service e a democratização do acesso.
-    \item O lado ruim: planilhas e dashboards duplicados, cada área com o seu número de faturamento.
-    \item Governança contra liberdade: o equilíbrio que nenhum time acerta de primeira.
-      Aqui só o problema; a governança na era da IA fica para o capítulo~\ref{cap:governanca}.
-    \item Boas práticas de visualização que não dependem de ferramenta.
-  \end{itemize}
-}
+O data warehouse resolveu a consistência, mas manteve a distância. Para ter um relatório
+novo, o analista de negócio ainda abria um chamado, esperava a fila da TI e recebia, semanas
+depois, algo parecido com o que tinha pedido. Nos anos 2000 e 2010, uma nova geração de
+ferramentas encurtou essa distância de forma radical: o próprio analista passou a
+conectar os dados, arrastar campos e montar o seu painel. Este capítulo trata dessa
+virada, dos problemas que ela criou e do que vale aprender sobre visualização
+independentemente da ferramenta.
 
 \section{O BI sai da TI}
 \label{sec:bi-sai-da-ti}
 
-\pendente{escrever}
+Uma das origens dessa mudança é um projeto acadêmico. Na Universidade Stanford, Chris
+Stolte, Diane Tang e Pat Hanrahan desenvolveram o Polaris, um sistema que traduzia
+gestos visuais (arrastar uma dimensão para as linhas, uma medida para as colunas) em
+consultas ao banco de dados e mostrava o resultado como gráfico
+\parencite{stolte2002}. A ideia central era que explorar dados devia ser um processo
+visual e iterativo, e não a redação de uma consulta seguida da espera pelo resultado. O
+projeto deu origem a uma das ferramentas de visualização mais conhecidas do mercado.
+
+Na mesma época, outras ferramentas apostaram em carregar os dados na memória do
+computador e permitir que o usuário navegasse livremente por eles, clicando num valor e
+vendo todo o resto se reorganizar em torno dele. E, já na metade dos anos 2010, os
+grandes fornecedores de software corporativo entraram com ferramentas próprias, muitas
+vezes integradas à planilha que o analista já usava todo dia, a preços que tornaram a
+licença acessível para qualquer área.
+
+O efeito somado foi uma mudança de quem fazia BI. O analista de negócio, que antes
+consumia relatórios, passou a produzi-los. A TI deixou de ser a fábrica de relatórios e
+passou, em tese, a cuidar da infraestrutura e dos dados de base. O tempo entre a
+pergunta e o primeiro gráfico caiu de semanas para horas.
+
+Foi uma conquista real. Muita gente que hoje trabalha com dados entrou na área por esse
+caminho: começou montando painéis para a própria equipe, descobriu que gostava e foi
+aprendendo SQL, modelagem e estatística no meio do caminho. A trilha tradicional de
+aprendizado que o capítulo~\ref{cap:trilha-tradicional} descreve tem muito desse
+período.
 
 \section{Mil dashboards e nenhuma verdade}
 \label{sec:mil-dashboards}
 
-\pendente{escrever}
+A liberdade trouxe de volta o problema que o data warehouse tinha tentado resolver. Cada
+área passou a conectar a ferramenta onde achava melhor: no armazém, numa extração, numa
+planilha que alguém mantinha à mão. Cada uma aplicava os próprios filtros e as próprias
+regras. Não demorou para aparecerem três versões do faturamento do mês, todas
+\enquote{oficiais}, todas diferentes.
+
+O sintoma clássico é a reunião em que a primeira meia hora se gasta discutindo de onde
+veio cada número, e a decisão fica para a próxima semana. O problema raramente é a
+ferramenta. É que a definição da métrica (o que entra no faturamento, se devolução
+desconta, em que data a venda conta) foi feita várias vezes, por pessoas diferentes, sem
+que ninguém soubesse.
+
+Há também o problema do volume. Como criar um painel ficou fácil, criar mais um painel
+passou a ser a resposta para qualquer pergunta. Empresas acumularam centenas de painéis,
+muitos abertos uma vez e esquecidos, outros duplicados com pequenas variações, todos
+consumindo atualização, manutenção e, cada vez mais, dinheiro. É a crítica de Ackoff
+(\veja{sec:sad}) com ferramenta moderna. O capítulo~\ref{cap:frequencia} volta a esse
+ponto com uma proposta concreta: medir o uso dos próprios produtos de dados e desligar o
+que não é usado.
+
+\rascunho{
+  Relato: uma situação de números divergentes entre áreas, ou de painéis duplicados, e
+  como foi resolvida. Sem nomes de empresa nem valores exatos.
+}
 
 \section{Governança sem burocracia}
 \label{sec:governanca}
 
-\pendente{escrever}
+A primeira reação de muitas empresas ao caos foi recentralizar: tirar a liberdade das
+áreas e voltar a fila da TI. Funciona por algum tempo, até as áreas voltarem às
+planilhas, porque a fila continua lenta e a pergunta continua urgente. Governança que só
+proíbe empurra o trabalho para fora do alcance dela.
+
+O que costuma funcionar é separar o que precisa ser único do que pode ser livre. O que
+precisa ser único são os dados de base e as definições das métricas que a empresa usa
+para decidir: faturamento, margem, cliente ativo. Esses ficam num lugar só, com dono e
+com regra escrita, e as ferramentas de self-service consomem dali. O que pode ser livre é
+a exploração em cima dessa base: cada área monta as análises e os painéis de que
+precisa, desde que parta dos dados certificados.
+
+Na prática, isso se traduz em conjuntos de dados certificados, que as ferramentas
+marcam como oficiais, e numa camada semântica, onde cada métrica é definida uma vez e
+reaproveitada por todos os painéis (\veja{sec:camada-semantica}). Aqui o livro só
+apresenta o problema. A governança de dados como disciplina, e a forma como a IA muda o
+papel de quem cuida dela, ficam para o capítulo~\ref{cap:governanca}.
+
+\section{Visualização que não depende de ferramenta}
+\label{sec:visualizacao}
+
+As ferramentas de self-service tornaram fácil fazer gráfico. Não tornaram fácil fazer
+gráfico bom. Algumas ideias, todas anteriores às ferramentas atuais, continuam sendo o
+melhor ponto de partida.
+
+Edward Tufte propôs que a maior parte da tinta de um gráfico deveria representar dados,
+e não decoração: bordas, sombras, fundos e efeitos tridimensionais disputam a atenção
+com a informação \parencite{tufte1983}. O princípio vale para a tela. Um painel limpo,
+com poucos elementos e muito espaço, comunica mais do que um painel cheio de enfeites.
+
+Stephen Few levou essas ideias para os dashboards e propôs uma definição exigente: um
+dashboard mostra, numa única tela, a informação mais importante para atingir um ou mais
+objetivos, de forma que possa ser acompanhada de relance \parencite{few2006}. Se o painel
+precisa de rolagem, de dez abas e de um manual, ele pode ser útil, mas não é um
+dashboard nesse sentido. Few também insistia em comparar sempre: um número sozinho não
+diz se está bom ou ruim; o mesmo número ao lado da meta, do mês anterior ou do mesmo mês
+do ano passado diz.
+
+Cole Nussbaumer Knaflic acrescentou a perspectiva da comunicação: antes de escolher o
+gráfico, é preciso saber quem vai ler, o que essa pessoa precisa decidir e qual é a
+mensagem principal \parencite{knaflic2015}. Na maior parte das vezes, uma barra simples,
+com o ponto importante destacado e um título que diz a conclusão, funciona melhor do que
+qualquer gráfico sofisticado.
+
+\begin{dica}
+Antes de publicar um painel, faça três perguntas: quem vai abrir, com que frequência, e
+que decisão essa pessoa toma com o que está vendo. Se não houver resposta para a terceira,
+o painel provavelmente não precisa existir.
+\end{dica}
+
+Essas três referências têm em comum o fato de que nenhuma depende de ferramenta. É
+por isso que valem mais do que qualquer curso de um produto específico: o produto muda a
+cada poucos anos, o olho de quem lê o gráfico não.
+
+O próximo capítulo volta para os bastidores. Enquanto as ferramentas de visualização
+democratizavam a análise, o volume de dados crescia, o armazenamento ficava barato e o
+data warehouse começava a se mudar para a nuvem.
+
+\begin{leituras}
+  \leitura{few2006}{O livro que definiu o que é um bom dashboard. Os exemplos de painéis
+    ruins, analisados um a um, ensinam tanto quanto as recomendações.}
+  \leitura{knaflic2015}{Para quem precisa apresentar dados a gestores: como escolher o
+    gráfico, tirar o excesso e conduzir a atenção para a mensagem.}
+  \leitura{tufte1983}{O clássico da visualização de dados. Mais conceitual que prático,
+    mas forma o olhar para sempre.}
+  \leitura{stolte2002}{Para ver, na fonte, a ideia de exploração visual que está por trás
+    de boa parte das ferramentas de self-service.}
+\end{leituras}

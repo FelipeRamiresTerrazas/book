@@ -297,9 +297,13 @@
     title={\textls[80]{nota do autor}}, attach title to upper={\par\smallskip}, detach title]
     #1
   \end{tcolorbox}\fi}
-\newcommand{\pendente}[1]{\PackageWarning{livro}{Pendente: #1}%
-  \ifrascunho{\ttfamily\footnotesize\color{cinza}[pendente: #1]}\fi}
-\newcommand{\veja}[1]{\emph{\nameref{#1}} (p.~\pageref{#1})}
+\ifrascunho
+  \newcommand{\pendente}[1]{\PackageWarning{livro}{Pendente: #1}%
+    {\ttfamily\footnotesize\color{cinza}[pendente: #1]}}
+\else% na versao limpa nao aparece nem deixa espaco duplo no lugar
+  \newcommand{\pendente}[1]{\@bsphack\PackageWarning{livro}{Pendente: #1}\@esphack}
+\fi
+\newcommand{\veja}[1]{\emph{\nameref{#1}}, p.~\pageref{#1}}
 
 % ---------------------------------------------------------------------------
 % Referencias e links (sem cor: o PDF e o mesmo que vai para a impressao)
@@ -321,7 +325,7 @@
 %   \end{leituras}
 \newenvironment{leituras}{%
   \section*{Para ir além}%
-  \begin{list}{}{\small\setlength{\leftmargin}{1.2em}\setlength{\itemindent}{-1.2em}%
+  \begin{list}{}{\small\sloppy\setlength{\leftmargin}{1.2em}\setlength{\itemindent}{-1.2em}%
     \setlength{\itemsep}{0.5\onelineskip}\setlength{\parsep}{0pt}}}%
   {\end{list}}
 \newcommand{\leitura}[2]{\item \fullcite{#1}.\par{\color{cinza}#2}}

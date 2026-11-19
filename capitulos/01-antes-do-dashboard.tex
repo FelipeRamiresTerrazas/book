@@ -2,26 +2,142 @@
 \chapter{Antes do dashboard}
 \label{cap:origens}
 
-\rascunho{
-  \textbf{Ideia do capítulo.} De onde vem a ideia de usar dados para decidir, antes de existir a palavra dashboard.
-  \begin{itemize}
-    \item Relatórios impressos, sistemas de apoio à decisão (SAD) e as primeiras planilhas.
-    \item A origem do termo \enquote{business intelligence}: o artigo de Luhn \parencite{luhn1958} e a popularização do termo no fim dos anos 1980 \pendente{conferir fonte sobre Dresner e o Gartner}.
-    \item O que já existia de bom nessa época e que ainda vale hoje: a pergunta de negócio vem antes do dado.
-  \end{itemize}
-}
+Antes de existir dashboard, existia o relatório impresso. Ele chegava na mesa do
+gerente alguns dias depois do fechamento do mês, em formulário contínuo, com páginas e
+páginas de números alinhados em colunas. Quem precisava de uma resposta diferente
+daquela que o relatório trazia fazia um pedido ao centro de processamento de dados e
+esperava. Às vezes semanas.
+
+Parece pré-história, mas boa parte dos problemas que discutimos hoje já estava ali:
+números que chegam tarde, relatórios que ninguém lê, a distância entre quem tem a
+pergunta e quem sabe extrair a resposta. Este capítulo volta a essa época por um motivo
+prático. Quem entende de onde vêm as ideias do BI reconhece mais rápido quando uma
+ferramenta nova está só dando outro nome a uma ideia velha, e quando está trazendo algo
+de fato novo.
 
 \section{Relatórios, planilhas e sistemas de apoio à decisão}
 \label{sec:sad}
 
-\pendente{escrever}
+Nos anos 1960, as grandes empresas começaram a usar computadores de grande porte para
+processar a folha de pagamento, o faturamento e o estoque. Como esses dados já estavam
+na máquina, parecia natural usá-los também para informar a gestão. Surgiram os sistemas
+de informação gerencial, que produziam relatórios periódicos a partir dos dados
+operacionais.
+
+A promessa era dar ao gestor toda a informação de que ele precisava. Em 1967, Russell
+Ackoff publicou uma crítica que continua atual. Para ele, o problema da maioria dos
+gestores não era a falta de informação relevante, e sim o excesso de informação
+irrelevante \parencite{ackoff1967}. Os sistemas da época partiam do princípio de que mais
+dados levariam a decisões melhores, e por isso despejavam relatórios. Ackoff argumentava
+o contrário: um sistema de informação útil precisa filtrar e condensar, e para isso
+precisa entender como a decisão é tomada.
+
+Quem já viu uma empresa com duzentos dashboards e nenhuma reunião em que eles sejam
+abertos reconhece o diagnóstico. A tecnologia mudou várias vezes desde então; a
+tentação de produzir mais relatório em vez de melhor informação continua a mesma.
+
+A resposta acadêmica a esse problema veio no começo dos anos 1970. \textcite{gorry1971}
+separaram as decisões em estruturadas, semiestruturadas e não estruturadas, e propuseram
+o nome \emph{sistemas de apoio à decisão} (SAD) para os sistemas voltados às decisões
+que não se resolvem com uma regra fixa. A ideia era apoiar o julgamento do gestor, não
+substituí-lo. \textcite{keen1978} desenvolveram o conceito no livro que se tornou
+referência da área, e a história completa desse período está bem contada por
+\textcite{power2007}.
+
+Os SAD eram, em geral, sistemas construídos para uma decisão específica: planejar a
+produção, avaliar uma carteira de investimentos, escolher rotas. Eram caros e dependiam
+de especialistas. A virada que levou a análise para a mesa de qualquer pessoa veio de
+outro lugar: as planilhas eletrônicas.
+
+Quando as planilhas chegaram aos computadores pessoais, no fim dos anos 1970 e ao longo
+dos anos 1980, o gestor passou a poder montar a própria análise sem pedir nada a
+ninguém. Foi o primeiro \enquote{self-service} da história do BI, décadas antes de o
+termo existir. E foi tão bem-sucedido que até hoje a planilha é a ferramenta de análise
+mais usada nas empresas, inclusive naquelas que pagam caro por ferramentas de BI.
+
+A planilha resolveu o problema da espera e criou outro, que vai aparecer várias vezes
+neste livro: cada pessoa com a sua cópia dos dados, a sua fórmula e o seu número. O
+capítulo~\ref{cap:master-data} trata de uma das consequências mais caras disso, os
+cadastros que existem em versões diferentes em cada planilha.
+
+No fim dos anos 1980, havia ainda os sistemas de informação executiva, que levavam
+indicadores resumidos para a alta direção em telas simples. Eram, na prática, os avós
+dos dashboards. A sopa de siglas (SIG, SAD, SIE) era grande, e foi nesse ambiente que
+um nome guarda-chuva pegou.
+
+\rascunho{
+  Relato opcional: o primeiro contato com relatórios estáticos ou com uma empresa que
+  rodava tudo em planilhas, e o que isso ensinou. Se não houver um caso bom, a seção se
+  sustenta sem relato.
+}
 
 \section{De onde vem o termo business intelligence}
 \label{sec:termo-bi}
 
-\pendente{escrever}
+A expressão \enquote{business intelligence} é mais antiga do que costuma se imaginar.
+Ela já aparece em um livro de anedotas comerciais de 1865, para descrever um banqueiro
+que conseguia vantagem sobre os concorrentes porque recebia notícias antes deles
+\parencite{devens1865}. A palavra \emph{intelligence}, em inglês, tem esse sentido de
+informação obtida para orientar uma ação, como em serviço de inteligência.
+
+O uso que se aproxima do atual vem de 1958. Hans Peter Luhn, pesquisador da IBM,
+publicou um artigo descrevendo um \enquote{sistema de business intelligence}: um sistema
+automático que resumiria documentos, identificaria o interesse de cada área da empresa e
+faria a informação certa chegar a quem precisava agir \parencite{luhn1958}. Luhn definia
+inteligência como a capacidade de perceber as relações entre os fatos apresentados de
+forma a orientar a ação em direção a um objetivo. \pendente{conferir a definição de Luhn
+no artigo original antes de manter a paráfrase}
+
+Vale reparar no que Luhn colocava no centro. Não era o armazenamento de dados nem o
+gráfico; era a entrega da informação certa para a pessoa certa, com o objetivo de
+orientar uma ação. Quase setenta anos depois, essa ainda é uma boa definição do que um
+time de dados deveria fazer.
+
+O termo só se popularizou no fim dos anos 1980. Howard Dresner, então analista do
+Gartner, passou a usar \enquote{business intelligence} como guarda-chuva para os
+conceitos e métodos de apoio à decisão baseados em fatos, num mercado cheio de siglas
+\parencite{computerworld2006}. A autoria é disputada: o termo já aparecia em
+publicações anteriores, e o próprio Dresner deu versões diferentes sobre quando e onde
+começou a usá-lo. Para este livro, a disputa importa menos do que o fato de que o nome
+pegou, e com ele veio uma indústria inteira.
 
 \section{O que ficou dessa época}
 \label{sec:legado-origens}
 
-\pendente{escrever}
+Os relatórios em formulário contínuo sumiram, os SAD viraram nota de rodapé e as siglas
+foram esquecidas. Três ideias dessa época, porém, continuam valendo, e vão aparecer ao
+longo do livro.
+
+A primeira é que a pergunta de negócio vem antes do dado. Luhn falava em orientar a
+ação; Gorry e Scott Morton classificavam sistemas pelo tipo de decisão que apoiavam.
+Nenhum dos dois começava pela tecnologia. Projetos de dados que começam pela ferramenta,
+e só depois procuram uma pergunta para responder, continuam fracassando pelo mesmo
+motivo que fracassavam nos anos 1970.
+
+A segunda é a crítica de Ackoff: mais informação não é melhor informação. Ela reaparece
+quando o livro discute com que frequência os dados precisam atualizar
+(capítulo~\ref{cap:frequencia}) e por que vale medir o uso dos próprios produtos de dados.
+Um relatório que ninguém abre é o mesmo desperdício de 1967, só que mais barato de
+produzir e, na era dos créditos e tokens, nem sempre tão barato de manter.
+
+A terceira é que a análise sempre escapa para perto de quem decide. Aconteceu com a
+planilha, aconteceu com as ferramentas de self-service (capítulo~\ref{cap:self-service})
+e está acontecendo de novo com a IA (capítulo~\ref{cap:ia}). Cada vez que isso acontece,
+a empresa ganha agilidade e perde consistência, e alguém precisa reconstruir a
+consistência sem matar a agilidade. Esse alguém, quase sempre, é o time de dados.
+
+O passo seguinte da história foi justamente uma tentativa de resolver a consistência de
+uma vez: tirar os dados de análise de dentro dos sistemas operacionais e organizá-los num
+lugar próprio. É o assunto do próximo capítulo.
+
+\begin{leituras}
+  \leitura{ackoff1967}{Um artigo curto e provocador. Os cinco pressupostos errados que
+    Ackoff aponta nos sistemas de informação da época continuam aparecendo em projetos de
+    dashboard.}
+  \leitura{gorry1971}{O artigo que deu nome aos sistemas de apoio à decisão e que
+    organizou as decisões gerenciais pelo grau de estrutura.}
+  \leitura{power2007}{Um panorama acessível da história dos sistemas de apoio à decisão,
+    escrito por quem acompanhou a área de perto.}
+  \leitura{luhn1958}{Para ler o primeiro \enquote{sistema de business intelligence} na
+    fonte e perceber como a preocupação com a pessoa certa e a ação certa já estava lá.}
+\end{leituras}

@@ -2,35 +2,145 @@
 \chapter{Nuvem, big data e o modern data stack}
 \label{cap:nuvem}
 
-\rascunho{
-  \textbf{Ideia do capítulo.} Do Hadoop ao armazém na nuvem e à troca de ETL por ELT.
-  \begin{itemize}
-    \item Big data e data lakes: o que prometeram e o que entregaram.
-    \item Armazéns de dados na nuvem, separação entre armazenamento e processamento, custo por consulta.
-    \item ELT e o surgimento do analytics engineering (dbt e parecidos).
-    \item Lakehouse e o retorno de ideias antigas com nomes novos. A arquitetura medalhão
-      aparece aqui só de passagem; o capítulo~\ref{cap:medalhao} trata dela a fundo.
-    \item Custo por consumo: créditos de processamento como primeiro passo da mudança
-      tratada no capítulo~\ref{cap:custo-consumo}.
-  \end{itemize}
-}
+Enquanto o self-service levava a análise para a mesa do analista, os bastidores
+mudavam de escala. A internet, os celulares e os sensores passaram a gerar dados num
+volume que os armazéns tradicionais não davam conta de guardar, e muito menos de
+processar dentro de uma janela noturna. Este capítulo percorre as três ondas que vieram
+em seguida: o big data, os armazéns de dados na nuvem e a troca do ETL pelo ELT, que deu
+origem ao chamado modern data stack. E termina com uma constatação que vai acompanhar o
+resto do livro: muitas das ideias novas são ideias antigas com outra roupa.
 
 \section{Big data e data lakes}
 \label{sec:big-data}
 
-\pendente{escrever}
+Em 2001, Doug Laney, analista do META Group, descreveu os desafios de gestão de dados em
+três dimensões: volume, velocidade e variedade \parencite{laney2001}. Os \enquote{três
+Vs} viraram, anos depois, a definição informal de big data: dados grandes demais, rápidos
+demais ou heterogêneos demais para as ferramentas da época.
+
+A resposta técnica veio das empresas de internet, que enfrentavam o problema antes de
+todo mundo. O Google publicou em 2003 a arquitetura do seu sistema de arquivos
+distribuído, que espalhava dados por milhares de máquinas baratas
+\parencite{ghemawat2003}, e em 2004 o MapReduce, um modelo para processar esses dados
+em paralelo dividindo o trabalho em duas etapas simples \parencite{dean2004}. Um projeto
+de código aberto inspirado nesses dois artigos, o Hadoop, ganhou força a partir de 2006 e
+se tornou sinônimo de big data na década seguinte.
+
+A promessa do Hadoop era guardar tudo, em qualquer formato, a um custo baixo, e decidir
+depois o que fazer com os dados. Em 2010, James Dixon cunhou o termo \emph{data lake}
+para essa ideia: em vez de um armazém em que a água chega engarrafada e pronta para
+consumo, um lago onde ela chega no estado natural e cada um retira o que precisa
+\parencite{dixon2010}.
+
+A metáfora era boa, e a prática nem sempre acompanhou. Muitos lagos viraram pântanos:
+arquivos sem documentação, sem dono, sem garantia de qualidade, que ninguém tinha
+coragem de apagar e ninguém conseguia usar. E a tecnologia exigia especialistas raros,
+escrevendo código de baixo nível para tarefas que, num banco relacional, seriam uma
+consulta SQL de poucas linhas. Não por acaso, uma das primeiras coisas que o ecossistema
+Hadoop ganhou foram ferramentas para consultar os dados com SQL.
+
+O big data deixou duas heranças duradouras. A primeira é a ideia de separar o
+armazenamento barato e flexível do processamento, que vai reaparecer na nuvem e no
+lakehouse. A segunda é a lição de que guardar tudo não substitui modelar e documentar. O
+dado sem contexto, por mais barato que seja guardá-lo, continua sem valor.
 
 \section{O armazém vai para a nuvem}
 \label{sec:dw-nuvem}
 
-\pendente{escrever}
+A segunda onda trouxe o data warehouse de volta, agora como serviço. Em vez de comprar
+servidores e licenças, a empresa passou a alugar capacidade de um provedor de nuvem e a
+pagar pelo uso.
+
+Três sistemas marcaram essa transição, e todos foram descritos em artigos técnicos que
+valem a leitura. O Dremel, do Google, mostrou que era possível consultar bilhões de
+linhas em segundos usando armazenamento em colunas e processamento distribuído
+\parencite{melnik2010}; ele está por trás de um dos primeiros armazéns oferecidos como
+serviço. A Amazon defendeu um armazém de dados mais simples de contratar e operar, que
+qualquer time pudesse ligar em minutos \parencite{gupta2015}. E o Snowflake levou ao
+extremo a separação entre armazenamento e processamento: os dados ficam num lugar, e
+quantos \enquote{motores} de processamento forem necessários podem ser ligados e
+desligados sobre eles, de forma independente \parencite{dageville2016}.
+
+Essa separação mudou a economia do armazém de dados. No modelo antigo, a capacidade era
+comprada para o pico e ficava ociosa a maior parte do tempo. No modelo novo, o custo
+acompanha o uso: uma consulta pesada custa mais, um processo que roda a cada hora custa
+mais do que um que roda uma vez por dia. É uma vantagem enorme para quem começa pequeno,
+e uma armadilha para quem não acompanha o consumo. Essa mudança, da licença fixa para o
+pagamento por uso, foi o primeiro passo de uma tendência que a IA acelerou e que o
+capítulo~\ref{cap:custo-consumo} trata em detalhe.
 
 \section{De ETL para ELT}
 \label{sec:elt}
 
-\pendente{escrever}
+Com processamento barato e elástico dentro do próprio armazém, uma inversão passou a
+fazer sentido. Em vez de transformar os dados num servidor intermediário antes de
+carregá-los (ETL), a empresa carrega os dados brutos no armazém e transforma lá dentro,
+com SQL (ELT). A janela noturna deixa de ser um gargalo, o dado bruto fica disponível
+para reprocessar quando uma regra muda, e a transformação passa a ser escrita na
+linguagem que os analistas já conhecem.
+
+Em meados dos anos 2010 surgiram ferramentas para organizar essa transformação como
+código: modelos em SQL, versionados, testados e documentados, com dependências entre si
+resolvidas automaticamente. A mais conhecida delas, o dbt, ajudou a consolidar uma forma
+de trabalhar que trouxe práticas de engenharia de software para dentro do time de dados.
+A Parte~\ref{parte:devops} do livro é, em boa medida, sobre essas práticas.
+
+Com a nova forma de trabalhar veio um papel novo. Em 2019, Michael Kaminsky descreveu o
+\emph{analytics engineer}: alguém entre o engenheiro de dados e o analista, que domina SQL
+e modelagem, aplica práticas de engenharia de software e entrega conjuntos de dados
+limpos e bem documentados para os analistas usarem \parencite{kaminsky2019}. A
+comunidade em torno do dbt adotou e popularizou o termo. O
+capítulo~\ref{cap:mapas} compara esse papel com o do analista e o do engenheiro de
+dados.
+
+Os projetos de analytics engineering costumam se organizar em camadas: uma camada de
+preparação, que limpa e padroniza o dado bruto de cada fonte; uma camada intermediária,
+que junta e aplica regras de negócio quando necessário; e uma camada final, com os
+modelos prontos para consumo, muitas vezes dimensionais. Quem leu o capítulo anterior
+reconhece aqui ecos de Inmon e de Kimball. O capítulo~\ref{cap:medalhao} mostra como
+essa organização em camadas ganhou um nome próprio, a arquitetura medalhão.
+
+Ao conjunto de ferramentas dessa época (ingestão gerenciada, armazém na nuvem,
+transformação como código, BI por cima) deu-se o nome de \emph{modern data stack}. O
+nome é de marketing, mas a mudança foi real: um time pequeno passou a conseguir montar,
+em semanas, uma plataforma que antes exigia um projeto de anos.
+
+\rascunho{
+  Relato: a experiência de montar ou migrar uma plataforma nesse modelo (armazém na
+  nuvem, transformação em camadas, BI por cima), com o que deu certo e o que surpreendeu,
+  inclusive no custo. Sem nomes de empresa e com números só em ordem de grandeza.
+}
 
 \section{Ideias antigas, nomes novos}
 \label{sec:nomes-novos}
 
-\pendente{escrever}
+A área de dados tem o hábito de redescobrir as próprias ideias. O lakehouse, proposto em
+2021, junta o armazenamento aberto e barato do data lake com as garantias de um data
+warehouse: transações, esquemas, desempenho de consulta \parencite{armbrust2021}. É uma
+evolução técnica real, e também uma volta ao ponto em que o data warehouse já estava,
+agora sobre outra base.
+
+A camada semântica, em que cada métrica é definida uma vez e reaproveitada por todas as
+ferramentas, voltou à moda nos últimos anos. As suítes corporativas de BI dos anos 1990
+já tinham camadas desse tipo. A organização em camadas de refinamento lembra a separação
+entre a área de preparação e a área de apresentação de Kimball. E o
+\enquote{dado como produto} lembra muito o data mart com dono.
+
+Reconhecer isso não é desmerecer o novo. Cada volta acontece sobre uma tecnologia
+melhor, mais barata e mais acessível, e por isso chega a mais gente. Mas reconhecer o
+padrão ajuda a separar o que é de fato novo do que é rótulo, e a aproveitar décadas de
+experiência acumulada em vez de reaprender tudo do zero. O próximo capítulo trata da
+onda mais recente, e talvez da primeira em muito tempo que muda não só a infraestrutura,
+mas também o trabalho de quem analisa os dados: a chegada da IA generativa.
+
+\begin{leituras}
+  \leitura{dageville2016}{O artigo que descreve a separação entre armazenamento e
+    processamento no Snowflake. Ajuda a entender por que o custo da nuvem se comporta como
+    se comporta.}
+  \leitura{dean2004}{O artigo do MapReduce, base do Hadoop. Curto, claro e importante
+    para entender a década do big data.}
+  \leitura{kaminsky2019}{O texto que descreveu o papel do analytics engineer, ainda uma
+    boa leitura para quem quer entender onde ele se encaixa entre análise e engenharia.}
+  \leitura{reis2022}{Uma visão atual e independente de ferramenta do ciclo de vida da
+    engenharia de dados, da geração ao consumo.}
+\end{leituras}

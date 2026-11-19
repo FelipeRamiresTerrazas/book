@@ -2,34 +2,137 @@
 \chapter{A chegada da IA}
 \label{cap:ia}
 
-\rascunho{
-  \textbf{Ideia do capítulo.} O que a IA generativa mudou no trabalho com dados e o que ela não mudou.
-  \begin{itemize}
-    \item Modelos de linguagem como copilotos: escrever SQL, explicar código, documentar.
-    \item Text-to-SQL e a promessa de \enquote{conversar com os dados}: onde funciona e onde engana.
-    \item Agentes que executam tarefas inteiras e a nova pergunta: quem revisa?
-    \item O que não mudou: definição de métrica, qualidade do dado, contexto de negócio.
-    \item O que a IA passou a pedir dos dados (treino e contexto) fica para a
-      Parte~\ref{parte:modelagem}; o custo em tokens, para o capítulo~\ref{cap:custo-consumo}.
-  \end{itemize}
-}
+Cada onda contada até aqui mudou principalmente a infraestrutura: onde o dado fica, como
+é processado, quanto custa, quem consegue montar um gráfico. A onda da IA generativa é
+diferente porque mexe diretamente no trabalho de quem analisa. Ela escreve a consulta,
+explica o código, documenta a tabela e, cada vez mais, executa tarefas inteiras. Este
+capítulo trata do que mudou, do que a evidência disponível diz sobre os ganhos e os
+riscos, e do que continua exatamente igual.
 
 \section{O copiloto na mesa do analista}
 \label{sec:copiloto}
 
-\pendente{escrever}
+Os modelos de linguagem atuais descendem de uma arquitetura publicada em 2017, o
+transformer, que permitiu treinar modelos muito maiores a partir de grandes volumes de
+texto \parencite{vaswani2017}. Em 2020, um desses modelos mostrou que conseguia realizar
+tarefas novas a partir de poucos exemplos dados no próprio pedido, sem treinamento
+específico \parencite{brown2020}. No fim de 2022, a chegada dos assistentes de
+conversa ao grande público fez essa tecnologia sair dos laboratórios e entrar no dia a
+dia de qualquer pessoa com um navegador.
+
+Para quem trabalha com dados, o efeito foi imediato. O assistente escreve uma consulta
+SQL a partir de uma descrição em português, explica o que faz uma consulta herdada de
+outra pessoa, traduz código de uma linguagem para outra, sugere testes, escreve a
+documentação de uma tabela e encontra o erro numa fórmula. Tarefas que tomavam uma tarde
+passaram a tomar minutos.
+
+A evidência sobre os ganhos existe e é mais interessante do que as manchetes. Num
+experimento controlado, programadores com acesso a um assistente de código concluíram
+uma tarefa de programação cerca de 56\% mais rápido do que o grupo sem assistente
+\parencite{peng2023}. Num estudo de campo com consultores de uma grande consultoria,
+quem usou IA em tarefas dentro do alcance dos modelos produziu mais, mais rápido e com
+mais qualidade. Mas, numa tarefa escolhida por estar fora desse alcance, quem usou IA
+acertou menos do que quem trabalhou sem ela \parencite{dellacqua2023}. Os autores
+chamaram isso de fronteira irregular: a IA é excelente em algumas tarefas e ruim em
+outras que parecem igualmente difíceis, e não é óbvio, olhando de fora, de que lado da
+fronteira uma tarefa está.
+
+Um terceiro estudo acrescenta uma nuance importante. Em 2025, desenvolvedores experientes
+trabalhando em projetos de código aberto grandes e maduros, que conheciam a fundo,
+levaram cerca de 19\% mais tempo nas tarefas em que puderam usar IA. E, mesmo depois de
+terminar, acreditavam que a IA os tinha deixado cerca de 20\% mais rápidos
+\parencite{becker2025}. O resultado não diz que a IA atrapalha sempre; diz que o ganho
+depende do contexto, e que a nossa percepção do ganho não é um bom instrumento de
+medida.
+
+\begin{destaque}
+A IA acelera muito o trabalho que está dentro do alcance dela, e pode piorar o que está
+fora. Saber de que lado está cada tarefa virou parte do ofício.
+\end{destaque}
+
+\rascunho{
+  Relato: como a IA entrou no meu dia a dia de trabalho com dados (o primeiro uso que
+  realmente economizou tempo, e o primeiro erro da IA que quase passou despercebido).
+}
 
 \section{Conversar com os dados}
 \label{sec:text-to-sql}
 
-\pendente{escrever}
+A promessa mais repetida da IA aplicada a dados é a de \enquote{conversar com os
+dados}: o gestor pergunta em linguagem natural e recebe a resposta, sem precisar de
+analista nem de painel. Por baixo, a técnica se chama \emph{text-to-SQL}: o modelo
+traduz a pergunta numa consulta, executa e devolve o resultado.
+
+A pesquisa acadêmica mede essa capacidade com conjuntos de perguntas e bancos de dados
+de referência. O Spider, de 2018, reuniu milhares de perguntas sobre bancos de domínios
+diferentes \parencite{yu2018}. O BIRD, de 2023, foi construído para ficar mais perto da
+realidade: bancos maiores, dados sujos e perguntas que exigem conhecimento externo ao
+banco para serem respondidas \parencite{li2023bird}. Quando foi publicado, os melhores
+modelos ficavam bem abaixo de especialistas humanos nesse conjunto. Os modelos
+melhoraram rápido desde então, e os números envelhecem em meses.
+
+O que não envelhece é o motivo da distância entre o laboratório e a empresa. Num banco
+de verdade, as tabelas têm nomes herdados de sistemas antigos, há três colunas que
+parecem ser a data da venda, e a pergunta \enquote{quanto faturamos no mês?} depende de
+regras que não estão escritas em lugar nenhum: se devolução desconta, se o frete entra,
+em que data a venda conta. O modelo não tem como saber isso. Quando falta contexto, ele
+não avisa que falta; ele escolhe uma interpretação plausível e responde com segurança.
+
+Por isso a pergunta em linguagem natural funciona bem onde o trabalho de base foi bem
+feito: modelo dimensional com grão claro, métricas definidas uma vez, tabelas e colunas
+documentadas. Funciona mal onde não foi. O capítulo~\ref{cap:contexto-ia} trata desse
+trabalho de base, que é, no fundo, modelagem e documentação feitas para um consumidor
+novo.
 
 \section{Agentes e a pergunta de quem revisa}
 \label{sec:agentes}
 
-\pendente{escrever}
+O passo seguinte ao assistente que sugere é o agente que executa. Em vez de devolver
+uma consulta para a pessoa rodar, o agente roda a consulta, olha o resultado, percebe um
+erro, corrige, gera o gráfico e escreve o resumo. Em vez de sugerir uma alteração no
+código do pipeline, ele altera, roda os testes e abre o pedido de revisão.
+
+Isso muda a natureza do trabalho humano. Quando a máquina sugere e a pessoa executa, a
+pessoa naturalmente confere cada passo. Quando a máquina executa uma sequência inteira,
+a conferência vira uma etapa separada, e é a etapa que mais tende a ser pulada quando o
+prazo aperta. O estudo de 2025 citado acima aponta um custo que costuma ser esquecido:
+parte do tempo dos desenvolvedores foi gasto revisando e corrigindo o que a IA produziu
+\parencite{becker2025}.
+
+A pergunta central deixa de ser \enquote{a IA consegue fazer isso?} e passa a ser
+\enquote{quem revisa, com que critério, e quem responde se estiver errado?}. Boa parte
+do resto do livro é uma resposta a essa pergunta. Revisar exige ler código
+(capítulo~\ref{cap:programar}). Revisar com critério exige testes que digam o que é
+certo antes de o código existir (\veja{sec:tdd}). E responder pelo resultado continua
+sendo de uma pessoa, como o capítulo~\ref{cap:governanca} discute.
 
 \section{O que continua igual}
 \label{sec:continua-igual}
 
-\pendente{escrever}
+Com tanta coisa mudando, vale olhar para o que não mudou. A definição da métrica
+continua sendo uma decisão de negócio: a IA calcula o faturamento do jeito que alguém
+definiu, ou do jeito que ela imagina, se ninguém definiu. A qualidade do dado continua
+dependendo de processos e de pessoas: um cadastro duplicado gera um número errado com ou
+sem IA, só que agora mais rápido. E o contexto de negócio, saber o que o gestor vai fazer
+com o número, continua sendo o que separa uma análise correta de uma análise útil
+(capítulo~\ref{cap:negocio}).
+
+A IA também trouxe exigências novas para os dados, que as ondas anteriores não tinham.
+Modelos precisam de dados organizados para serem treinados, ajustados e avaliados, e
+assistentes precisam de dados organizados como contexto para responder bem. Esses usos
+ganham capítulos próprios na Parte~\ref{parte:modelagem}. E trouxe uma nova forma de
+custo: cada pergunta respondida por um modelo consome tokens, que alguém paga, assunto do
+capítulo~\ref{cap:custo-consumo}.
+
+Este capítulo fecha a primeira parte do livro, a história de como chegamos até aqui. A
+próxima parte muda de pergunta: com tudo isso acontecendo, o que vale a pena estudar, e em
+que ordem?
+
+\begin{leituras}
+  \leitura{dellacqua2023}{O estudo da fronteira irregular. A melhor leitura para entender
+    por que a mesma ferramenta ajuda muito numa tarefa e atrapalha em outra parecida.}
+  \leitura{becker2025}{Um experimento controlado com desenvolvedores experientes que
+    mostra a distância entre o ganho percebido e o ganho medido.}
+  \leitura{li2023bird}{Para entender, com dados, por que responder perguntas sobre bancos
+    reais é mais difícil do que parece.}
+\end{leituras}

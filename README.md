@@ -39,7 +39,7 @@ referências indefinidas. No VS Code, as receitas do LaTeX Workshop fazem o mesm
 |---|---|
 | `\rascunho{...}` | Nota de planejamento, só aparece no PDF de rascunho |
 | `\pendente{...}` | Algo a resolver; marcado no rascunho e contado pelo `compilar.py` |
-| `\veja{sec:rotulo}` | Remissão a seção (sem número): *Nome da seção* (p. 42) |
+| `\veja{sec:rotulo}` | Remissão a seção (sem número): *Nome da seção*, p. 42 |
 | `\codigo{...}` | Código no meio da frase |
 | `relato` | Caixa "Da minha experiência", para relatos de projetos reais |
 | `destaque` | Ideia-chave em uma ou duas frases |

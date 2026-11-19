@@ -1,13 +1,59 @@
 \chapter{Como ler este livro}
 \label{cap:como-ler}
 
-\rascunho{
-  Mapa do livro e roteiros de leitura por perfil. Ideias:
-  \begin{itemize}
-    \item As cinco partes em um parágrafo cada (\nameref{parte:origens}, \nameref{parte:trilhas}, \nameref{parte:modelagem}, \nameref{parte:devops}, \nameref{parte:agil}).
-    \item Roteiros: quem está começando lê tudo em ordem; quem já trabalha com dados pode ir direto à Parte~\ref{parte:modelagem}, \ref{parte:devops} ou \ref{parte:agil}; gestores podem ler a Parte~\ref{parte:origens} e a Parte~\ref{parte:agil}.
-    \item Convenções do livro: as caixas \enquote{Da minha experiência} são relatos de projetos reais (sem nomes de empresas nem clientes); \enquote{Antes e depois da IA} compara o mesmo trabalho nos dois momentos; trechos de código em SQL e Python.
-  \end{itemize}
-}
+Este livro foi escrito para ser lido em ordem, mas não precisa ser. Ele está dividido em
+cinco partes, e cada uma responde a uma pergunta diferente.
 
-\pendente{escrever o guia de leitura}
+A Parte~\ref{parte:origens}, \emph{\nameref{parte:origens}}, conta como a análise de
+dados chegou até aqui: dos relatórios impressos ao data warehouse, do self-service à
+nuvem, e daí à IA generativa. Não é uma aula de história. Cada capítulo existe porque
+uma ideia daquela época continua presente no trabalho de hoje, às vezes com outro nome.
+
+A Parte~\ref{parte:trilhas}, \emph{\nameref{parte:trilhas}}, trata do que estudar. Compara
+a trilha tradicional de quem aprendeu antes da IA com a trilha possível hoje, defende que
+aprender a programar continua valendo e mostra por que o conhecimento de negócio virou o
+principal diferencial de quem trabalha com dados.
+
+A Parte~\ref{parte:modelagem}, \emph{\nameref{parte:modelagem}}, é a mais técnica. Mostra
+como organizar o mesmo dado para usos diferentes (análise descritiva, ciência de dados,
+treino de IA e contexto para assistentes), e como cuidar de master data e de governança
+numa época em que a IA pode fazer boa parte do trabalho braçal.
+
+A Parte~\ref{parte:devops}, \emph{\nameref{parte:devops}}, traz para os dados as práticas
+de engenharia de software: versionamento, testes, entrega contínua, monitoramento. E
+discute duas decisões que costumam ser tomadas no automático e custam caro: com que
+frequência os dados precisam atualizar, e como controlar o consumo numa época em que quase
+tudo é cobrado por uso.
+
+A Parte~\ref{parte:agil}, \emph{\nameref{parte:agil}}, trata de pessoas e de fluxo de
+trabalho: como os times de dados se organizam, por que o ágil \enquote{de prateleira} não
+encaixa bem em dados, e o modelo de Scrum com Kanban que funcionou nos projetos de
+visualização e de engenharia que estão por trás deste livro.
+
+\section*{Roteiros de leitura}
+
+Quem está começando na área ganha mais lendo em ordem, porque cada parte usa conceitos da
+anterior. Quem já trabalha com dados pode ir direto à Parte~\ref{parte:modelagem} ou à
+Parte~\ref{parte:devops} e voltar aos capítulos anteriores quando uma referência pedir.
+Gestores, inclusive os que não vêm da área técnica, tendem a aproveitar mais a
+Parte~\ref{parte:origens}, o capítulo~\ref{cap:negocio}, os capítulos sobre frequência de
+atualização e custo (\ref{cap:frequencia} e \ref{cap:custo-consumo}) e a
+Parte~\ref{parte:agil}.
+
+\section*{Convenções}
+
+Ao longo do texto aparecem algumas caixas. As caixas \enquote{Da minha experiência}
+trazem relatos de projetos reais; empresas, clientes e pessoas não são identificados, e
+números da operação aparecem só em ordem de grandeza. As caixas \enquote{Antes e depois
+da IA} comparam o mesmo trabalho nos dois momentos. As caixas \enquote{Na prática} trazem
+uma recomendação curta, para aplicar na semana seguinte. E os destaques resumem uma ideia
+central em uma ou duas frases.
+
+Os exemplos de código estão em SQL e em Python, as duas linguagens mais usadas em dados.
+Eles foram escritos para serem lidos, não só copiados: são curtos e evitam recursos
+específicos de um fornecedor sempre que possível.
+
+As referências seguem o formato autor e ano, como \textcite{kimball2013}, e estão
+completas no fim do livro, onde cada obra indica as páginas em que foi citada. Os
+capítulos com base bibliográfica terminam com uma seção \enquote{Para ir além}, com
+algumas leituras comentadas para quem quiser se aprofundar.

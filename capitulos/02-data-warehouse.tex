@@ -2,45 +2,61 @@
 \chapter{O data warehouse e a modelagem dimensional}
 \label{cap:dw}
 
-\rascunho{
-  \textbf{Ideia do capítulo.} Como o data warehouse surgiu, as duas escolas que
-  definiram o campo (Inmon e Kimball) e por que a modelagem dimensional continua sendo
-  a parte mais duradoura desse período. Comparar as escolas sem tomar partido cego, e
-  fechar com a minha experiência de qual delas aparece na prática.
-  \begin{itemize}
-    \item Figuras: linha do tempo (Figura~\ref{fig:dw-linha-tempo}), arquitetura de
-      Inmon (Figura~\ref{fig:inmon}), arquitetura de Kimball (Figura~\ref{fig:kimball}),
-      esquema estrela (Figura~\ref{fig:estrela}).
-    \item Tabelas: matriz de barramento (Tabela~\ref{tab:matriz-barramento}) e
-      comparação entre as escolas (Tabela~\ref{tab:inmon-kimball}).
-    \item Rigor: todo conceito com a fonte; datas históricas pela primeira edição,
-      conceitos pela edição que eu li. Fechar com \enquote{Para ir além}.
-  \end{itemize}
-}
+Nos anos 1990, o BI deixou de ser um conjunto de relatórios e planilhas e virou projeto
+corporativo, com orçamento, equipe e arquitetura próprios. O centro desse projeto era o
+data warehouse, o armazém de dados. Este capítulo conta como ele surgiu, apresenta as
+duas escolas que definiram o campo, a de Bill Inmon e a de Ralph Kimball, e mostra por
+que a modelagem dimensional, uma ideia dessa época, continua sendo uma das habilidades
+mais úteis para quem trabalha com dados.
 
-% ---------------------------------------------------------------------------
 \section{Como surgiu o data warehouse}
 \label{sec:surgimento-dw}
 
-\rascunho{
-  \begin{itemize}
-    \item O problema: os sistemas operacionais (vendas, estoque, contabilidade) foram
-      feitos para registrar transações, não para analisar. Relatório pesado competia
-      com a operação, e cada área extraía seus próprios dados, com números que não
-      batiam entre si. \pendente{achar fonte para a proliferação de extrações; Inmon descreve isso}
-    \item \textcite{devlin1988} descrevem na IBM a arquitetura de um armazém de dados
-      separado dos sistemas operacionais.
-    \item \textcite{inmon1992} publica o livro que populariza o termo e a disciplina.
-      Definição clássica (paráfrase): uma coleção de dados orientada por assunto,
-      integrada, variável no tempo e não volátil, para apoiar a decisão gerencial
-      \parencite{inmon2005}. \pendente{conferir a citação exata e a página na edição usada}
-    \item Explicar cada um dos quatro adjetivos com um exemplo do dia a dia.
-    \item Apresentar a linha do tempo (Figura~\ref{fig:dw-linha-tempo}) e dizer que o
-      resto do livro percorre a metade de baixo dela.
-  \end{itemize}
-}
+Os sistemas operacionais de uma empresa (vendas, estoque, contabilidade, folha de
+pagamento) foram construídos para registrar transações. Eles precisam gravar um pedido
+em milissegundos, garantir que dois vendedores não vendam a mesma unidade e manter o
+saldo sempre correto. Para isso, guardam o estado atual das coisas, organizado de forma
+a evitar repetição.
 
-\pendente{escrever}
+Análise pede quase o oposto. O gestor quer saber como as vendas evoluíram nos últimos
+três anos, por região e por produto, comparando com o orçamento. Essa consulta lê
+milhões de linhas, precisa de histórico que o sistema operacional muitas vezes já
+apagou, e cruza dados de sistemas que não conversam entre si. Rodar esse tipo de
+consulta no mesmo banco que registra as vendas deixa a operação lenta, e nem assim
+resolve o cruzamento entre sistemas.
+
+A saída que as empresas encontraram primeiro foi extrair dados. Cada área pedia um
+arquivo do sistema de origem, tratava do seu jeito e montava o seu relatório. Com o
+tempo, as extrações se multiplicavam, cada uma com uma regra um pouco diferente, e os
+números de áreas diferentes deixavam de bater. \pendente{achar fonte para a
+proliferação de extrações; Inmon descreve esse cenário}
+
+Em 1988, Barry Devlin e Paul Murphy descreveram na IBM uma arquitetura diferente: um
+armazém de dados de negócio, separado dos sistemas operacionais, alimentado de forma
+controlada e usado como fonte única para os relatórios \parencite{devlin1988}. Quatro
+anos depois, Bill Inmon publicou o livro que popularizou o termo data warehouse e
+transformou a ideia numa disciplina \parencite{inmon1992}.
+
+A definição de Inmon ficou clássica. Um data warehouse é uma coleção de dados orientada
+por assunto, integrada, variável no tempo e não volátil, que apoia a tomada de decisão
+gerencial \parencite{inmon2005}. \pendente{conferir a citação exata e a página na
+edição usada} Cada um dos quatro adjetivos resolve um problema concreto:
+
+\begin{description}[style=nextline, leftmargin=1.5em, font=\normalfont\itshape]
+  \item[Orientada por assunto] Os dados se organizam pelos assuntos do negócio
+    (cliente, produto, venda), não pelos sistemas de onde vieram. O analista procura
+    \enquote{clientes} e não precisa saber se eles estão no ERP ou no CRM.
+  \item[Integrada] O mesmo cliente tem o mesmo código e o mesmo nome em todo o armazém,
+    mesmo que cada sistema de origem o registre de um jeito. É a primeira aparição, no
+    livro, do problema de master data.
+  \item[Variável no tempo] O armazém guarda o histórico. Se o cliente mudou de cidade, é
+    possível saber onde ele estava quando fez cada compra.
+  \item[Não volátil] O dado carregado não é alterado pelas transações do dia a dia. Uma
+    consulta de hoje sobre o mês passado dá o mesmo resultado amanhã.
+\end{description}
+
+A Figura~\ref{fig:dw-linha-tempo} situa esses marcos numa linha do tempo que vai até a
+IA. O resto do livro percorre, de certa forma, a metade de baixo dessa linha.
 
 \begin{figure}[htbp]
   \centering
@@ -52,26 +68,19 @@
     \textcite{linstedt2015} e \textcite{armbrust2021}.}
 \end{figure}
 
-% ---------------------------------------------------------------------------
 \section{A abordagem de Inmon}
 \label{sec:inmon}
 
-\rascunho{
-  \begin{itemize}
-    \item De cima para baixo: primeiro um armazém corporativo único, integrado e
-      normalizado (terceira forma normal), que é a fonte de verdade da empresa
-      \parencite{inmon2005}.
-    \item Os data marts de cada área são derivados do armazém (dependentes), e só
-      eles costumam ser modelados para consulta.
-    \item A arquitetura completa, com o armazém como uma das peças, é a Corporate
-      Information Factory \parencite{inmon2001}.
-    \item Pontos fortes: consistência entre áreas, flexibilidade para perguntas que
-      ninguém previu. Pontos fracos: primeira entrega lenta e cara, exige um modelo
-      corporativo antes de mostrar valor.
-  \end{itemize}
-}
+Para Inmon, o data warehouse é a base corporativa de informação. Ele deve ser
+construído de cima para baixo: primeiro se modela a empresa como um todo, depois se
+carrega um armazém central, integrado e normalizado, na terceira forma normal, o mesmo
+tipo de modelagem usado nos sistemas transacionais para evitar repetição de dados
+\parencite{inmon2005}. Esse armazém é a fonte de verdade.
 
-\pendente{escrever}
+Os data marts, bases menores voltadas a uma área (vendas, finanças, logística), vêm
+depois e são derivados do armazém central. Por isso são chamados de dependentes. Neles,
+sim, os dados podem ser reorganizados para facilitar a consulta. A
+Figura~\ref{fig:inmon} resume o desenho.
 
 \begin{figure}[htbp]
   \centering
@@ -81,30 +90,32 @@
   \fonte{elaborado pelo autor com base em \textcite{inmon2005} e \textcite{inmon2001}.}
 \end{figure}
 
-% ---------------------------------------------------------------------------
+Inmon e coautores ampliaram depois essa visão para a Corporate Information Factory, uma
+arquitetura completa em que o data warehouse é uma das peças, ao lado de bases
+operacionais integradas, data marts e aplicações de análise \parencite{inmon2001}.
+
+A força dessa abordagem é a consistência. Como tudo passa pelo armazém central, as áreas
+partem dos mesmos dados e das mesmas regras. E como o núcleo é normalizado, ele aguenta
+bem perguntas que ninguém previu quando o modelo foi desenhado. O ponto fraco é o tempo.
+Modelar a empresa inteira antes de entregar o primeiro relatório exige meses, às vezes
+anos, e um patrocínio que nem sempre sobrevive à espera.
+
 \section{A abordagem de Kimball}
 \label{sec:kimball}
 
-\rascunho{
-  \begin{itemize}
-    \item De baixo para cima: o armazém é construído um processo de negócio por vez
-      (vendas, depois estoque, depois compras), cada um num modelo dimensional
-      \parencite{kimball2013}.
-    \item A integração vem das dimensões conformadas: Data, Produto e Cliente são as
-      mesmas tabelas em todos os data marts. O conjunto forma a arquitetura de
-      barramento (\emph{bus architecture}), planejada na matriz de barramento
-      (Tabela~\ref{tab:matriz-barramento}). Dimensão conformada é master data com
-      outro nome (ver o capítulo~\ref{cap:master-data}).
-    \item Outras ideias de Kimball que valem citar: chaves substitutas
-      (\emph{surrogate keys}) e dimensões que mudam devagar (\emph{slowly changing
-      dimensions}). \pendente{decidir se SCD entra aqui ou no capítulo de engenharia}
-    \item Pontos fortes: entrega rápida, modelo fácil de entender para o usuário e
-      para a ferramenta de BI. Ponto fraco: sem disciplina nas dimensões conformadas,
-      vira um conjunto de silos.
-  \end{itemize}
-}
+Ralph Kimball propôs o caminho inverso. Em vez de começar pela empresa inteira, o
+armazém é construído um processo de negócio por vez: primeiro vendas, depois estoque,
+depois compras. Cada processo ganha um modelo dimensional, desenhado para ser fácil de
+entender e rápido de consultar \parencite{kimball1996,kimball2013}.
 
-\pendente{escrever}
+O que impede esse crescimento incremental de virar um amontoado de bases isoladas são as
+dimensões conformadas. Data, produto, cliente e loja são as mesmas tabelas, com as mesmas
+chaves e os mesmos atributos, em todos os modelos. Assim, uma análise que cruza vendas e
+estoque por produto funciona, porque os dois usam exatamente a mesma dimensão de produto.
+O conjunto de modelos ligados pelas dimensões conformadas forma o que Kimball chama de
+arquitetura de barramento (Figura~\ref{fig:kimball}). Uma dimensão conformada é, na
+prática, master data com outro nome, e o capítulo~\ref{cap:master-data} volta a esse
+ponto.
 
 \begin{figure}[htbp]
   \centering
@@ -113,6 +124,12 @@
   \label{fig:kimball}
   \fonte{elaborado pelo autor com base em \textcite{kimball2013}.}
 \end{figure}
+
+O planejamento desse barramento cabe numa tabela simples, a matriz de barramento: os
+processos de negócio nas linhas, as dimensões nas colunas, e uma marca onde o processo
+usa a dimensão (Tabela~\ref{tab:matriz-barramento}). Ela mostra, de relance, quais
+dimensões precisam ser construídas com mais cuidado, porque serão compartilhadas por
+muitos processos.
 
 \begin{table}[htbp]
   \centering
@@ -132,24 +149,29 @@
   \fonte{exemplo do autor, no formato da matriz de barramento de \textcite{kimball2013}.}
 \end{table}
 
-% ---------------------------------------------------------------------------
+Duas outras ideias de Kimball aparecem em quase todo projeto de dados até hoje. As
+chaves substitutas (\emph{surrogate keys}) são códigos gerados pelo próprio armazém para
+cada linha de dimensão, independentes dos códigos dos sistemas de origem. Elas protegem o
+modelo quando a origem muda a numeração ou quando dois sistemas usam o mesmo código para
+coisas diferentes. As dimensões que mudam devagar (\emph{slowly changing dimensions})
+são as técnicas para lidar com atributos que mudam com o tempo, como a cidade de um
+cliente. A forma mais simples sobrescreve o valor antigo; a mais usada para análise
+histórica cria uma nova linha a cada mudança, com datas de início e fim de validade.
+Essa segunda forma vai reaparecer, com outro nome, quando o livro tratar de dados para
+modelos preditivos (\veja{sec:vazamento}).
+
+A força da abordagem de Kimball é a entrega rápida e o modelo que o usuário entende. O
+ponto fraco é que tudo depende da disciplina nas dimensões conformadas. Sem ela, cada
+processo ganha a sua própria dimensão de cliente, e o armazém vira um conjunto de silos
+com a aparência de um sistema integrado.
+
 \section{Fatos, dimensões e granularidade}
 \label{sec:modelagem-dimensional}
 
-\rascunho{
-  \begin{itemize}
-    \item O processo de quatro passos de \textcite{kimball2013}: escolher o processo de
-      negócio, declarar o grão, identificar as dimensões, identificar os fatos.
-    \item O grão é a decisão mais importante e a mais esquecida: \enquote{uma linha por
-      item vendido} é diferente de \enquote{uma linha por pedido}.
-    \item Fatos são medidas (quantidade, valor); dimensões são o contexto (quando, o
-      quê, quem, onde). A Figura~\ref{fig:estrela} mostra o desenho e a consulta abaixo
-      mostra por que ele é fácil de consultar.
-    \item Relato: um erro de grão que eu vi (ou cometi) na prática. \pendente{escolher o caso}
-  \end{itemize}
-}
-
-\pendente{escrever}
+O modelo dimensional tem duas peças. As tabelas de fatos guardam as medidas de um
+processo de negócio: quantidade vendida, valor, custo. As tabelas de dimensão guardam o
+contexto dessas medidas: quando, o quê, quem, onde. Desenhado, o modelo parece uma
+estrela, com o fato no centro e as dimensões em volta (Figura~\ref{fig:estrela}).
 
 \begin{figure}[htbp]
   \centering
@@ -158,6 +180,28 @@
   \label{fig:estrela}
   \fonte{elaborado pelo autor.}
 \end{figure}
+
+\textcite{kimball2013} organizam o desenho em quatro passos: escolher o processo de
+negócio, declarar o grão, identificar as dimensões e identificar os fatos. A ordem
+importa, e o segundo passo é o mais importante e o mais esquecido.
+
+O grão é o que uma linha da tabela de fatos representa. \enquote{Uma linha por item
+vendido} é um grão; \enquote{uma linha por pedido} é outro; \enquote{uma linha por loja
+por dia} é um terceiro. Cada um responde a perguntas diferentes, e misturar grãos na
+mesma tabela é uma das origens mais comuns de número errado em dashboard. Se parte das
+linhas é por item e parte é por pedido, qualquer soma conta alguma coisa duas vezes.
+Kimball recomenda declarar o grão mais detalhado que os dados permitem, porque agregar
+depois é fácil e desagregar é impossível.
+
+\rascunho{
+  Relato: um erro de grão visto ou cometido na prática (uma tabela que misturava
+  níveis de detalhe e gerava um número errado que alguém levou para uma reunião).
+  Nomes e valores só em ordem de grandeza.
+}
+
+A recompensa por esse cuidado aparece na hora de consultar. Com o grão claro e as
+dimensões bem desenhadas, as perguntas de negócio viram consultas curtas e previsíveis:
+junta o fato às dimensões de que a pergunta precisa, filtra, agrupa e soma.
 
 \begin{sql}
 -- Receita por mês e por categoria de produto, no esquema estrela de vendas
@@ -173,26 +217,16 @@ GROUP BY d.ano, d.mes, p.categoria
 ORDER BY d.ano, d.mes, p.categoria;
 \end{sql}
 
-% ---------------------------------------------------------------------------
+Essa previsibilidade também ajuda a IA. Quando o livro tratar de dados como contexto
+para modelos de linguagem (capítulo~\ref{cap:contexto-ia}), o modelo dimensional bem
+feito vai aparecer como meio caminho andado: grão explícito e nomes claros reduzem a
+chance de a máquina somar a coisa errada.
+
 \section{Inmon ou Kimball?}
 \label{sec:inmon-ou-kimball}
 
-\rascunho{
-  \begin{itemize}
-    \item A Tabela~\ref{tab:inmon-kimball} resume as diferenças.
-    \item Na prática, muita empresa acaba híbrida: uma camada integrada perto das
-      fontes e marts dimensionais para consumo. O Data Vault
-      \parencite{linstedt2015} surgiu como uma terceira opção para a camada de
-      integração.
-    \item A nuvem mudou a conta: armazenamento barato e processamento elástico
-      reduziram o peso de algumas decisões de Inmon e Kimball, mas a modelagem
-      dimensional continua no centro dos projetos de analytics engineering (ver o
-      capítulo~\ref{cap:nuvem}).
-    \item Minha opinião, com base no que vi funcionar. \pendente{escrever com relato}
-  \end{itemize}
-}
-
-\pendente{escrever}
+Durante anos, a pergunta dividiu a área. A Tabela~\ref{tab:inmon-kimball} resume as
+diferenças principais.
 
 \begin{table}[htbp]
   \centering
@@ -220,18 +254,57 @@ ORDER BY d.ano, d.mes, p.categoria;
   \fonte{elaborado pelo autor com base em \textcite{inmon2005} e \textcite{kimball2013}.}
 \end{table}
 
-% ---------------------------------------------------------------------------
+Na prática, muitas empresas acabaram com uma mistura das duas: uma camada integrada
+perto das fontes, que lembra o armazém de Inmon, e modelos dimensionais para consumo,
+no estilo de Kimball. Nos anos 2000 surgiu ainda uma terceira opção para a camada de
+integração, o Data Vault, que separa as chaves de negócio, os relacionamentos e os
+atributos descritivos em estruturas próprias, pensando em fontes que mudam com
+frequência \parencite{linstedt2015}.
+
+A nuvem mudou a conta de novo. Com armazenamento barato e processamento que cresce sob
+demanda (capítulo~\ref{cap:nuvem}), algumas preocupações de desempenho que pesavam nas
+decisões de Inmon e Kimball perderam força. É comum ver tabelas largas, que repetem
+atributos que um modelo normalizado evitaria. Mesmo assim, a modelagem dimensional
+continua no centro dos projetos de analytics engineering, porque o problema que ela
+resolve não é de desempenho: é fazer o dado ser entendido do mesmo jeito por todo mundo
+que o consulta.
+
+\rascunho{
+  Opinião do autor, com base no que viu funcionar: qual das abordagens aparece na
+  prática dos projetos de hoje e por quê. Pode fechar com um relato curto.
+}
+
 \section{ETL, cargas noturnas e cubos OLAP}
 \label{sec:etl-olap}
 
-\rascunho{
-  ETL em lote, janelas de carga noturna, cubos OLAP e as suítes corporativas de BI.
-  \pendente{achar fonte para a origem do termo OLAP}
-}
+Os armazéns de dados dos anos 1990 e 2000 eram abastecidos por processos de ETL:
+extrair os dados das fontes, transformá-los fora do banco de destino, num servidor
+próprio, e carregá-los já prontos. Como as fontes eram sistemas operacionais que não
+podiam ficar lentos durante o expediente, a carga acontecia de madrugada, numa janela
+que precisava terminar antes de a empresa abrir. Quando a janela estourava, os
+relatórios da manhã chegavam com o dado do dia anterior ao anterior.
 
-\pendente{escrever}
+Para que a consulta fosse rápida, os dados agregados eram pré-calculados em cubos
+multidimensionais: estruturas em que cada combinação de dimensões (mês, região,
+produto) já tinha o total guardado. O termo OLAP, de processamento analítico em linha,
+foi proposto em 1993 num documento assinado por Edgar Codd, o criador do modelo
+relacional, com doze regras para esse tipo de ferramenta \parencite{codd1993}. O
+documento foi encomendado por um fornecedor de software de cubos, o que gerou
+críticas sobre a independência das regras. O termo, ainda assim, pegou.
 
-% ---------------------------------------------------------------------------
+Em volta dos armazéns e dos cubos cresceram as suítes corporativas de BI, que
+juntavam relatórios, cubos e painéis num mesmo pacote, com licenças caras e equipes
+especializadas. No fim dos anos 2000, os maiores fornecedores independentes dessas
+suítes foram comprados por grandes empresas de software corporativo.
+\pendente{conferir e citar as aquisições de 2007 e 2008}
+
+Desse período, o que envelheceu foi a infraestrutura: janelas noturnas, cubos
+pré-calculados, servidores dedicados. O que ficou foi o modelo. Quando o processamento
+ficou barato o bastante para calcular os totais na hora, os cubos perderam a razão de
+existir, mas os fatos, as dimensões e o grão continuaram exatamente onde estavam. O
+próximo capítulo mostra o que aconteceu quando a ferramenta de análise saiu do
+departamento de TI e foi parar na mesa do analista.
+
 \begin{leituras}
   \leitura{kimball2013}{A referência da modelagem dimensional. Os primeiros capítulos
     apresentam o processo de quatro passos; os demais aplicam a técnica a casos de
