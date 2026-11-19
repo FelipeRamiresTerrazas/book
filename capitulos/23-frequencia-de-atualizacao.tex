@@ -1,0 +1,193 @@
+% Capitulo: Com que frequência os dados precisam atualizar?
+\chapter{Com que frequência os dados precisam atualizar?}
+\label{cap:frequencia}
+
+\rascunho{
+  \textbf{Ideia do capítulo.} Uma das decisões mais importantes de um produto de dados,
+  e uma das mais tomadas no automático: com que frequência ele atualiza. A regra que
+  quero defender é atualizar o mais rápido que as fontes permitem, mas só o quanto a
+  decisão de negócio precisa. Um relatório que atualiza de hora em hora e é aberto uma
+  vez por semana gasta recurso sem gerar valor.
+  \begin{itemize}
+    \item Exemplo de abertura, da minha experiência como gerente: um pedido de
+      \enquote{tempo real} que, olhando o uso, era uma reunião semanal. \pendente{escolher o caso}
+    \item A frequência é uma definição de negócio antes de ser técnica, e pode estar
+      errada. Por isso os produtos entregues precisam de métricas sobre eles mesmos
+      (uso, atualizações, custo), e a definição precisa ser revisada.
+    \item Na era da IA, em que quase tudo é cobrado em créditos e tokens, errar a
+      frequência custa dinheiro de forma direta (ver o capítulo~\ref{cap:custo-consumo}).
+    \item Conceito emprestado de SRE: objetivo de nível de serviço (SLO), aqui aplicado
+      à atualização do dado \parencite{beyer2016}. Atualização (\emph{freshness}) como
+      uma das dimensões da observabilidade de dados \parencite{moses2022}.
+  \end{itemize}
+}
+
+% ---------------------------------------------------------------------------
+\section{O ritmo da decisão}
+\label{sec:ritmo-decisao}
+
+\rascunho{
+  \begin{itemize}
+    \item A pergunta certa para o stakeholder não é \enquote{com que frequência você
+      quer que atualize?} (a resposta é sempre \enquote{o mais rápido possível}), mas
+      \enquote{quando e como você toma a decisão com esse número?}.
+    \item Decisões operacionais (despacho, estoque do dia, fraude) pedem atualização
+      frequente; decisões táticas e estratégicas (metas, orçamento, planejamento de
+      safra) convivem bem com atualização diária ou semanal.
+    \item A Figura~\ref{fig:frequencia-consumo} cruza a frequência de atualização com a
+      frequência de consumo: os dois quadrantes desalinhados são desperdício e risco.
+    \item Mostrar no próprio dashboard a data e a hora da última atualização: o usuário
+      precisa saber a idade do número que está vendo.
+  \end{itemize}
+}
+
+\pendente{escrever}
+
+\begin{figure}[htbp]
+  \centering
+  \input{figuras/frequencia-consumo}
+  \caption{Frequência de atualização contra frequência de consumo. Nos quadrantes em
+    branco as duas estão alinhadas; nos quadrantes em cinza, não.}
+  \label{fig:frequencia-consumo}
+  \fonte{elaborado pelo autor.}
+\end{figure}
+
+% ---------------------------------------------------------------------------
+\section{O que as fontes permitem}
+\label{sec:limites-fontes}
+
+\rascunho{
+  \begin{itemize}
+    \item O teto da frequência é dado pelas fontes: janelas de extração, limites de API,
+      sistemas que só fecham o dado no fim do dia, captura de mudanças (CDC) disponível
+      ou não.
+    \item Lote ou streaming: o custo e a complexidade crescem muito quando se passa de
+      diário para horário e de horário para contínuo \parencite{reis2022}.
+    \item Carga incremental contra carga completa: a mesma frequência pode custar dez
+      vezes menos com um modelo incremental. \pendente{conferir se uso essa ordem de grandeza ou um exemplo próprio}
+    \item Atualizar mais rápido que a fonte muda não traz dado novo, só custo.
+  \end{itemize}
+}
+
+\pendente{escrever}
+
+% ---------------------------------------------------------------------------
+\section{O que cada profissional precisa olhar}
+\label{sec:papeis-frequencia}
+
+\rascunho{
+  A Tabela~\ref{tab:papeis-frequencia} é um rascunho para revisar com a minha
+  experiência. A ideia é que a frequência não é responsabilidade de um papel só: o
+  gerente decide, mas cada papel enxerga uma parte da conta.
+}
+
+\pendente{escrever}
+
+\begin{table}[htbp]
+  \centering
+  \caption{A frequência de atualização vista por cada papel.}
+  \label{tab:papeis-frequencia}
+  \small
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.27\textwidth}
+      >{\raggedright\arraybackslash}X@{}}
+    \toprule
+    Papel & Com o que precisa se preocupar \\
+    \midrule
+    Gerente ou líder de dados & Entender a necessidade real do negócio, negociar a
+      frequência com o stakeholder, equilibrar custo e valor, acompanhar as métricas de
+      uso e revisar a decisão de tempos em tempos. \\
+    \addlinespace
+    Stakeholder (dono do negócio) & Dizer quando e como decide com o número, e aceitar
+      que atualizar mais rápido tem custo. \\
+    \addlinespace
+    Analista ou desenvolvedor de BI & Desenhar o produto para o ritmo de quem consome,
+      mostrar a data da última atualização e não prometer uma frequência que a fonte não
+      sustenta. \\
+    \addlinespace
+    Analytics engineer & Escolher a materialização certa (visão, tabela, incremental)
+      para a frequência combinada e testar a atualização do dado. \\
+    \addlinespace
+    Engenheiro de dados & Conhecer os limites das fontes, o custo de cada execução e
+      monitorar atrasos e falhas de carga. \\
+    \bottomrule
+  \end{tabularx}
+  \fonte{elaborado pelo autor.}
+\end{table}
+
+% ---------------------------------------------------------------------------
+\section{Métricas sobre os próprios produtos de dados}
+\label{sec:metricas-uso}
+
+\rascunho{
+  \begin{itemize}
+    \item Tratar dashboards, tabelas e modelos como produtos, com métricas próprias:
+      acessos, usuários distintos, data do último acesso, número de atualizações, custo
+      por execução, custo por acesso.
+    \item A métrica que mais revela desperdício: atualizações por acesso, ou créditos
+      por acesso. A consulta abaixo mostra a ideia, sobre tabelas de metadados que quase
+      toda ferramenta de BI e armazém de dados oferece de alguma forma.
+      \pendente{trocar os nomes pelos metadados da ferramenta usada como exemplo}
+    \item Produtos sem acesso há semanas são candidatos a desligar, ou a baixar a
+      frequência.
+  \end{itemize}
+}
+
+\pendente{escrever}
+
+\begin{sql}
+-- Atualizações contra acessos de cada produto de dados nos últimos 30 dias
+WITH atualizacoes AS (
+    SELECT produto,
+           COUNT(*)            AS qtd_atualizacoes,
+           SUM(custo_creditos) AS creditos
+    FROM meta_atualizacoes
+    WHERE executado_em >= CURRENT_DATE - INTERVAL '30' DAY
+    GROUP BY produto
+),
+acessos AS (
+    SELECT produto,
+           COUNT(*)                AS qtd_acessos,
+           COUNT(DISTINCT usuario) AS usuarios
+    FROM meta_acessos
+    WHERE acessado_em >= CURRENT_DATE - INTERVAL '30' DAY
+    GROUP BY produto
+)
+SELECT a.produto,
+       a.qtd_atualizacoes,
+       COALESCE(v.qtd_acessos, 0)            AS qtd_acessos,
+       COALESCE(v.usuarios, 0)               AS usuarios,
+       a.creditos,
+       a.creditos / NULLIF(v.qtd_acessos, 0) AS creditos_por_acesso
+FROM atualizacoes AS a
+LEFT JOIN acessos AS v ON v.produto = a.produto
+ORDER BY creditos_por_acesso DESC NULLS FIRST;  -- sem acesso nenhum aparece primeiro
+\end{sql}
+
+% ---------------------------------------------------------------------------
+\section{Revisar a definição}
+\label{sec:revisar-frequencia}
+
+\rascunho{
+  \begin{itemize}
+    \item A frequência combinada no começo do projeto é uma hipótese. As métricas de uso
+      dizem se ela estava certa.
+    \item Ritual simples: revisar mensal ou trimestralmente os produtos mais caros e os
+      menos acessados. Encaixa na revisão do Scrum com Kanban (ver o
+      capítulo~\ref{cap:scrumban}).
+    \item Baixar a frequência ou desligar um produto também é entrega, e precisa ser
+      comunicado ao stakeholder com os números de uso na mão.
+    \item Relato: uma revisão dessas e o que ela economizou. \pendente{escolher o caso; números só em ordem de grandeza}
+  \end{itemize}
+}
+
+\pendente{escrever}
+
+% ---------------------------------------------------------------------------
+\begin{leituras}
+  \leitura{beyer2016}{De onde vem a ideia de objetivo de nível de serviço (SLO). Os
+    capítulos sobre SLOs se aplicam quase sem adaptação a prazos de atualização de dados.}
+  \leitura{moses2022}{Trata a atualização do dado como uma das dimensões da
+    observabilidade e mostra como monitorar atrasos antes do usuário reclamar.}
+  \leitura{reis2022}{Para a discussão de lote contra streaming e do custo de cada escolha
+    no ciclo de vida da engenharia de dados.}
+\end{leituras}

@@ -1,0 +1,331 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{estilo/livro}[2026/11/19 Estilo do livro (formato 16 x 23 cm)]
+
+% Estilo do livro, usado com a classe memoir.
+%
+% Modo escolhido pelo nome do PDF (-jobname), como nos outros projetos:
+%   <base>_RASCUNHO.pdf  mostra as notas \rascunho{} e as marcas \pendente{}
+%   <base>.pdf           versao limpa, no tamanho final da pagina (upload na grafica
+%                        por demanda: UICLAP, Clube de Autores, Amazon KDP...)
+%   <base>_GRAFICA.pdf   versao limpa, pagina 16 x 23 centralizada numa folha A4
+%                        com marcas de corte (grafica offset / prova impressa em casa)
+%
+% O miolo e pensado para impressao em preto e branco: tudo em tons de cinza.
+
+% ---------------------------------------------------------------------------
+% Modos
+% ---------------------------------------------------------------------------
+\newif\ifrascunho
+\newif\ifgrafica
+\ExplSyntaxOn
+\str_if_eq:eeT { \str_range:Nnn \c_sys_jobname_str { -9 } { -1 } } { _RASCUNHO }
+  { \rascunhotrue }
+\str_if_eq:eeT { \str_range:Nnn \c_sys_jobname_str { -8 } { -1 } } { _GRAFICA }
+  { \graficatrue }
+\ExplSyntaxOff
+
+% ---------------------------------------------------------------------------
+% Formato da pagina: 16 x 23 cm (formato mais comum de livro no Brasil)
+% Para 14 x 21 cm ou 6 x 9 pol. (KDP), mude so \larguralivro e \alturalivro.
+% ---------------------------------------------------------------------------
+\newlength{\larguralivro}\setlength{\larguralivro}{160mm}
+\newlength{\alturalivro}\setlength{\alturalivro}{230mm}
+
+\ifgrafica
+  \setstocksize{297mm}{210mm}% A4
+  \settrimmedsize{\alturalivro}{\larguralivro}{*}
+  \setlength{\trimtop}{\stockheight}\addtolength{\trimtop}{-\paperheight}
+  \setlength{\trimtop}{0.5\trimtop}
+  \setlength{\trimedge}{\stockwidth}\addtolength{\trimedge}{-\paperwidth}
+  \setlength{\trimedge}{0.5\trimedge}
+  \trimLmarks% marcas de corte em L nos cantos (exige a opcao showtrims da classe)
+  \showtrimson
+\else
+  \setstocksize{\alturalivro}{\larguralivro}
+  \settrimmedsize{\stockheight}{\stockwidth}{*}
+  \settrims{0pt}{0pt}
+  \showtrimsoff
+\fi
+
+% Margens: lombada (interna) maior que a externa por causa da encadernacao.
+\setlrmarginsandblock{22mm}{17mm}{*}% lombada, borda externa
+\setulmarginsandblock{21mm}{24mm}{*}% topo, base
+\setheadfoot{\onelineskip}{2\onelineskip}
+\setheaderspaces{*}{7mm}{*}
+\checkandfixthelayout
+
+% ---------------------------------------------------------------------------
+% Lingua e fontes
+% ---------------------------------------------------------------------------
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[english,main=brazilian]{babel}
+\RequirePackage[lining]{ebgaramond}% texto: EB Garamond, algarismos alinhados
+\RequirePackage[scale=0.82]{sourcecodepro}% codigo: Source Code Pro
+\RequirePackage[protrusion=true,expansion=true,tracking=true]{microtype}
+\RequirePackage{csquotes}
+\RequirePackage{xcolor}
+\RequirePackage{graphicx}
+\RequirePackage{booktabs}
+\RequirePackage{tabularx}
+\RequirePackage{array}
+\RequirePackage[shortlabels]{enumitem}
+\RequirePackage{listings}
+\RequirePackage[most]{tcolorbox}
+\RequirePackage{ifthen}
+\RequirePackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,shapes.geometric,shapes.multipart,fit,backgrounds,calc,shadows}
+
+\graphicspath{{figuras/}}
+
+% Paleta (cinzas para impressao P&B; troque aqui se um dia o miolo for colorido)
+\definecolor{tinta}{gray}{0.10}% texto principal
+\definecolor{cinza}{gray}{0.40}% rotulos, numeros de capitulo
+\definecolor{fio}{gray}{0.70}% fios e bordas
+\definecolor{fundo}{gray}{0.95}% fundo das caixas (claro, economiza tinta)
+
+% ---------------------------------------------------------------------------
+% Texto corrido
+% ---------------------------------------------------------------------------
+\setlength{\parindent}{1.3em}
+\setlength{\parskip}{0pt}
+\clubpenalty=10000
+\widowpenalty=10000
+\sloppybottom
+\setlist{itemsep=0.2\onelineskip,topsep=0.4\onelineskip,leftmargin=1.5em}
+\frenchspacing
+
+% Notas de rodape
+\setlength{\footmarkwidth}{1.2em}
+\setlength{\footmarksep}{0em}
+\footmarkstyle{\textsuperscript{#1}\hspace{0.3em}}
+
+% ---------------------------------------------------------------------------
+% Cabecalhos de pagina
+%   pagina par (verso):  numero ............ titulo do capitulo
+%   pagina impar (recto): titulo da secao ............ numero
+% ---------------------------------------------------------------------------
+\makepagestyle{livro}
+\makeevenhead{livro}{\small\thepage}{}{\small\itshape\leftmark}
+\makeoddhead{livro}{\small\itshape\rightmark}{}{\small\thepage}
+\makepsmarks{livro}{%
+  \nouppercaseheads
+  \createmark{chapter}{both}{nonumber}{}{}%
+  \createmark{section}{right}{nonumber}{}{}%
+  \createplainmark{toc}{both}{\contentsname}%
+  \createplainmark{bib}{both}{\bibname}%
+}
+\pagestyle{livro}
+\aliaspagestyle{cleared}{empty}% paginas em branco antes de capitulo
+\makepagestyle{abertura}% primeira pagina do capitulo: so o numero, embaixo
+\makeoddfoot{abertura}{}{\small\thepage}{}
+\makeevenfoot{abertura}{}{\small\thepage}{}
+\aliaspagestyle{chapter}{abertura}
+\aliaspagestyle{plain}{abertura}
+\aliaspagestyle{part}{empty}
+
+% ---------------------------------------------------------------------------
+% Partes
+% ---------------------------------------------------------------------------
+\renewcommand*{\partnamefont}{\normalfont\large\color{cinza}}
+\renewcommand*{\partnumfont}{\normalfont\large\color{cinza}}
+\renewcommand*{\printpartname}{\partnamefont\textls[160]{\scshape\MakeLowercase{\partname}}}
+\renewcommand*{\printpartnum}{\partnumfont\ \textls[160]{\scshape\MakeLowercase{\thepart}}}
+\renewcommand*{\midpartskip}{\par\vspace{1.2\onelineskip}}
+\renewcommand*{\parttitlefont}{\normalfont\Huge\color{tinta}}
+\renewcommand*{\printparttitle}[1]{\parttitlefont #1\par
+  \vspace{1.2\onelineskip}{\color{fio}\rule{0.25\textwidth}{0.4pt}}}
+
+% ---------------------------------------------------------------------------
+% Capitulos: rotulo "capitulo" espacado, numero grande em cinza, titulo e fio
+% ---------------------------------------------------------------------------
+\makechapterstyle{livro}{%
+  \setlength{\beforechapskip}{3\onelineskip}%
+  \setlength{\midchapskip}{0.2\onelineskip}%
+  \setlength{\afterchapskip}{2.5\onelineskip}%
+  \renewcommand*{\chapterheadstart}{\vspace*{\beforechapskip}}%
+  \renewcommand*{\chapnamefont}{\normalfont\small\color{cinza}}%
+  \renewcommand*{\printchaptername}{\chapnamefont\textls[160]{\scshape\MakeLowercase{\chaptername}}}%
+  \renewcommand*{\chapternamenum}{\par\vspace{0.1\onelineskip}}%
+  \renewcommand*{\chapnumfont}{\normalfont\fontsize{48}{48}\selectfont\color{cinza}}%
+  \renewcommand*{\printchapternum}{\chapnumfont\thechapter}%
+  \renewcommand*{\afterchapternum}{\par\nobreak\vskip\midchapskip}%
+  \renewcommand*{\printchapternonum}{}%
+  \renewcommand*{\chaptitlefont}{\normalfont\huge\color{tinta}}%
+  \renewcommand*{\printchaptertitle}[1]{%
+    \raggedright\chaptitlefont ##1\par\nobreak
+    \vskip 0.7\onelineskip{\color{fio}\rule{\textwidth}{0.4pt}}}%
+  \renewcommand*{\afterchaptertitle}{\par\nobreak\vskip\afterchapskip}%
+}
+\chapterstyle{livro}
+
+% Secoes sem numero (livro, nao tese). Para apontar uma secao, use \veja{rotulo}.
+\setsecnumdepth{chapter}
+\setsecheadstyle{\normalfont\Large\raggedright\color{tinta}}
+\setbeforesecskip{-1.8\onelineskip plus -0.5\onelineskip minus -0.2\onelineskip}
+\setaftersecskip{0.8\onelineskip plus 0.1\onelineskip}
+\setsubsecheadstyle{\normalfont\large\itshape\raggedright}
+\setbeforesubsecskip{-1.2\onelineskip plus -0.3\onelineskip minus -0.2\onelineskip}
+\setaftersubsecskip{0.5\onelineskip plus 0.1\onelineskip}
+\setsubsubsecheadstyle{\normalfont\normalsize\scshape\raggedright}
+
+% Sumario: partes e capitulos
+\settocdepth{chapter}
+\renewcommand*{\cftpartfont}{\normalfont\scshape}
+\renewcommand*{\cftpartpagefont}{\normalfont}
+\renewcommand*{\cftchapterfont}{\normalfont}
+\renewcommand*{\cftchapterpagefont}{\normalfont}
+\renewcommand*{\cftchapterleader}{\cftdotfill{\cftdotsep}}
+\setlength{\cftbeforepartskip}{1.4\onelineskip}
+\setlength{\cftbeforechapterskip}{0.3\onelineskip}
+\renewcommand*{\cftpartpresnum}{Parte~}
+\renewcommand*{\cftpartaftersnumb}{\quad}
+\setlength{\cftpartnumwidth}{4.5em}
+
+% Epigrafes (\epigraph{texto}{fonte}) e a epigrafe na abertura de capitulo
+\setlength{\epigraphwidth}{0.65\textwidth}
+\setlength{\epigraphrule}{0pt}
+\epigraphposition{flushright}
+\epigraphtextposition{flushleftright}
+\epigraphsourceposition{flushright}
+\renewcommand*{\epigraphsize}{\small\itshape}
+\setlength{\beforeepigraphskip}{0pt}
+\setlength{\afterepigraphskip}{2\onelineskip}
+
+% Legendas: figura com legenda embaixo, tabela com legenda em cima, e a fonte
+% sempre embaixo, com \fonte{...} (ex.: \fonte{elaborado pelo autor com base em \textcite{kimball2013}.})
+\captionnamefont{\small\scshape}
+\captiontitlefont{\small}
+\captiondelim{.\enspace}
+\newcommand{\fonte}[1]{\par\vspace{0.3\onelineskip}{\footnotesize\color{cinza}Fonte: #1\par}}
+
+% ---------------------------------------------------------------------------
+% Diagramas (TikZ): estilos comuns para todas as figuras do livro ficarem iguais
+%   caixa    retangulo para sistemas, etapas, ferramentas
+%   destaquecaixa  caixa com fundo cinza, para o elemento principal do diagrama
+%   banco    cilindro para bancos, armazens, data marts
+%   tabela   tabela de modelo (titulo + campos), use rectangle split
+%   seta     fluxo de dados; rotulo: texto pequeno em cinza
+% ---------------------------------------------------------------------------
+\tikzset{
+  diagrama/.style={font=\footnotesize, node distance=6mm and 8mm, line width=0.5pt},
+  caixa/.style={draw=tinta, rectangle, minimum height=7mm, minimum width=18mm,
+    align=center, inner sep=2pt, fill=white},
+  destaquecaixa/.style={caixa, fill=fundo, line width=0.7pt},
+  banco/.style={draw=tinta, cylinder, shape border rotate=90, aspect=0.22,
+    minimum height=11mm, minimum width=17mm, align=center, inner sep=2pt, fill=white},
+  bancodestaque/.style={banco, fill=fundo, line width=0.7pt},
+  tabela/.style={draw=tinta, rectangle split, rectangle split parts=2,
+    rectangle split part fill={fundo,white}, align=left, inner sep=3pt,
+    font=\scriptsize\ttfamily},
+  seta/.style={-{Stealth[length=2mm]}, draw=tinta},
+  ligacao/.style={draw=cinza},
+  rotulo/.style={font=\scriptsize\itshape, text=cinza, align=center},
+  moldura/.style={draw=fio, dashed, rounded corners=1pt, inner sep=3mm},
+}
+
+% ---------------------------------------------------------------------------
+% Caixas
+% ---------------------------------------------------------------------------
+\tcbset{livrobase/.style={
+  enhanced, breakable, boxrule=0pt, arc=0pt, outer arc=0pt,
+  left=3mm, right=3mm, top=2mm, bottom=2mm,
+  before skip=\onelineskip, after skip=\onelineskip,
+  fonttitle=\normalfont\small\scshape, coltitle=cinza,
+  fontupper=\small, colupper=tinta}}
+
+% Da minha experiencia: relatos de projetos reais
+\newtcolorbox{relato}[1][Da minha experiência]{livrobase,
+  colback=fundo, borderline west={1.2pt}{0pt}{cinza},
+  title={\textls[80]{\MakeLowercase{#1}}}, attach title to upper={\par\smallskip},
+  detach title}
+
+% Destaque: ideia-chave, uma ou duas frases
+\newtcolorbox{destaque}{livrobase,
+  colback=white, borderline north={0.4pt}{0pt}{fio}, borderline south={0.4pt}{0pt}{fio},
+  fontupper=\normalsize\itshape, left=6mm, right=6mm, top=3mm, bottom=3mm}
+
+% Dica pratica (titulo opcional)
+\newtcolorbox{dica}[1][Na prática]{livrobase,
+  colback=white, borderline={0.4pt}{0pt}{fio},
+  title={\textls[80]{\MakeLowercase{#1}}}, attach title to upper={\par\smallskip},
+  detach title}
+
+% Antes e depois da IA, lado a lado: \antesdepois{texto antes}{texto depois}
+\newcommand{\antesdepois}[2]{%
+  \begin{tcolorbox}[livrobase, colback=fundo, sidebyside, sidebyside align=top seam,
+    lefthand ratio=0.5, sidebyside gap=6mm, segmentation style={draw=fio, line width=0.4pt},
+    fontlower=\small, collower=tinta]
+    {\small\scshape\color{cinza}\textls[80]{antes da ia}}\par\smallskip #1
+    \tcblower
+    {\small\scshape\color{cinza}\textls[80]{depois da ia}}\par\smallskip #2
+  \end{tcolorbox}}
+
+% ---------------------------------------------------------------------------
+% Codigo: ambientes sql, python e terminal, mais \codigo{} para trechos na linha
+% ---------------------------------------------------------------------------
+\lstset{
+  basicstyle=\ttfamily\small, columns=fullflexible, keepspaces=true,
+  keywordstyle=\bfseries, commentstyle=\itshape\color{cinza}, stringstyle=\color{tinta},
+  showstringspaces=false, breaklines=true, breakatwhitespace=true,
+  postbreak=\mbox{\textcolor{cinza}{$\hookrightarrow$}\space},
+  frame=tb, framerule=0.4pt, rulecolor=\color{fio}, framesep=2mm,
+  xleftmargin=0pt, aboveskip=\onelineskip, belowskip=\onelineskip,
+  numbers=none, upquote=true, tabsize=2,
+  literate=
+    {á}{{\'a}}1 {à}{{\`a}}1 {â}{{\^a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {ê}{{\^e}}1
+    {í}{{\'i}}1 {ó}{{\'o}}1 {ô}{{\^o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c c}}1
+    {Á}{{\'A}}1 {À}{{\`A}}1 {Â}{{\^A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Ê}{{\^E}}1
+    {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ô}{{\^O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c C}}1
+}
+\lstdefinestyle{sql}{language=SQL, morekeywords={WITH,OVER,PARTITION,QUALIFY,ROW_NUMBER,COALESCE,CASE,WHEN,THEN,ELSE,END,LEFT,JOIN,USING,NULLIF,NULLS,FIRST,INTERVAL,DISTINCT,CURRENT_DATE}}
+\lstdefinestyle{python}{language=Python}
+\lstnewenvironment{sql}[1][]{\lstset{style=sql,#1}}{}
+\lstnewenvironment{python}[1][]{\lstset{style=python,#1}}{}
+\lstnewenvironment{terminal}[1][]{\lstset{language={},#1}}{}
+\newcommand{\codigo}[1]{\texttt{#1}}
+
+% ---------------------------------------------------------------------------
+% Ferramentas de escrita
+%   \rascunho{...}  nota de planejamento; aparece so no PDF _RASCUNHO
+%   \pendente{...}  algo a resolver; marca visivel no rascunho e aviso no log
+%                   em qualquer modo (o compilar.py conta quantos sobraram)
+%   \veja{rotulo}   remissao para secao sem numero: "Nome da secao (p. 42)"
+% ---------------------------------------------------------------------------
+\newcommand{\rascunho}[1]{\ifrascunho
+  \begin{tcolorbox}[livrobase, colback=white, borderline={0.6pt}{0pt}{cinza,dashed},
+    title={\textls[80]{nota do autor}}, attach title to upper={\par\smallskip}, detach title]
+    #1
+  \end{tcolorbox}\fi}
+\newcommand{\pendente}[1]{\PackageWarning{livro}{Pendente: #1}%
+  \ifrascunho{\ttfamily\footnotesize\color{cinza}[pendente: #1]}\fi}
+\newcommand{\veja}[1]{\emph{\nameref{#1}} (p.~\pageref{#1})}
+
+% ---------------------------------------------------------------------------
+% Referencias e links (sem cor: o PDF e o mesmo que vai para a impressao)
+% ---------------------------------------------------------------------------
+% backref: cada referencia mostra as paginas em que foi citada.
+\RequirePackage[style=authoryear,backend=biber,maxcitenames=2,uniquelist=false,
+  uniquename=false,dashed=false,backref=true]{biblatex}
+\renewcommand*{\bibfont}{\small}
+% Entradas com note = {CONFERIR}: o aviso aparece na bibliografia so no rascunho.
+\ifrascunho\else
+  \DeclareSourcemap{\maps[datatype=bibtex]{\map{
+    \step[fieldsource=note, match=\regexp{\ACONFERIR\Z}, final]
+    \step[fieldset=note, null]}}}
+\fi
+
+% Para ir alem: leituras comentadas no fim do capitulo
+%   \begin{leituras}
+%     \leitura{chave}{Por que vale ler, em uma ou duas frases.}
+%   \end{leituras}
+\newenvironment{leituras}{%
+  \section*{Para ir além}%
+  \begin{list}{}{\small\setlength{\leftmargin}{1.2em}\setlength{\itemindent}{-1.2em}%
+    \setlength{\itemsep}{0.5\onelineskip}\setlength{\parsep}{0pt}}}%
+  {\end{list}}
+\newcommand{\leitura}[2]{\item \fullcite{#1}.\par{\color{cinza}#2}}
+\RequirePackage[hidelinks,unicode,bookmarksnumbered]{hyperref}
+\RequirePackage{bookmark}
+
+\endinput

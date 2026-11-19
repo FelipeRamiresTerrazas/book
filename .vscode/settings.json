@@ -1,0 +1,22 @@
+{
+  "cSpell.language": "en,pt,pt_BR",
+  "cSpell.words": ["Scrumban", "Kanban", "dashboards", "lakehouse", "Copiloto"],
+  "latex-workshop.latex.tools": [
+    { "name": "rascunho", "command": "latexmk",
+      "args": ["-synctex=1", "-interaction=nonstopmode", "-file-line-error", "-pdf", "-outdir=%OUTDIR%", "-jobname=Livro_Felipe_Terrazas_RASCUNHO", "main.tex"] },
+    { "name": "final", "command": "latexmk",
+      "args": ["-synctex=1", "-interaction=nonstopmode", "-file-line-error", "-pdf", "-outdir=%OUTDIR%", "-jobname=Livro_Felipe_Terrazas", "main.tex"] },
+    { "name": "grafica", "command": "latexmk",
+      "args": ["-synctex=1", "-interaction=nonstopmode", "-file-line-error", "-pdf", "-outdir=%OUTDIR%", "-jobname=Livro_Felipe_Terrazas_GRAFICA", "main.tex"] }
+  ],
+  "latex-workshop.latex.recipes": [
+    { "name": "Livro: rascunho", "tools": ["rascunho"] },
+    { "name": "Livro: final (16 x 23)", "tools": ["final"] },
+    { "name": "Livro: gráfica (A4 com marcas de corte)", "tools": ["grafica"] },
+    { "name": "Livro: todas as versões", "tools": ["rascunho", "final", "grafica"] }
+  ],
+  "latex-workshop.latex.recipe.default": "first",
+  "latex-workshop.latex.rootFile.useSubFile": false,
+  "latex-workshop.latex.outDir": "%WORKSPACE_FOLDER%/output",
+  "latex-workshop.view.pdf.viewer": "tab"
+}

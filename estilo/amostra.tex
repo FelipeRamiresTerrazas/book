@@ -1,0 +1,103 @@
+% Amostra do estilo: um capitulo de teste com todos os elementos do livro.
+% Serve para conferir mudancas no estilo/livro.sty antes de aplica-las:
+%   python compilar.py amostra             (versao rascunho, com notas)
+%   python compilar.py amostra --modo final
+% O texto abaixo e so enchimento para testar a diagramacao, nao e conteudo do livro.
+\documentclass[11pt,twoside,openright,showtrims]{memoir}
+\usepackage{estilo/livro}
+\input{metadados}
+\addbibresource{referencias.bib}
+
+\begin{document}
+\mainmatter
+\part{Parte de teste}
+\label{parte:teste}
+
+\chapter{Um capítulo de amostra}
+\label{cap:amostra}
+
+\epigraph{Uma epígrafe curta na abertura do capítulo, em itálico e alinhada à direita.}{Fonte da epígrafe}
+
+\rascunho{Nota do autor: aparece só no PDF de rascunho. Serve para planejar o capítulo
+sem misturar o plano com o texto.}
+
+Este parágrafo de abertura testa a fonte do texto corrido, o espaçamento entre linhas
+e a largura da mancha. Uma linha confortável de livro tem entre 60 e 75 caracteres,
+e o formato 16 por 23 centímetros, com estas margens, fica nessa faixa. Uma citação no
+texto aparece assim \parencite{kimball2013}, e uma nota de rodapé, assim.\footnote{A nota
+de rodapé usa o corpo menor e fica separada do texto por um fio curto.}
+
+O segundo parágrafo começa recuado. Termos de código aparecem no meio da frase com
+\codigo{SELECT}, \codigo{GROUP BY} ou o nome de uma tabela como \codigo{fato\_vendas}.
+Uma remissão para outra seção sem número fica assim: \veja{sec:amostra-codigo}.
+Um ponto ainda sem resposta fica marcado \pendente{exemplo de pendência}.
+
+\section{Uma seção com caixas}
+\label{sec:amostra-caixas}
+
+O texto segue normalmente antes da caixa de relato, que é o lugar das histórias de
+projetos reais.
+
+\begin{relato}
+Aqui entra um relato de um projeto real, sem nomes de empresa nem de cliente. A caixa
+tem fundo cinza claro (para gastar pouca tinta) e um fio à esquerda. Ela pode
+quebrar entre páginas quando o relato for longo.
+\end{relato}
+
+\begin{destaque}
+Uma ideia-chave em uma ou duas frases, para o leitor que folheia o livro.
+\end{destaque}
+
+\begin{dica}
+Uma dica prática, curta, que o leitor pode aplicar no trabalho da semana seguinte.
+\end{dica}
+
+\antesdepois{O mesmo trabalho como era feito antes de a IA entrar no fluxo.}
+{O mesmo trabalho hoje, com o que mudou e o que continuou igual.}
+
+\subsection{Uma subseção}
+
+Texto da subseção, para conferir a hierarquia dos títulos.
+
+\section{Uma seção com código e tabela}
+\label{sec:amostra-codigo}
+
+\begin{sql}
+-- Receita por mês e por região (comentário com acentuação)
+SELECT
+    d.ano_mes,
+    r.regiao,
+    SUM(f.valor) AS receita
+FROM fato_vendas AS f
+JOIN dim_data   AS d ON d.id_data   = f.id_data
+JOIN dim_regiao AS r ON r.id_regiao = f.id_regiao
+GROUP BY d.ano_mes, r.regiao
+ORDER BY d.ano_mes;
+\end{sql}
+
+\begin{python}
+import pandas as pd
+
+vendas = pd.read_parquet("vendas.parquet")
+por_mes = vendas.groupby("ano_mes")["valor"].sum()  # soma por mês
+\end{python}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Uma tabela no padrão do livro.}
+  \label{tab:amostra}
+  \begin{tabular}{@{}lrr@{}}
+    \toprule
+    Região & Receita & Variação \\
+    \midrule
+    Norte  & 1.250,00 & 4,2\% \\
+    Sul    & 3.980,50 & $-$1,7\% \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+A Tabela~\ref{tab:amostra} mostra o padrão: fios do \codigo{booktabs}, sem linhas
+verticais, números alinhados à direita.
+
+\printbibliography[heading=bibintoc,title={Referências}]
+\end{document}

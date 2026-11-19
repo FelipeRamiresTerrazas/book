@@ -1,0 +1,21 @@
+% Linha do tempo do data warehouse (cap. 2). Fontes na legenda do capitulo.
+\begin{tikzpicture}[diagrama, x=1mm, y=1mm]
+  \draw[fio, line width=0.8pt] (18,5) -- (18,-85);
+  \foreach \y/\ano/\texto/\peso in {
+      0/1958/{Luhn descreve um \enquote{sistema de business intelligence} na IBM}/normal,
+    -10/1970/{Codd propõe o modelo relacional, base dos bancos de dados SQL}/normal,
+    -20/1988/{Devlin e Murphy descrevem a arquitetura de um \enquote{business data warehouse} na IBM}/normal,
+    -30/1992/{Inmon publica \emph{Building the Data Warehouse}: o armazém corporativo, normalizado, construído de cima para baixo}/destaque,
+    -40/1996/{Kimball publica \emph{The Data Warehouse Toolkit}: a modelagem dimensional, construída de baixo para cima}/destaque,
+    -50/{Anos 2000}/{O Data Vault, de Dan Linstedt, ganha espaço como alternativa para a camada de integração}/normal,
+    -60/{Anos 2010}/{Armazéns de dados na nuvem separam armazenamento de processamento, e o ETL dá lugar ao ELT}/normal,
+    -70/2021/{Armbrust e colegas propõem o lakehouse, que junta data lake e data warehouse}/normal,
+    -80/{Anos 2020}/{A IA generativa entra no fluxo de trabalho com dados}/normal%
+  }{
+    \ifthenelse{\equal{\peso}{destaque}}
+      {\filldraw[draw=tinta, fill=tinta] (18,\y) circle (1.4);}
+      {\filldraw[draw=cinza, fill=white, line width=0.6pt] (18,\y) circle (1.1);}
+    \node[anchor=east, font=\footnotesize] at (14.5,\y) {\ano};
+    \node[anchor=west, text width=92mm, align=left, font=\footnotesize] at (22,\y) {\texto};
+  }
+\end{tikzpicture}

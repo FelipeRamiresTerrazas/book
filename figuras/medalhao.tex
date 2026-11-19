@@ -1,0 +1,25 @@
+% Arquitetura medalhao e os consumidores de cada camada (cap. 12).
+\begin{tikzpicture}[diagrama, x=1mm, y=1mm]
+  % fontes
+  \foreach \y/\nome/\id in {12/Sistemas/f1, 4/APIs/f2, -4/Arquivos/f3, -12/Documentos/f4}
+    \node[caixa, minimum width=15mm, minimum height=6mm] (\id) at (7.5,\y) {\nome};
+  \node[moldura, fit=(f1)(f4), label={[rotulo]above:Fontes}] {};
+
+  % camadas
+  \node[banco, minimum width=19mm, minimum height=26mm] (b) at (31,0)
+    {\textbf{Bronze}\\[1mm]{\scriptsize bruto, como}\\{\scriptsize chegou}};
+  \node[banco, minimum width=19mm, minimum height=26mm] (p) at (53,0)
+    {\textbf{Prata}\\[1mm]{\scriptsize limpo, tipado,}\\{\scriptsize integrado}};
+  \node[bancodestaque, minimum width=19mm, minimum height=26mm] (o) at (75,0)
+    {\textbf{Ouro}\\[1mm]{\scriptsize pronto para}\\{\scriptsize o consumo}};
+  \foreach \id in {f1,f2,f3,f4} \draw[seta] (\id.east) -- (b.west);
+  \draw[seta] (b) -- (p);
+  \draw[seta] (p) -- (o);
+
+  % consumidores
+  \foreach \y/\nome/\id in {15/{BI descritivo}/c1, 5/{Ciência de dados}/c2, -5/{Treino de IA}/c3, -15/{Contexto p/ IA}/c4}
+    \node[caixa, minimum width=21mm, minimum height=6mm] (\id) at (104.5,\y) {\nome};
+  \foreach \id in {c1,c2,c3,c4} \draw[seta] (o.east) -- (\id.west);
+  \node[rotulo, text width=110mm] at (58,-23)
+    {Ciência de dados e treino de IA muitas vezes leem também da prata, que guarda mais detalhe que o ouro.};
+\end{tikzpicture}

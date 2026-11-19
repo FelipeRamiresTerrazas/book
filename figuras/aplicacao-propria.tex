@@ -1,0 +1,32 @@
+% Arquitetura minima de uma aplicacao propria de master data e governanca (cap. 15).
+\begin{tikzpicture}[diagrama, x=1mm, y=1mm]
+  % fontes e ingestao
+  \foreach \y/\nome/\id in {8/ERP/f1, 0/CRM/f2, -8/Planilhas/f3}
+    \node[caixa, minimum width=14mm, minimum height=6mm] (\id) at (7,\y) {\nome};
+  \node[moldura, fit=(f1)(f3), label={[rotulo]above:Fontes}] {};
+  \node[caixa, minimum width=17mm, minimum height=10mm] (ing) at (29,0) {Ingestão\\{\scriptsize (prata)}};
+  \foreach \id in {f1,f2,f3} \draw[seta] (\id.east) -- (ing.west);
+
+  % motor de conciliacao
+  \node[destaquecaixa, minimum width=24mm, minimum height=18mm] (mot) at (54,0)
+    {Motor de\\conciliação\\[0.5mm]{\scriptsize regras,}\\{\scriptsize similaridade, IA}};
+  \draw[seta] (ing) -- (mot);
+
+  % saidas
+  \node[bancodestaque, minimum width=24mm, minimum height=13mm] (reg) at (102,9)
+    {\scriptsize Registro mestre e\\\scriptsize correspondência};
+  \node[caixa, minimum width=20mm, minimum height=9mm] (fila) at (81,-10) {Fila de\\revisão};
+  \node[caixa, minimum width=18mm, minimum height=9mm] (stew) at (104,-10) {Steward\\revisa};
+  \node[caixa, draw=cinza, dashed, text=cinza, minimum width=20mm, minimum height=8mm] (notif) at (81,-24)
+    {\scriptsize Mensagem\\\scriptsize aos donos};
+  \draw[seta] (mot.east) ++(0,3) -- node[rotulo, above, sloped] {alta confiança} (reg.west);
+  \draw[seta] (mot.east) ++(0,-3) -- node[rotulo, pos=0.55, below left=0.5mm] {dúvida} (fila.west);
+  \draw[seta] (fila) -- (stew);
+  \draw[seta] (stew) -- (reg);
+  \draw[seta, draw=cinza] (fila) -- (notif);
+  \node[rotulo, anchor=south] at (reg.north) {lido por BI, sistemas e IA};
+
+  % aprendizado
+  \draw[seta, dashed, draw=cinza] (stew.south) -- ++(0,-19) -| (mot.south);
+  \node[rotulo, anchor=north] at (68,-33) {as decisões do steward viram regras e exemplos para o motor};
+\end{tikzpicture}

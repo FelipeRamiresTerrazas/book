@@ -1,0 +1,26 @@
+% Arquitetura de Kimball: data marts dimensionais integrados pelo barramento (cap. 2).
+\begin{tikzpicture}[diagrama, x=1mm, y=1mm]
+  % sistemas de origem
+  \foreach \y/\nome/\id in {13.5/ERP/f1, 4.5/CRM/f2, -4.5/Planilhas/f3, -13.5/{Outros}/f4}
+    \node[caixa, minimum width=15mm, minimum height=6mm] (\id) at (8,\y) {\nome};
+  \node[moldura, fit=(f1)(f4), label={[rotulo]above:Sistemas de origem}] {};
+
+  % area de preparacao
+  \node[caixa, minimum width=19mm, minimum height=30mm] (stg) at (36,0)
+    {Área de\\preparação\\[1mm]{\scriptsize (ETL)}};
+  \foreach \id in {f1,f2,f3,f4} \draw[seta] (\id.east) -- (\id.east -| stg.west);
+
+  % area de apresentacao: data marts dimensionais
+  \foreach \x/\nome/\id in {62/Vendas/m1, 80/Estoque/m2, 98/Finanças/m3}
+    \node[bancodestaque, minimum width=16mm, minimum height=13mm] (\id) at (\x,5)
+      {\nome\\{\scriptsize estrela}};
+  % barramento de dimensoes conformadas
+  \node[caixa, fill=fundo, draw=cinza, minimum width=56mm, minimum height=6mm, inner sep=1pt] (bus) at (80,-12)
+    {\scriptsize Barramento: dimensões conformadas (Data, Produto, Cliente)};
+  \foreach \id in {m1,m2,m3} \draw[ligacao, line width=1.2pt] (\id.south) -- (\id.south |- bus.north);
+  \node[moldura, fit=(m1)(m3)(bus), label={[rotulo]above:Área de apresentação}] (apr) {};
+  \draw[seta] (stg.east) -- (stg.east -| apr.west);
+
+  \node[rotulo, text width=110mm] at (58,-27)
+    {Ordem de construção: um processo de negócio por vez, integrados pelas dimensões conformadas.};
+\end{tikzpicture}

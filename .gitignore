@@ -1,0 +1,25 @@
+# PDFs e auxiliares do LaTeX saem em output/ (latexmkrc)
+output/
+
+# Auxiliares soltos, caso algo compile fora do compilar.py
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+/*.pdf
+
+# Python
+__pycache__/
+.venv/
+
+# Configuracoes locais do Claude Code
+.claude/settings.local.json

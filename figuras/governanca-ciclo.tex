@@ -1,0 +1,17 @@
+% Ciclo de governanca com o data steward como tutor e revisor da IA (cap. 14).
+\begin{tikzpicture}[diagrama, x=1mm, y=1mm,
+    etapa/.style={caixa, text width=34mm, minimum height=13mm, font=\scriptsize}]
+  \node[destaquecaixa, etapa] (prop) at (55,28)
+    {\textbf{A IA propõe}\\descrições, classificação de dado sensível, pares suspeitos};
+  \node[etapa] (rev) at (96,10)
+    {\textbf{O steward revisa}\\aprova, corrige ou rejeita};
+  \node[etapa] (reg) at (55,-8)
+    {\textbf{A decisão é registrada}\\auditoria, correspondência, catálogo};
+  \node[etapa] (apr) at (14,10)
+    {\textbf{Regras e exemplos melhoram}\\cada correção ensina a próxima proposta};
+  \draw[seta] (prop.east) to[bend left=20] (rev.north);
+  \draw[seta] (rev.south) to[bend left=20] (reg.east);
+  \draw[seta] (reg.west) to[bend left=20] (apr.south);
+  \draw[seta] (apr.north) to[bend left=20] (prop.west);
+  \node[rotulo] at (55,10) {o steward como\\tutor e revisor};
+\end{tikzpicture}

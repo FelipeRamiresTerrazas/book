@@ -1,0 +1,17 @@
+% Esquema estrela de vendas (cap. 2). Os mesmos nomes da consulta SQL do capitulo.
+\begin{tikzpicture}[diagrama, x=1mm, y=1mm]
+  \node[tabela, line width=0.9pt] (f) at (0,0)
+    {\textbf{fato\_vendas}\nodepart{second}id\_data\\id\_produto\\id\_cliente\\id\_loja\\[0.6mm]quantidade\\valor\_total};
+
+  \node[tabela] (d1) at (-40,20)
+    {\textbf{dim\_data}\nodepart{second}id\_data\\data\\mes\\trimestre\\ano};
+  \node[tabela] (d2) at (40,20)
+    {\textbf{dim\_produto}\nodepart{second}id\_produto\\nome\\categoria\\marca};
+  \node[tabela] (d3) at (-40,-20)
+    {\textbf{dim\_cliente}\nodepart{second}id\_cliente\\nome\\cidade\\segmento};
+  \node[tabela] (d4) at (40,-20)
+    {\textbf{dim\_loja}\nodepart{second}id\_loja\\nome\\cidade\\regiao};
+
+  \foreach \d in {d1,d2,d3,d4} \draw[ligacao, line width=0.7pt] (f) -- (\d);
+  \node[rotulo, anchor=north] at (f.south) [yshift=-1mm] {grão: uma linha por item vendido};
+\end{tikzpicture}

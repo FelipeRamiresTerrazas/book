@@ -1,0 +1,129 @@
+% Capitulo: De usuários a tokens: custo e consumo
+\chapter{De usuários a tokens: custo e consumo}
+\label{cap:custo-consumo}
+
+\rascunho{
+  \textbf{Ideia do capítulo.} As ferramentas tradicionais de dados eram cobradas por
+  usuário: o custo era fixo, e o gerente controlava quem tinha acesso. A tendência agora
+  é cobrar por consumo (créditos de processamento, tokens de modelos de linguagem), e a
+  gestão desse consumo virou preocupação de todo gerente de dados, para controlar custo
+  e recurso.
+  \begin{itemize}
+    \item A mudança começou com os armazéns de dados na nuvem, que cobram pelo
+      processamento (ver o capítulo~\ref{cap:nuvem}), e se acelerou com a IA, em que
+      cada pergunta tem um custo em tokens.
+    \item Ferramentas de BI também estão migrando para modelos de crédito ou capacidade.
+      \pendente{conferir exemplos atuais de ferramentas com modelo por consumo, inclusive as que eu uso}
+    \item Liga direto com o capítulo~\ref{cap:frequencia}: a frequência de atualização
+      é uma das maiores alavancas de consumo.
+    \item Referência para a disciplina de gestão de custo em nuvem (FinOps):
+      \textcite{storment2023}.
+  \end{itemize}
+}
+
+% ---------------------------------------------------------------------------
+\section{O modelo por usuário}
+\label{sec:modelo-usuario}
+
+\rascunho{
+  \begin{itemize}
+    \item Licença por pessoa, muitas vezes em níveis (quem cria, quem explora, quem só
+      visualiza). Custo previsível, negociado na renovação do contrato.
+    \item A alavanca do gerente era o acesso: quem precisa de licença e de qual nível.
+    \item O desperdício típico: licença paga para quem não entra há meses.
+  \end{itemize}
+}
+
+\pendente{escrever}
+
+% ---------------------------------------------------------------------------
+\section{Créditos, consumo e tokens}
+\label{sec:modelo-consumo}
+
+\rascunho{
+  \begin{itemize}
+    \item No modelo por consumo, paga-se pelo que foi processado: consultas, atualizações,
+      horas de computação, tokens de entrada e de saída de um modelo de linguagem.
+    \item A Tabela~\ref{tab:usuario-consumo} compara os dois modelos.
+    \item Vantagem: paga-se pelo uso real, e um time pequeno começa barato. Risco: o
+      custo fica variável, e um processo mal configurado pode consumir o orçamento do
+      mês em poucos dias.
+  \end{itemize}
+}
+
+\pendente{escrever}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Cobrança por usuário e por consumo.}
+  \label{tab:usuario-consumo}
+  \small
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.2\textwidth}
+      >{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
+    \toprule
+    & Por usuário & Por consumo (créditos, tokens) \\
+    \midrule
+    O que se paga & Uma licença por pessoa com acesso & O que foi processado: consultas, atualizações, tokens \\
+    \addlinespace
+    Previsibilidade & Alta, custo fixo por período & Baixa, varia com o uso \\
+    \addlinespace
+    Alavanca de controle & Quem tem acesso e com qual nível & O que roda, com que frequência e com qual modelo \\
+    \addlinespace
+    Desperdício típico & Licença de quem não usa & Atualização ou consulta que ninguém aproveita \\
+    \addlinespace
+    Quem acompanha & Compras e TI, na renovação & O gerente do time, de forma contínua \\
+    \bottomrule
+  \end{tabularx}
+  \fonte{elaborado pelo autor.}
+\end{table}
+
+\antesdepois{O custo da ferramenta era uma linha fixa no orçamento. O gerente controlava
+  quem tinha licença, e o uso, alto ou baixo, não mudava a fatura.}
+{O custo acompanha o uso. O gerente controla o que roda, com que frequência e com qual
+  modelo, e acompanha o consumo como acompanha qualquer outro indicador do time.}
+
+% ---------------------------------------------------------------------------
+\section{O gerente como gestor de consumo}
+\label{sec:gestao-consumo}
+
+\rascunho{
+  \begin{itemize}
+    \item Orçamento de créditos ou tokens por time e por produto, com alertas de consumo
+      antes de estourar.
+    \item Custo por produto de dados (dashboard, pipeline, agente), usando as métricas de
+      metadados do capítulo~\ref{cap:frequencia} (\veja{sec:metricas-uso}).
+    \item Mostrar o custo para quem pede: quando o stakeholder vê quanto custa atualizar
+      de hora em hora, a conversa sobre frequência muda.
+    \item As práticas de FinOps: visibilidade, responsabilidade de cada time pelo próprio
+      custo, otimização contínua \parencite{storment2023}.
+    \item Relato: como eu acompanho consumo hoje. \pendente{escrever com relato, sem nomes nem valores exatos}
+  \end{itemize}
+}
+
+\pendente{escrever}
+
+% ---------------------------------------------------------------------------
+\section{Tokens no trabalho com dados}
+\label{sec:tokens-dados}
+
+\rascunho{
+  \begin{itemize}
+    \item Onde os tokens aparecem: assistentes de SQL, perguntas em linguagem natural
+      sobre dashboards, agentes que rodam tarefas inteiras, documentação gerada.
+    \item O que faz o custo crescer: contexto grande (mandar a tabela inteira para o
+      modelo), perguntas repetidas sem cache, usar o modelo mais caro para tudo.
+    \item O que ajuda: pré-calcular o que é perguntado sempre, escolher o modelo pelo
+      tamanho da tarefa, limitar o contexto ao necessário, medir tokens por resposta
+      útil.
+    \item A mesma lógica do capítulo anterior: não adianta responder em segundos uma
+      pergunta que poderia vir num relatório semanal.
+  \end{itemize}
+}
+
+\pendente{escrever}
+
+% ---------------------------------------------------------------------------
+\begin{leituras}
+  \leitura{storment2023}{A referência sobre FinOps: como dar visibilidade ao custo de
+    nuvem, distribuir a responsabilidade entre os times e otimizar sem travar o trabalho.}
+\end{leituras}

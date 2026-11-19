@@ -1,0 +1,67 @@
+% Paginas iniciais, na ordem tradicional de um livro impresso:
+%   i   falsa folha de rosto (so o titulo)
+%   ii  verso em branco
+%   iii folha de rosto (titulo, subtitulo, autor, editora, cidade, ano)
+%   iv  creditos (direitos, ficha catalografica, ISBN)
+% Nenhuma delas leva numero de pagina impresso.
+
+% i - falsa folha de rosto
+\thispagestyle{empty}
+\begin{vplace}[0.7]
+  \centering
+  {\LARGE\titulolivro\par}
+\end{vplace}
+\cleardoublepage
+
+% iii - folha de rosto
+\thispagestyle{empty}
+\begin{center}
+  \vspace*{0.12\textheight}
+  {\large\textls[160]{\scshape\MakeLowercase{\autorlivro}}\par}
+  \vspace{0.12\textheight}
+  {\fontsize{30}{34}\selectfont\titulolivro\par}
+  \vspace{1.2\onelineskip}
+  {\color{fio}\rule{0.25\textwidth}{0.4pt}\par}
+  \vspace{1.2\onelineskip}
+  {\large\itshape\subtitulolivro\par}
+  \vfill
+  {\small\textls[120]{\scshape\MakeLowercase{\editoralivro}}\par}
+  \vspace{0.3\onelineskip}
+  {\small\cidadelivro, \anolivro\par}
+\end{center}
+\clearpage
+
+% iv - creditos
+\thispagestyle{empty}
+{\footnotesize\raggedright
+\vspace*{\fill}
+
+Copyright \textcopyright\ \anolivro\ \autorlivro
+
+Todos os direitos reservados. Nenhuma parte deste livro pode ser reproduzida,
+por qualquer meio, sem autorização prévia e por escrito do autor, exceto trechos
+curtos citados com a fonte.
+
+\bigskip
+\edicaolivro, \anolivro
+
+\bigskip
+\begin{tabular}{@{}ll@{}}
+  Revisão & \pendente{revisor} \\
+  Capa & \pendente{capa} \\
+  Diagramação & o autor, em \LaTeX \\
+\end{tabular}
+
+\bigskip
+\fbox{\parbox{0.9\textwidth}{\centering\vspace{0.5\onelineskip}
+  Dados Internacionais de Catalogação na Publicação (CIP)\par
+  \pendente{ficha catalográfica, feita por bibliotecário com CRB}\par
+  \vspace{0.5\onelineskip}
+  ISBN \isbnlivro\par\vspace{0.5\onelineskip}}}
+
+\bigskip
+Os nomes de produtos e empresas citados pertencem a seus donos e aparecem só
+para identificar as ferramentas. As opiniões são do autor e não representam
+nenhum empregador, atual ou passado.
+\par}
+\cleardoublepage

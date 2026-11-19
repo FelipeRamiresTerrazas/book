@@ -1,0 +1,30 @@
+% Master data: programa unico contra dominios puxados por projetos de negocio (cap. 13).
+\begin{tikzpicture}[diagrama, x=1mm, y=1mm,
+    titulo/.style={anchor=west, font=\footnotesize\scshape, text=cinza},
+    linha/.style={anchor=west, font=\footnotesize, text=cinza}]
+
+  % --- antes
+  \node[titulo] at (0,40) {antes: um programa de master data};
+  \node[caixa, anchor=west, minimum width=26mm] at (20,31) {Mapear fontes};
+  \node[caixa, anchor=west, minimum width=34mm] at (46,31) {Conciliar nomes e IDs};
+  \node[caixa, anchor=west, minimum width=20mm] at (80,31) {Governança};
+  \node[destaquecaixa, anchor=west, minimum width=16mm] at (100,31) {Resultado};
+  \draw[seta, draw=cinza] (20,24.5) -- (116,24.5);
+  \node[rotulo, anchor=north] at (68,24) {meses ou anos até o primeiro resultado};
+
+  % --- agora
+  \node[titulo] at (0,12) {agora: puxado por um projeto de negócio};
+  \node[linha] at (0,3) {Negócio};
+  \node[linha] at (0,-9) {Master data};
+  \node[caixa, anchor=west, minimum width=44mm] (pa) at (20,3) {Projeto de negócio A};
+  \node[caixa, anchor=west, minimum width=46mm] (pb) at (70,3) {Projeto de negócio B};
+  \node[destaquecaixa, anchor=west, minimum width=28mm] (cl) at (26,-9) {Clientes};
+  \node[destaquecaixa, anchor=west, minimum width=28mm] (pr) at (80,-9) {Produtos};
+  \draw[seta] (cl.north) -- (cl.north |- pa.south);
+  \draw[seta] (pr.north) -- (pr.north |- pb.south);
+  \draw[seta, dashed, draw=cinza] (cl.east) -- ($(pb.south west)+(4,0)$)
+    node[rotulo, pos=0.45, below right] {reuso};
+  \draw[seta, draw=cinza] (20,-16.5) -- (116,-16.5);
+  \node[rotulo, anchor=north] at (68,-17)
+    {um domínio por vez, cada um justificado por um projeto que precisa dele};
+\end{tikzpicture}

@@ -1,0 +1,58 @@
+% Capitulo: Testes e qualidade de dados
+\chapter{Testes e qualidade de dados}
+\label{cap:testes}
+
+\rascunho{
+  \textbf{Ideia do capítulo.} Como saber que o dado está certo antes que o usuário descubra que está errado.
+  \begin{itemize}
+    \item Tipos de teste: unicidade, nulos, integridade referencial, regras de negócio.
+    \item TDD em dados: com IA, escrever testes ficou tão barato que o desenvolvimento
+      guiado por testes deixa de ser um \emph{nice to have} e pode virar requisito.
+    \item Contratos de dados entre quem produz e quem consome.
+    \item Exemplo de teste em SQL.
+    \item Relato: um erro em produção que um teste simples teria pego.
+  \end{itemize}
+}
+
+\section{O que testar}
+\label{sec:o-que-testar}
+
+\pendente{escrever}
+
+\section{Testes antes do modelo}
+\label{sec:tdd}
+
+\rascunho{
+  \textbf{Argumento da seção.} TDD sempre foi recomendado em dados e quase nunca
+  praticado, porque escrever teste custava tempo que o prazo não dava. Com IA, o custo
+  de escrever o teste caiu, e o TDD pode passar de boa intenção a requisito do time.
+  \begin{itemize}
+    \item O fluxo: primeiro se escrevem os testes que descrevem as regras de negócio
+      (\enquote{toda venda cancelada sai da receita}, \enquote{o saldo nunca fica
+      negativo}), depois o modelo que faz os testes passarem.
+    \item Os testes viram a especificação executável. A regra é validada uma vez com o
+      stakeholder, na forma de casos de teste, e daí em diante o time itera sem
+      precisar dele presente a cada versão do modelo.
+    \item Consequência para o ritmo: menos dependência da agenda do stakeholder,
+      ciclos mais curtos, mudança de regra vira mudança de teste.
+    \item O papel da IA: gerar casos de teste a partir da regra descrita em texto,
+      sugerir casos de borda, montar dados de exemplo. O papel do profissional:
+      revisar se o teste diz mesmo o que o negócio quer (ver o capítulo~\ref{cap:negocio}).
+    \item Cuidado: teste gerado sem revisão só confirma o que o modelo já faz, inclusive
+      o erro.
+    \item Exemplo: escrever os testes de um modelo de receita antes do modelo, em SQL
+      ou no formato de testes da ferramenta usada. \pendente{escolher a ferramenta do exemplo}
+  \end{itemize}
+}
+
+\pendente{escrever}
+
+\section{Contratos de dados}
+\label{sec:contratos}
+
+\pendente{escrever}
+
+\section{Um teste em SQL}
+\label{sec:teste-sql}
+
+\pendente{escrever}

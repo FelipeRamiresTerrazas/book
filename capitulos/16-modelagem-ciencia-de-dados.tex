@@ -1,0 +1,129 @@
+% Capitulo: Modelagem para ciência de dados
+\chapter{Modelagem para ciência de dados}
+\label{cap:modelagem-cd}
+
+\rascunho{
+  \textbf{Ideia do capítulo.} Análises preditivas e prescritivas pedem uma modelagem
+  diferente da descritiva. O esquema estrela é ótimo para somar e filtrar, mas um modelo
+  preditivo precisa de uma linha por entidade e por momento, com o cuidado de só usar o
+  que se sabia naquele momento. E a prescritiva ainda precisa guardar as decisões
+  tomadas.
+  \begin{itemize}
+    \item Os três níveis (descritivo, preditivo, prescritivo) como fio do capítulo
+      \parencite{davenport2007}. \pendente{conferir se uso essa referência ou outra mais recente para os três níveis}
+    \item Posso ligar com a minha experiência de pesquisa, que segue os três níveis.
+      \pendente{decidir se cito o mestrado}
+    \item Referência principal para a parte técnica: \textcite{huyen2022}.
+  \end{itemize}
+}
+
+% ---------------------------------------------------------------------------
+\section{Descritiva, preditiva e prescritiva}
+\label{sec:tres-niveis}
+
+\rascunho{
+  \begin{itemize}
+    \item Descritiva: o que aconteceu. Preditiva: o que vai acontecer. Prescritiva: o
+      que fazer a respeito.
+    \item Cada nível depende do anterior: não se prevê bem o que não se descreve bem.
+    \item Um exemplo que atravessa os três níveis. \pendente{escolher o domínio: agricultura, finanças ou logística}
+  \end{itemize}
+}
+
+\pendente{escrever}
+
+% ---------------------------------------------------------------------------
+\section{A tabela de variáveis}
+\label{sec:tabela-features}
+
+\rascunho{
+  \begin{itemize}
+    \item O grão muda: em vez de \enquote{uma linha por venda}, \enquote{uma linha por
+      cliente por mês} ou \enquote{uma linha por veículo por dia}, com as variáveis
+      (\emph{features}) calculadas e o alvo que se quer prever.
+    \item Tabelas largas, com muitas colunas, que o modelo dimensional evitaria.
+    \item A camada prata costuma ser a fonte melhor que o ouro, porque o ouro já vem
+      agregado para o BI e perde detalhe.
+  \end{itemize}
+}
+
+\pendente{escrever}
+
+% ---------------------------------------------------------------------------
+\section{O futuro não pode vazar para o passado}
+\label{sec:vazamento}
+
+\rascunho{
+  \begin{itemize}
+    \item O erro mais comum e mais caro: calcular uma variável com dado que só existiu
+      depois do momento da previsão (vazamento, \emph{data leakage}) \parencite{huyen2022}.
+      O modelo fica ótimo no teste e inútil em produção.
+    \item Correção no tempo (\emph{point-in-time}): cada variável é calculada só com o
+      que se sabia na data de referência. A consulta abaixo mostra a ideia.
+    \item O histórico das dimensões (as dimensões que mudam devagar, de Kimball) vira
+      requisito: é preciso saber como o cadastro estava naquele dia, não como está hoje.
+  \end{itemize}
+}
+
+\pendente{escrever}
+
+\begin{sql}
+-- Variáveis de cada cliente calculadas só com o passado de cada data de referência
+SELECT
+    r.id_cliente,
+    r.data_referencia,
+    COUNT(v.id_venda)                AS compras_90d,
+    COALESCE(SUM(v.valor_total), 0)  AS valor_90d,
+    r.cancelou_no_mes_seguinte       AS alvo
+FROM referencias_clientes AS r
+LEFT JOIN vendas AS v
+       ON v.id_cliente = r.id_cliente
+      AND v.data_venda <  r.data_referencia                       -- nada do futuro
+      AND v.data_venda >= r.data_referencia - INTERVAL '90' DAY
+GROUP BY r.id_cliente, r.data_referencia, r.cancelou_no_mes_seguinte;
+\end{sql}
+
+% ---------------------------------------------------------------------------
+\section{Reuso de variáveis e dívida técnica}
+\label{sec:feature-store}
+
+\rascunho{
+  \begin{itemize}
+    \item Quando cada cientista calcula as próprias variáveis, o mesmo conceito ganha
+      várias definições, como acontecia com as métricas antes do data warehouse.
+    \item Repositório de variáveis (\emph{feature store}): definir uma vez, usar no
+      treino e em produção com o mesmo código \parencite{huyen2022}.
+    \item A maior parte do código de um sistema de aprendizado de máquina não é o
+      modelo, é dado e infraestrutura em volta dele \parencite{sculley2015}.
+  \end{itemize}
+}
+
+\pendente{escrever}
+
+% ---------------------------------------------------------------------------
+\section{Da previsão à decisão}
+\label{sec:prescritiva}
+
+\rascunho{
+  \begin{itemize}
+    \item A prescritiva junta a previsão com o que o negócio pode fazer: custos,
+      capacidades, restrições, regras. Muitas vezes é um problema de otimização.
+    \item O dado novo que ela exige: o registro da decisão recomendada, da decisão
+      tomada e do resultado. Sem isso não se sabe se a recomendação funciona.
+    \item Modelar cenários (\enquote{e se}) como dados, não como planilhas soltas.
+    \item Ligação com o capítulo~\ref{cap:negocio}: as restrições certas vêm de quem
+      conhece o negócio.
+  \end{itemize}
+}
+
+\pendente{escrever}
+
+% ---------------------------------------------------------------------------
+\begin{leituras}
+  \leitura{huyen2022}{A visão mais completa e prática de como dados, variáveis e
+    modelos se organizam num sistema de aprendizado de máquina em produção.}
+  \leitura{sculley2015}{Artigo curto que mostra por que o modelo é a menor parte do
+    problema e onde a dívida técnica se esconde.}
+  \leitura{davenport2007}{Para a visão de negócio dos níveis de análise e de como as
+    empresas competem usando dados.}
+\end{leituras}

@@ -1,0 +1,132 @@
+% Capitulo: Arquitetura medalhão e modelagem tradicional
+\chapter{Arquitetura medalhão e modelagem tradicional}
+\label{cap:medalhao}
+
+\rascunho{
+  \textbf{Ideia do capítulo.} Abrir a Parte~\ref{parte:modelagem} explicando a
+  arquitetura medalhão (bronze, prata, ouro), por que ela ficou popular na era do
+  lakehouse e em que ela é diferente da modelagem tradicional para análise descritiva.
+  A tese: medalhão organiza camadas de refinamento, não substitui modelagem. E o mesmo
+  dado, bem organizado em camadas, passa a servir a usos que a modelagem tradicional
+  não previa: ciência de dados, treino de IA e contexto para IA.
+  \begin{itemize}
+    \item Retomar Inmon e Kimball do capítulo~\ref{cap:dw} e mostrar onde cada um
+      reaparece dentro do medalhão.
+    \item A Figura~\ref{fig:medalhao} e a Tabela~\ref{tab:usos-modelagem} servem de mapa
+      para os próximos três capítulos.
+  \end{itemize}
+}
+
+% ---------------------------------------------------------------------------
+\section{Bronze, prata e ouro}
+\label{sec:bronze-prata-ouro}
+
+\rascunho{
+  \begin{itemize}
+    \item O termo vem do ecossistema do lakehouse \parencite{databricksmedallion,armbrust2021}.
+    \item Bronze: o dado como chegou da fonte, sem transformação, com histórico. Serve
+      para reprocessar e auditar.
+    \item Prata: limpo, tipado, sem duplicidade, com as chaves integradas entre fontes.
+    \item Ouro: pronto para um consumo específico (métricas de negócio, modelos
+      dimensionais, tabelas de features).
+    \item O paralelo com as camadas de um projeto de analytics engineering (preparação,
+      intermediária, marts). \pendente{decidir se uso a nomenclatura de alguma ferramenta como exemplo}
+  \end{itemize}
+}
+
+\pendente{escrever}
+
+\begin{figure}[htbp]
+  \centering
+  \input{figuras/medalhao}
+  \caption{A arquitetura medalhão e os consumidores que leem de cada camada.}
+  \label{fig:medalhao}
+  \fonte{elaborado pelo autor com base em \textcite{databricksmedallion}.}
+\end{figure}
+
+% ---------------------------------------------------------------------------
+\section{O que muda em relação a Inmon e Kimball}
+\label{sec:medalhao-tradicional}
+
+\rascunho{
+  \begin{itemize}
+    \item Medalhão fala de \emph{camadas de refinamento}; Inmon e Kimball falam de
+      \emph{modelo}. Por isso não são concorrentes diretos.
+    \item A prata lembra a camada integrada de Inmon; o ouro, quando serve a BI, quase
+      sempre é um modelo dimensional de Kimball (ver \veja{sec:modelagem-dimensional}).
+    \item O que mudou foi o custo: com armazenamento barato, guardar o bruto (bronze) e
+      várias versões refinadas deixou de ser luxo.
+    \item O risco: tratar medalhão como receita e acabar com três cópias do mesmo dado e
+      nenhum modelo. Bronze, prata e ouro sem grão definido continuam sendo bagunça, só
+      que organizada em pastas.
+    \item Relato: como eu organizei camadas num projeto. \pendente{escolher o caso}
+  \end{itemize}
+}
+
+\pendente{escrever}
+
+% ---------------------------------------------------------------------------
+\section{Modelagem para análise descritiva}
+\label{sec:modelagem-descritiva}
+
+\rascunho{
+  \begin{itemize}
+    \item A análise descritiva responde o que aconteceu e por quê. É o uso que a
+      modelagem tradicional sempre atendeu, e continua sendo o maior volume de trabalho
+      na maioria das empresas.
+    \item Na camada ouro: esquema estrela, métricas definidas uma vez, tabelas agregadas
+      para os painéis mais acessados.
+    \item O que vale manter da tradição: grão explícito, dimensões conformadas, chaves
+      substitutas, histórico das dimensões.
+  \end{itemize}
+}
+
+\pendente{escrever}
+
+% ---------------------------------------------------------------------------
+\section{Um dado, vários usos}
+\label{sec:um-dado-varios-usos}
+
+\rascunho{
+  \begin{itemize}
+    \item A modelagem tradicional tinha um consumidor principal: o analista com a
+      ferramenta de BI. Hoje o mesmo dado alimenta modelos preditivos, decisões
+      automatizadas, treino de IA e assistentes que respondem perguntas.
+    \item Cada uso pede uma forma diferente de dado (Tabela~\ref{tab:usos-modelagem}).
+      Os próximos capítulos tratam um uso cada.
+  \end{itemize}
+}
+
+\pendente{escrever}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Cada uso pede uma forma diferente de organizar os dados.}
+  \label{tab:usos-modelagem}
+  \small
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.22\textwidth}
+      >{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
+    \toprule
+    Uso & Forma dos dados & Cuidado principal \\
+    \midrule
+    Descritiva \newline{\footnotesize\itshape o que aconteceu?} & Esquema estrela e tabelas agregadas, na camada ouro & Métrica definida uma vez; grão explícito \\
+    \addlinespace
+    Preditiva \newline{\footnotesize\itshape o que vai acontecer?} & Tabela larga: uma linha por entidade e momento, com variáveis e alvo & Não deixar o futuro vazar para o passado \\
+    \addlinespace
+    Prescritiva \newline{\footnotesize\itshape o que fazer?} & Previsões junto com custos, restrições e cenários do negócio & Registrar a decisão tomada e o resultado \\
+    \addlinespace
+    Treino de IA & Conjunto curado, rotulado, versionado e documentado & Qualidade e representatividade dos exemplos, privacidade \\
+    \addlinespace
+    Contexto para IA & Documentos em trechos, metadados, glossário, camada semântica & Atualização, dono de cada fonte, permissões \\
+    \bottomrule
+  \end{tabularx}
+  \fonte{elaborado pelo autor.}
+\end{table}
+
+% ---------------------------------------------------------------------------
+\begin{leituras}
+  \leitura{armbrust2021}{O artigo que propõe o lakehouse, o contexto em que a
+    arquitetura medalhão se popularizou.}
+  \leitura{kleppmann2017}{Para entender os sistemas por baixo das camadas:
+    armazenamento, replicação, lote e fluxo contínuo, sem depender de ferramenta.}
+\end{leituras}

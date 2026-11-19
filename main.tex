@@ -1,0 +1,78 @@
+% Livro sobre analise e engenharia de dados.
+% Compile com: python compilar.py   (ver README.md)
+\documentclass[11pt,twoside,openright,showtrims]{memoir}
+\usepackage{estilo/livro}
+\input{metadados}
+\addbibresource{referencias.bib}
+
+\hypersetup{pdftitle={\titulolivro}, pdfauthor={\autorlivro}, pdfsubject={\subtitulolivro}}
+
+\begin{document}
+
+% ---------------------------------------------------------------- abertura
+\frontmatter
+\input{abertura/folha-de-rosto}
+\input{abertura/dedicatoria}
+\tableofcontents*
+\input{abertura/prefacio}
+\input{abertura/como-ler}
+
+% ---------------------------------------------------------------- miolo
+\mainmatter
+
+\part{De onde viemos}
+\label{parte:origens}
+\input{capitulos/01-antes-do-dashboard}
+\input{capitulos/02-data-warehouse}
+\input{capitulos/03-self-service}
+\input{capitulos/04-nuvem-modern-data-stack}
+\input{capitulos/05-chegada-da-ia}
+
+\part{Trilhas de aprendizado}
+\label{parte:trilhas}
+\input{capitulos/06-trilha-tradicional}
+\input{capitulos/07-trilha-hoje}
+\input{capitulos/08-ainda-vale-programar}
+\input{capitulos/09-fundamentos}
+\input{capitulos/10-conhecer-o-negocio}
+\input{capitulos/11-mapas-de-trilhas}
+
+\part{Modelar e governar dados}
+\label{parte:modelagem}
+\input{capitulos/12-arquitetura-medalhao}
+\input{capitulos/13-master-data}
+\input{capitulos/14-governanca}
+\input{capitulos/15-aplicacao-propria}
+\input{capitulos/16-modelagem-ciencia-de-dados}
+\input{capitulos/17-dados-para-treinar-ia}
+\input{capitulos/18-dados-como-contexto-ia}
+
+\part{Dados com práticas de DevOps}
+\label{parte:devops}
+\input{capitulos/19-dados-como-codigo}
+\input{capitulos/20-testes-e-qualidade}
+\input{capitulos/21-ci-cd}
+\input{capitulos/22-pipeline-ao-dashboard}
+\input{capitulos/23-frequencia-de-atualizacao}
+\input{capitulos/24-custo-e-consumo}
+
+\part{Ágil em times de dados}
+\label{parte:agil}
+\input{capitulos/25-estrutura-dos-times}
+\input{capitulos/26-agil-de-prateleira}
+\input{capitulos/27-scrum-com-kanban}
+\input{capitulos/28-projetos-de-visualizacao}
+\input{capitulos/29-projetos-de-engenharia}
+\input{capitulos/30-antes-e-depois-da-ia}
+
+\input{capitulos/31-para-onde-vamos}
+
+% ---------------------------------------------------------------- fechamento
+\appendix
+\input{apendices/glossario}
+
+\backmatter
+\printbibliography[heading=bibintoc,title={Referências}]
+\input{apendices/sobre-o-autor}
+
+\end{document}

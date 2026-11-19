@@ -1,0 +1,20 @@
+% Frequencia de atualizacao contra frequencia de consumo (cap. 16).
+\begin{tikzpicture}[diagrama, x=1mm, y=1mm]
+  % quadrantes (os da diagonal, alinhados, em branco; os desalinhados, em cinza)
+  \node[caixa, fill=fundo, minimum width=46mm, minimum height=26mm, text width=40mm] at (25,43)
+    {\textbf{Desperdício}\\[1mm]atualiza de hora em hora, alguém olha uma vez por semana};
+  \node[caixa, minimum width=46mm, minimum height=26mm, text width=40mm] at (75,43)
+    {\textbf{Operacional}\\[1mm]a decisão é de minutos ou horas; atualizar rápido vale o custo};
+  \node[caixa, minimum width=46mm, minimum height=26mm, text width=40mm] at (25,15)
+    {\textbf{Estratégico}\\[1mm]decisão mensal ou semanal; atualização periódica basta};
+  \node[caixa, fill=fundo, minimum width=46mm, minimum height=26mm, text width=40mm] at (75,15)
+    {\textbf{Risco}\\[1mm]muita gente decide todo dia com um número velho};
+
+  % eixos
+  \draw[seta] (-3,-1) -- (104,-1);
+  \draw[seta] (-1,-3) -- (-1,61);
+  \node[rotulo, anchor=north] at (50,-2) {com que frequência alguém olha os números};
+  \node[rotulo, anchor=south, rotate=90] at (-2,29) {com que frequência os dados atualizam};
+  \node[rotulo, anchor=north west] at (0,-2) {menos};
+  \node[rotulo, anchor=north east] at (102,-2) {mais};
+\end{tikzpicture}

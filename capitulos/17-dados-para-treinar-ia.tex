@@ -1,0 +1,93 @@
+% Capitulo: Dados para treinar IA
+\chapter{Dados para treinar IA}
+\label{cap:treinar-ia}
+
+\rascunho{
+  \textbf{Ideia do capítulo.} Quando o consumidor do dado é um modelo que vai aprender
+  com ele, a modelagem passa a ser sobre exemplos: quais entram, como são rotulados,
+  como são versionados e documentados, e o que nunca pode entrar. A maioria das
+  empresas não vai treinar um modelo do zero, mas quase todas vão ajustar modelos e,
+  principalmente, avaliar se a IA responde certo, e isso também é dado de treino.
+  \begin{itemize}
+    \item Diferença em relação ao capítulo~\ref{cap:modelagem-cd}: lá o dado é tabular
+      e o modelo é nosso; aqui entram texto, imagem, pares de pergunta e resposta, e
+      muitas vezes o modelo é de terceiros.
+    \item Ligação com segurança e privacidade (ver \veja{sec:seguranca}).
+  \end{itemize}
+}
+
+% ---------------------------------------------------------------------------
+\section{Quando o consumidor é um modelo}
+\label{sec:consumidor-modelo}
+
+\rascunho{
+  \begin{itemize}
+    \item Treinar do zero, ajustar (\emph{fine-tuning}) e avaliar: três necessidades de
+      dado diferentes, em ordem crescente de frequência nas empresas.
+    \item O conjunto de avaliação (perguntas com a resposta certa conhecida) é o
+      conjunto de treino que todo time de dados vai precisar montar, mesmo sem treinar
+      nada.
+  \end{itemize}
+}
+
+\pendente{escrever}
+
+% ---------------------------------------------------------------------------
+\section{Curadoria, rotulagem e versionamento}
+\label{sec:curadoria}
+
+\rascunho{
+  \begin{itemize}
+    \item Poucos exemplos bons valem mais que muitos ruins: duplicados, contraditórios
+      ou fora do domínio estragam o resultado.
+    \item Rotulagem: quem rotula, com que critério, e como medir a concordância entre
+      rotuladores. \pendente{achar referência sobre rotulagem}
+    \item Versionar o conjunto como se versiona código: saber exatamente com qual versão
+      do dado cada modelo foi treinado (ver o capítulo~\ref{cap:dados-codigo}).
+    \item Separar treino, validação e teste antes de qualquer coisa, e nunca deixar o
+      teste vazar para o treino.
+  \end{itemize}
+}
+
+\pendente{escrever}
+
+% ---------------------------------------------------------------------------
+\section{Documentar o conjunto de dados}
+\label{sec:datasheets}
+
+\rascunho{
+  \begin{itemize}
+    \item A proposta das fichas técnicas de conjuntos de dados (\emph{datasheets for
+      datasets}): por que o conjunto foi criado, como foi coletado, o que contém, para
+      que não deve ser usado \parencite{gebru2021}.
+    \item A ficha é o equivalente, para dados, do que a documentação do modelo
+      dimensional era para o BI.
+  \end{itemize}
+}
+
+\pendente{escrever}
+
+% ---------------------------------------------------------------------------
+\section{Privacidade, direitos e viés}
+\label{sec:privacidade-vies}
+
+\rascunho{
+  \begin{itemize}
+    \item Dado pessoal no treino é difícil de tirar depois: anonimizar ou pseudonimizar
+      antes, lembrando que dado pseudonimizado continua sendo dado pessoal pela LGPD.
+      \pendente{conferir o texto da LGPD sobre dado pseudonimizado e citar a lei}
+    \item Direitos sobre o conteúdo usado para treinar e termos de uso das fontes.
+    \item Representatividade: um conjunto que só tem exemplos de uma região, um produto
+      ou um perfil de cliente ensina o modelo a errar nos outros.
+  \end{itemize}
+}
+
+\pendente{escrever}
+
+% ---------------------------------------------------------------------------
+\begin{leituras}
+  \leitura{gebru2021}{A proposta de documentar cada conjunto de dados como se documenta
+    um componente eletrônico: origem, composição, usos recomendados e limites.}
+  \leitura{huyen2022}{Os capítulos sobre dados de treino tratam amostragem, rotulagem e
+    desbalanceamento de forma prática.}
+\end{leituras}

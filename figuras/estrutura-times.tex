@@ -1,0 +1,38 @@
+% Estrutura tradicional de um time de dados e uma versao enxuta possivel (cap. 23).
+\begin{tikzpicture}[diagrama, x=1mm, y=1mm,
+    titulo/.style={anchor=west, font=\footnotesize\scshape, text=cinza},
+    cargo/.style={caixa, minimum width=24mm, minimum height=8mm, font=\scriptsize},
+    pilha/.style={cargo, double copy shadow={shadow xshift=1mm, shadow yshift=-1mm, draw=tinta, fill=white}},
+    negocio/.style={caixa, draw=cinza, dashed, font=\scriptsize, text=cinza},
+    hierarquia/.style={draw=tinta, line width=0.5pt}]
+
+  % --- estrutura tradicional
+  \node[titulo] at (0,58) {estrutura tradicional};
+  \node[cargo] (head) at (58,50) {Head de dados};
+  \node[cargo] (ge) at (14,37) {Gerente de\\engenharia};
+  \node[cargo] (ga) at (44,37) {Gerente de\\analytics};
+  \node[cargo] (pm) at (74,37) {Product\\manager};
+  \node[cargo] (ag) at (103,37) {Agilista\\(scrum master)};
+  \foreach \n in {ge,ga,pm,ag} \draw[hierarquia] (head.south) -- ++(0,-3) -| (\n.north);
+  \node[pilha] (eng) at (14,23) {Engenheiros\\de dados};
+  \node[pilha] (ana) at (44,23) {Analistas de\\dados e BI};
+  \draw[hierarquia] (ge) -- (eng);
+  \draw[hierarquia] (ga) -- (ana);
+  \node[negocio, minimum width=50mm, minimum height=8mm] (neg1) at (88,23)
+    {Times de negócio: analistas de\\negócio, gestores, usuários};
+  \draw[ligacao, dashed] (pm.south) -- (pm.south |- neg1.north);
+
+  % --- versao enxuta
+  \draw[fio] (0,12) -- (118,12);
+  \node[titulo] at (0,7) {uma versão enxuta possível};
+  \node[destaquecaixa, minimum width=34mm, minimum height=8mm, font=\scriptsize] (lider) at (58,0)
+    {Líder de dados\\(produto e fluxo)};
+  \node[pilha] (prof) at (40,-14) {Profissionais de\\dados (ponta a ponta)};
+  \node[caixa, draw=cinza, minimum width=24mm, minimum height=8mm, font=\scriptsize] (ia) at (76,-14)
+    {Agentes de IA\\(revisados pelo time)};
+  \draw[hierarquia] (lider.south) -- ++(0,-3) -| (prof.north);
+  \draw[ligacao] (lider.south) -- ++(0,-3) -| (ia.north);
+  \node[negocio, minimum width=26mm, minimum height=8mm] (neg2) at (105,-14)
+    {Negócio, com\\analistas próprios};
+  \draw[ligacao, dashed] (ia.east) -- (neg2.west);
+\end{tikzpicture}
