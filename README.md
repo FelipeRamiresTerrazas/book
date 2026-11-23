@@ -31,7 +31,8 @@ referências indefinidas. No VS Code, as receitas do LaTeX Workshop fazem o mesm
 | `apendices/` | Glossário e sobre o autor |
 | `referencias.bib` | Bibliografia (biblatex, autor-data) |
 | `figuras/` | Imagens e diagramas |
-| `notas/` | Planejamento: proposta, títulos, decisões |
+| `notas/` | Planejamento: proposta, títulos, publicação, lançamento |
+| `divulgacao/linkedin/` | Rascunhos de posts e da newsletter, banco de pautas (regras no `README.md` de lá) |
 
 ## Comandos do estilo
 
