@@ -1,8 +1,59 @@
 % Ultima pagina do miolo.
+% Foto: salvar como figuras/autor.jpg (ou .png). Enquanto o arquivo nao existir,
+% aparece um quadro cinza marcando o lugar. Para impressao P&B, preferir uma foto
+% ja convertida para tons de cinza, com boa resolucao (300 dpi no tamanho final).
 \cleardoublepage
-\chapter*{Sobre o autor}
+{% abertura mais compacta que a dos capitulos, para a pagina caber inteira
+\setlength{\beforechapskip}{0pt}
+\setlength{\afterchapskip}{1\onelineskip}
+\chapter*{Sobre o autor}}
 \addcontentsline{toc}{chapter}{Sobre o autor}
 \markboth{Sobre o autor}{Sobre o autor}
 \thispagestyle{empty}
 
-\pendente{escrever a biografia curta, em terceira pessoa, 1 ou 2 parágrafos}
+{\centering
+  \IfFileExists{figuras/autor.jpg}{%
+    \includegraphics[width=28mm]{autor.jpg}%
+  }{\IfFileExists{figuras/autor.png}{%
+    \includegraphics[width=28mm]{autor.png}%
+  }{%
+    \pendente{foto do autor em figuras/autor.jpg}%
+    \fcolorbox{fio}{fundo}{\parbox[c][34mm][c]{28mm}{\centering\small\color{cinza}foto do autor}}%
+  }}\par}
+\vspace{0.6\onelineskip}
+
+\textbf{Felipe Ramires Terrazas} trabalha com análise e engenharia de dados desde 2019, quase
+sempre no ponto em que a técnica encontra o negócio. É formado em Engenharia
+\pendente{conferir o nome exato do curso} pela Escola Superior de Agricultura Luiz de Queiroz
+(ESALQ), da Universidade de São Paulo, e fez MBAs em Business Intelligence, Ciência de Dados
+Aplicada, Big Data e Analytics, Gestão Logística e Engenharia de Produção, e Gestão de
+Projetos de TI.
+
+A carreira passou pelos três setores que aparecem ao longo deste livro. No agronegócio,
+começou numa multinacional do setor e, numa startup de tecnologia agrícola, fundou a área de
+dados como único analista e a levou a um time de doze pessoas. Foi também diretor de operações
+de uma startup agroindustrial de cana-de-açúcar. Na logística, conduziu programas de
+transformação digital e de melhoria de processos, com Lean Six Sigma e Kanban, numa das maiores
+empresas de transporte marítimo de contêineres do mundo. Nas finanças, foi analista de dados de
+risco numa empresa de meios de pagamento, trabalhando com fraude, cobrança e governança de dados
+em times organizados com Scrum. Hoje lidera a área de analytics engineering de uma empresa de
+logística, onde construiu do zero a arquitetura de dados, com armazém na nuvem, transformação
+versionada e testada, governança e monitoramento de qualidade, e reduziu pela metade o custo do
+armazém de dados.
+
+Escreve SQL, Python e R, e se interessa especialmente pela modelagem de dados para os
+diferentes usos que a IA trouxe, da análise descritiva ao contexto para assistentes. Mantém
+projetos públicos de dados, como uma base reprodutível de indicadores econômicos oficiais do
+Brasil. Nas horas vagas, escreve regras de jogos de estratégia históricos e pinta miniaturas,
+com a mesma atenção ao detalhe que procura levar para o trabalho com dados.
+
+\noindent{\small\color{cinza}\href{https://www.linkedin.com/in/felipe-ramires-terrazas}{linkedin.com/in/felipe-ramires-terrazas}
+\quad·\quad \href{https://github.com/FelipeRamiresTerrazas}{github.com/FelipeRamiresTerrazas}\par}
+
+\rascunho{
+  Texto montado a partir do site profissional, do currículo e dos repositórios públicos.
+  Revisar: nome exato do curso de graduação; se quero citar o nome das empresas (o site cita;
+  aqui elas aparecem só pelo setor); se incluo o e-mail de contato (o do site está desatualizado);
+  se menciono o mestrado depois que ele for aprovado. A foto vai em
+  \codigo{figuras/autor.jpg}.
+}
