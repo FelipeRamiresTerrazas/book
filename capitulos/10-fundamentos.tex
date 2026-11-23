@@ -1,0 +1,132 @@
+% Capitulo: Fundamentos que não envelhecem
+\chapter{Fundamentos que não envelhecem}
+\label{cap:fundamentos}
+
+Ferramentas envelhecem rápido. A ferramenta de BI que alguém dominava há dez anos
+provavelmente já foi substituída, e o assistente de IA de hoje vai parecer antigo em dois
+anos. Algumas habilidades, porém, atravessam todas as ondas que a Parte~\ref{parte:origens}
+descreveu sem perder valor. Este capítulo reúne cinco delas: modelagem, estatística e
+pensamento crítico, qualidade de dados, comunicação e conhecimento do negócio. Nenhuma
+depende de produto, e todas ficaram mais importantes com a IA, porque são justamente o que
+permite avaliar o que a máquina produz.
+
+\section{Modelagem}
+\label{sec:fund-modelagem}
+
+Modelar dados é decidir como o mundo vai ser representado em tabelas: o que é uma
+entidade, o que identifica cada registro, como as coisas se relacionam, o que uma linha
+representa. O capítulo~\ref{cap:dw} apresentou duas formas clássicas de fazer isso, a
+normalizada e a dimensional. Aqui interessa o que elas têm em comum.
+
+Toda boa modelagem responde a três perguntas antes de qualquer outra. Qual é o grão, ou
+seja, o que exatamente uma linha representa? Qual é a chave, ou seja, o que torna cada
+linha única? E como esta tabela se liga às outras? Quem pergunta isso por hábito evita a
+maior parte dos erros de análise, inclusive os que a IA comete com toda a confiança, como o
+frete multiplicado do capítulo anterior (\veja{sec:consulta-errada}).
+
+Modelagem é também a habilidade que mais se valoriza com a IA. Quando escrever código fica
+barato, o que diferencia um projeto bom de um ruim é o desenho: as tabelas certas, com o
+grão certo e os nomes certos. A Parte~\ref{parte:modelagem} mostra que esse desenho muda
+conforme o uso, mas as três perguntas continuam as mesmas.
+
+\section{Estatística e pensamento crítico}
+\label{sec:fund-estatistica}
+
+Não é preciso ser estatístico para trabalhar com dados, mas é preciso pensar como um em
+alguns momentos. Na maior parte do tempo, isso se resume a poucas ideias, aplicadas com
+disciplina.
+
+A primeira é olhar a distribuição antes do resumo. Uma média esconde tudo o que importa
+quando os dados são assimétricos: o tempo médio de entrega pode estar ótimo enquanto um
+em cada dez pedidos atrasa uma semana. Mediana, percentis e um histograma simples contam a
+história que a média esconde.
+
+A segunda é sempre comparar. Um número sozinho não diz nada. Cresceu em relação a quê? Está
+alto em comparação com o quê? A variação está dentro do normal ou é sinal de alguma
+mudança? Boa parte do trabalho de análise é escolher a comparação certa.
+
+A terceira é desconfiar de relações simples. Correlação não é causalidade, e a frase é tão
+repetida que perdeu a força. Um exemplo clássico ajuda a recuperá-la. Em 1973, os dados de
+admissão na pós-graduação da Universidade da Califórnia em Berkeley mostravam que homens
+eram aceitos em proporção maior do que mulheres. Olhando departamento por departamento, o
+viés desaparecia, e em vários deles as mulheres tinham taxa de aceitação um pouco maior. A
+explicação: as mulheres se candidatavam mais aos departamentos mais concorridos, que
+recusavam a maioria dos candidatos de qualquer sexo \parencite{bickel1975}. O agregado
+contava uma história; os grupos, outra. Esse fenômeno, em que uma tendência se inverte
+quando os dados são separados em grupos, é conhecido como paradoxo de Simpson.
+
+Num painel de vendas, o mesmo efeito aparece quando a margem média cai porque a empresa
+vendeu mais de um produto de margem baixa, mesmo que a margem de cada produto tenha subido.
+Quem não pensa em composição tira a conclusão errada de um número correto.
+
+A quarta ideia é lembrar que números podem ser apresentados de forma enganosa, por
+intenção ou por descuido. O pequeno livro de \textcite{huff1954}, com mais de setenta anos,
+continua sendo a melhor introdução ao assunto: eixos cortados, médias escolhidas a dedo,
+amostras viciadas. E vale conhecer os atalhos do nosso próprio raciocínio, que tendem a
+construir uma história coerente com o pouco que está à vista e a ignorar o que não está
+\parencite{kahneman2011}. Um assistente de IA que responde com segurança e fluência explora
+exatamente essa tendência.
+
+\section{Qualidade de dados}
+\label{sec:fund-qualidade}
+
+Qualidade de dados costuma ser tratada como exatidão: o valor está certo ou errado. Um
+estudo clássico mostrou que, para quem usa os dados, qualidade é bem mais do que isso.
+\textcite{wang1996} perguntaram a consumidores de dados o que tornava um dado bom e
+organizaram as respostas em quatro grupos: qualidade intrínseca (o dado é correto e
+confiável), qualidade contextual (é relevante, atual e completo para a tarefa), qualidade
+de representação (é compreensível e consistente) e acessibilidade (dá para obter, com
+segurança).
+
+A consequência prática é que qualidade depende do uso. Um dado atualizado uma vez por mês
+tem ótima qualidade para o fechamento mensal e péssima para o acompanhamento diário. Um
+cadastro com o nome do cliente escrito de três formas é aceitável para contar pedidos e
+inaceitável para somar a receita por cliente. Perguntar \enquote{este dado é bom?} sem
+perguntar \enquote{bom para quê?} não leva a lugar nenhum.
+
+Na prática do dia a dia, isso vira hábitos simples: conferir se as chaves são únicas,
+contar nulos, comparar totais com a fonte, olhar a data da última atualização antes de
+confiar num número. Esses hábitos viram testes automáticos no capítulo~\ref{cap:testes} e
+uma disciplina de governança no capítulo~\ref{cap:governanca}.
+
+\section{Comunicação}
+\label{sec:fund-comunicacao}
+
+Uma análise que ninguém entende não muda nenhuma decisão. Comunicar é parte do trabalho, e
+não um enfeite no fim dele.
+
+A recomendação mais útil sobre escrita para quem trabalha com dados vem da consultoria:
+comece pela conclusão. Barbara Minto propôs organizar qualquer texto como uma pirâmide,
+com a ideia principal no topo e os argumentos que a sustentam embaixo
+\parencite{minto2009}. Um e-mail que começa com \enquote{as vendas caíram 8\% por causa da
+ruptura de estoque em duas regiões} e só depois mostra os números é lido; um que começa
+pela metodologia e chega à conclusão no quinto parágrafo, não.
+
+O mesmo vale para gráficos e apresentações (\veja{sec:visualizacao}): saber quem vai ler,
+o que essa pessoa precisa decidir, e colocar a mensagem no título, não numa legenda que
+ninguém lê. E vale, cada vez mais, para a forma como se escreve para a IA. Um pedido claro,
+com contexto, objetivo e critério de qualidade, é um pequeno exercício de comunicação, e
+quem escreve bem para pessoas costuma escrever bem para máquinas.
+
+\section{Conhecer o negócio}
+\label{sec:fund-negocio}
+
+O quinto fundamento é o que menos se ensina e o que mais diferencia: entender o negócio em
+que os dados nascem. Saber como a empresa ganha dinheiro, quais decisões dependem dos
+números e onde a operação costuma falhar transforma uma análise correta numa análise útil.
+
+Os quatro fundamentos anteriores ficaram mais acessíveis com a IA, que ajuda a modelar, a
+calcular, a conferir e a escrever. Este é o único em que ela pouco ajuda, porque o
+conhecimento de negócio está nas pessoas e nos processos da empresa, e não nos dados de
+treinamento de um modelo. Por isso ele ganha o próximo capítulo inteiro.
+
+\begin{leituras}
+  \leitura{huff1954}{Curto, divertido e ainda atual. A melhor vacina contra gráficos e
+    números enganosos.}
+  \leitura{wang1996}{O estudo que mostrou que qualidade de dados, para quem usa, vai muito
+    além da exatidão.}
+  \leitura{minto2009}{O método da pirâmide para organizar textos e apresentações. Muda a
+    forma de escrever qualquer e-mail de análise.}
+  \leitura{kahneman2011}{Para entender os atalhos do raciocínio que levam a conclusões
+    erradas, inclusive diante de números corretos.}
+\end{leituras}

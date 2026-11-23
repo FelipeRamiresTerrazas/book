@@ -1,0 +1,212 @@
+% Capitulo: Os quatro estágios da IA no trabalho com dados
+\chapter{Os quatro estágios da IA no trabalho com dados}
+\label{cap:estagios-ia}
+
+A adoção da IA no trabalho com dados não aconteceu de uma vez. Ela veio em estágios, cada
+um dando à IA um pouco mais de autonomia e mudando um pouco mais o papel de quem trabalha
+com ela. Primeiro, a IA era uma conversa numa janela à parte. Depois, passou a trabalhar
+dentro das ferramentas de código. Em seguida, passou a construir, publicar e manter
+aplicações inteiras. E agora começa a se tornar proativa: em vez de esperar que alguém
+pergunte, ela acompanha os dados, decide dentro de limites combinados e avisa quando uma
+decisão humana é necessária.
+
+Este capítulo descreve esses quatro estágios (Figura~\ref{fig:estagios-ia}). Eles não são
+uma escada que toda empresa sobe na mesma ordem, e convivem no mesmo time: a mesma pessoa
+pode conversar com a IA de manhã e supervisionar um agente à tarde. Mas separá-los ajuda a
+entender o que muda em cada um e, principalmente, o que cada estágio exige dos dados e das
+pessoas. A ideia de níveis de automação não é nova. Os carros autônomos, por exemplo, são
+classificados em níveis que dizem quem faz o quê, o sistema ou o motorista, em cada situação
+\parencite{sae2021}. A pergunta que organiza este capítulo é a mesma.
+
+\begin{figure}[htbp]
+  \centering
+  \input{figuras/estagios-ia}
+  \caption{Os quatro estágios da IA no trabalho com dados. A cada estágio, a IA ganha
+    autonomia e o papel humano muda de fazer para definir regras e decidir nas exceções.}
+  \label{fig:estagios-ia}
+  \fonte{elaborado pelo autor.}
+\end{figure}
+
+\section{Estágio 1: a IA como conversa}
+\label{sec:estagio-conversa}
+
+O primeiro contato da maioria das pessoas com a IA generativa foi uma janela de conversa. A
+pessoa escreve uma pergunta, recebe uma resposta e decide o que fazer com ela. Para quem
+trabalha com dados, isso já foi uma mudança grande: pedir uma consulta, colar um erro e pedir
+explicação, pedir ajuda para estruturar uma análise ou para escrever o e-mail com as
+conclusões (capítulo~\ref{cap:ia}).
+
+A característica que define esse estágio é o isolamento. A IA não vê o banco de dados, não
+conhece o código do projeto nem os padrões do time. Tudo o que ela sabe é o que a pessoa
+cola na conversa, e tudo o que ela produz precisa ser copiado, adaptado e integrado à mão.
+A pessoa é a ponte entre a IA e o trabalho real.
+
+Esse isolamento tem um lado bom: o controle é total, porque nada acontece sem que a pessoa
+execute. E tem um lado ruim: o contexto é pobre, a integração é manual e cansativa, e é fácil
+colar na conversa o que não deveria sair da empresa (\veja{sec:seguranca}). O estágio da
+conversa continua útil, e não vai desaparecer, mas é o que menos aproveita o que a IA pode
+fazer.
+
+\section{Estágio 2: a IA conectada ao código}
+\label{sec:estagio-codigo}
+
+O segundo estágio levou a IA para dentro das ferramentas em que o trabalho acontece. Primeiro
+vieram os assistentes integrados ao editor de código, que sugerem a próxima linha ou o
+próximo bloco enquanto a pessoa escreve. Depois vieram os agentes de programação: assistentes
+que leem o repositório inteiro, entendem a estrutura do projeto, executam comandos, rodam os
+testes, corrigem o que falhou e preparam a alteração para revisão. A pessoa deixa de pedir
+trechos de código e passa a pedir tarefas.
+
+A diferença em relação ao estágio anterior é o contexto e a ação. O agente vê o código real,
+os testes, as convenções do time, e consegue agir sobre eles. Uma tarefa como \enquote{crie
+o modelo de receita por cliente seguindo o padrão das outras tabelas, com os testes de
+unicidade e de frete} pode ser executada do começo ao fim, com a pessoa revisando o resultado.
+
+Esse estágio trouxe também um vocabulário novo e um debate útil. Em 2025, a expressão
+\emph{vibe coding} se popularizou para descrever um jeito de programar em que a pessoa
+descreve o que quer, aceita o código gerado sem lê-lo e segue em frente enquanto parece
+funcionar. Ela foi rapidamente distinguida do uso responsável dos assistentes: se a pessoa
+revisou, testou e entendeu o código que a IA escreveu, isso não é \emph{vibe coding}, é
+programar com um assistente \parencite{willison2025}. Para protótipos descartáveis, aceitar
+sem ler pode ser aceitável. Para um modelo de dados que vai alimentar a decisão de alguém,
+não é. A forma que tem ganhado espaço para o trabalho profissional costuma ser chamada de
+engenharia com agentes: a IA executa, a pessoa dirige e verifica. É o que os
+capítulos~\ref{cap:programar} e~\ref{cap:testes} defendem com outras palavras.
+
+\section{Estágio 3: construir, publicar e gerenciar aplicações}
+\label{sec:estagio-aplicacoes}
+
+No terceiro estágio, a IA deixa de trabalhar só sobre partes de um projeto e passa a
+construir aplicações inteiras: a interface, a lógica, o banco de dados, a publicação e, cada
+vez mais, a manutenção. Uma pessoa descreve uma ferramenta interna, como um painel de
+acompanhamento com alertas ou uma aplicação de conciliação de cadastros
+(capítulo~\ref{cap:aplicacao-propria}), e em pouco tempo tem uma versão funcionando,
+publicada e acessível ao time.
+
+Para times de dados, isso muda a fronteira do que é possível. Ferramentas internas que antes
+nunca entravam na fila de prioridades da TI, porque eram pequenas demais, agora podem ser
+construídas pelo próprio time. Uma aplicação para coletar dados que hoje chegam por planilha,
+uma tela para o steward revisar sugestões, um painel com uma lógica que a ferramenta de BI
+não suporta: tudo isso ficou ao alcance.
+
+O risco também mudou de lugar. Construir ficou fácil; manter continua difícil. Uma aplicação
+publicada precisa de alguém que cuide de segurança, de permissões, de atualização de
+dependências, de dúvidas dos usuários e de mudanças no negócio. Uma empresa que deixa cada
+pessoa publicar a sua aplicação com ajuda da IA, sem nenhum critério, repete o problema dos
+mil dashboards (\veja{sec:mil-dashboards}), agora com sistemas inteiros. As mesmas práticas
+que o livro propõe para os dados valem aqui: versionamento, testes, um dono para cada
+aplicação, e um critério claro do que pode ir para produção (Parte~\ref{parte:devops}).
+
+\section{Estágio 4: a IA proativa}
+\label{sec:estagio-proativa}
+
+Nos três primeiros estágios, a IA espera ser chamada. Alguém faz uma pergunta, pede uma
+tarefa ou descreve uma aplicação. O quarto estágio inverte essa relação. A IA passa a
+acompanhar os dados continuamente, com as regras de negócio no contexto, percebe quando um
+número mudou de forma relevante, analisa a situação e, conforme o caso, decide sozinha dentro
+de limites combinados ou avisa quem precisa decidir, já com a análise pronta.
+
+É uma mudança profunda na natureza do dado dentro da empresa. Durante toda a história contada
+nos capítulos anteriores, o dado foi passivo: ficava no armazém, ou no painel, esperando que
+alguém o consultasse, percebesse algo e decidisse. A crítica de Ackoff aos relatórios que
+ninguém lia (\veja{sec:sad}) e o problema dos painéis abertos uma vez por semana
+(capítulo~\ref{cap:frequencia}) são versões do mesmo limite: a informação existe, mas só gera
+ação se uma pessoa estiver olhando no momento certo. Com a IA proativa, o dado deixa de
+esperar.
+
+Uma referência clássica da engenharia de automação ajuda a pensar esse estágio com cuidado.
+\textcite{parasuraman2000} propõem que a automação pode atuar sobre quatro funções: obter a
+informação, analisá-la, escolher a decisão e executar a ação, cada uma num nível diferente,
+do totalmente manual ao totalmente automático. Os painéis tradicionais automatizam a primeira
+função e parte da segunda. A IA proativa avança sobre a terceira e, em alguns casos, sobre a
+quarta. A pergunta de projeto deixa de ser \enquote{a IA consegue?} e passa a ser \enquote{em
+que nível cada função deve ficar, para cada tipo de decisão?}.
+
+Uma proposta recente para agentes de IA organiza a resposta pelo papel que a pessoa assume:
+operadora, colaboradora, consultora, aprovadora ou observadora. No nível do aprovador, o agente
+age sozinho e só envolve a pessoa em situações de risco ou previamente combinadas; no do
+observador, age com autonomia total e a pessoa apenas acompanha \parencite{feng2025}. Para
+decisões de negócio, o nível do aprovador costuma ser o ponto de equilíbrio, e a forma de
+chegar lá é parecida com o que as empresas já fazem com pessoas: definir alçadas. A
+Tabela~\ref{tab:decisoes-proativa} mostra um exemplo de como esse desenho pode ficar.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Um desenho de alçadas para uma IA proativa.}
+  \label{tab:decisoes-proativa}
+  \small
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.22\textwidth}
+      >{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{0.2\textwidth}
+      >{\raggedright\arraybackslash}p{0.2\textwidth}@{}}
+    \toprule
+    Tipo de situação & Exemplo & O que a IA faz & Papel humano \\
+    \midrule
+    Rotineira, baixo impacto & Repor um item de estoque dentro do limite combinado & Decide, executa e registra & Audita por amostragem \\
+    \addlinespace
+    Fora do padrão, impacto médio & Custo de frete muito acima do contratado numa rota & Analisa e recomenda & Aprova ou rejeita \\
+    \addlinespace
+    Alto impacto ou ambígua & Suspender as compras de um fornecedor & Avisa com a análise pronta & Decide \\
+    \addlinespace
+    Fora das regras conhecidas & Uma situação que nenhuma regra cobre & Avisa que não sabe o que fazer & Define a regra nova \\
+    \bottomrule
+  \end{tabularx}
+  \fonte{elaborado pelo autor com base em \textcite{parasuraman2000} e \textcite{feng2025}.}
+\end{table}
+
+A última linha da tabela é talvez a mais importante. Uma IA proativa bem desenhada sabe
+reconhecer quando a situação está fora das regras que recebeu, e nesse caso a ação correta é
+avisar, e não improvisar. É a velha ideia de gestão por exceção: as pessoas deixam de
+acompanhar tudo e passam a cuidar do que foge do normal.
+
+\rascunho{
+  Relato ou exemplo da minha experiência: um caso em que um alerta proativo (com ou sem IA)
+  mudou uma decisão, ou um caso em que eu gostaria de ter tido esse tipo de alerta. Pode ser
+  também uma visão de como isso se aplicaria a um dos domínios do livro (agricultura,
+  finanças ou logística).
+}
+
+\section{O que cada estágio exige}
+\label{sec:estagios-exigem}
+
+Cada estágio exige mais dos dados e das pessoas do que o anterior. No estágio da conversa,
+basta saber perguntar e conferir. No estágio do código, é preciso saber revisar, o que exige
+saber programar (capítulo~\ref{cap:programar}). No estágio das aplicações, é preciso
+disciplina de engenharia para que o que foi construído possa ser mantido.
+
+O estágio proativo é o mais exigente, porque nele a IA age sobre os dados sem que alguém
+esteja olhando a cada passo. Para isso funcionar, os dados precisam estar prontos de uma forma
+que poucas empresas já estão: regras de negócio explícitas e escritas, métricas definidas uma
+vez (\veja{sec:camada-semantica}), cadastros conciliados (capítulo~\ref{cap:master-data}),
+testes que garantam que os números estão certos (\veja{sec:tdd}), atualização na frequência
+certa e monitorada (capítulo~\ref{cap:frequencia}), e documentação que sirva de contexto
+(capítulo~\ref{cap:contexto-ia}). Não é coincidência que essa lista resuma boa parte do resto
+do livro. A IA proativa é o estágio em que todo o trabalho de base deixa de ser boa prática e
+passa a ser condição.
+
+Há também um risco humano, bem conhecido na pesquisa sobre automação. Quando um sistema
+automático acerta quase sempre, as pessoas tendem a confiar demais nele e a prestar menos
+atenção justamente nos casos em que ele erra \parencite{parasuraman2010}. Uma IA proativa que
+pede aprovação dezenas de vezes por dia, com recomendações quase sempre certas, corre o risco
+de ser aprovada no automático. O desenho das alçadas precisa levar isso em conta: poucas
+aprovações, bem escolhidas, com a informação necessária para decidir, valem mais do que muitas
+aprovações que viram rotina.
+
+\begin{destaque}
+No último estágio, o dado deixa de esperar ser analisado. A IA acompanha, decide dentro de
+limites combinados e chama uma pessoa quando a decisão é dela. O trabalho humano passa a ser
+definir as regras e cuidar das exceções.
+\end{destaque}
+
+Com este capítulo, termina a primeira parte do livro: a história de como chegamos até aqui e
+de para onde a IA está levando o trabalho com dados. A próxima parte muda de pergunta: com
+tudo isso acontecendo, o que vale a pena estudar, e em que ordem?
+
+\begin{leituras}
+  \leitura{parasuraman2000}{O modelo clássico de tipos e níveis de automação. Escrito para
+    sistemas como aviação e controle industrial, serve muito bem para pensar a IA nas
+    decisões de negócio.}
+  \leitura{feng2025}{Uma proposta atual de níveis de autonomia para agentes de IA, organizada
+    pelo papel que a pessoa assume em cada nível.}
+  \leitura{parasuraman2010}{Para entender por que as pessoas passam a confiar demais em
+    sistemas automáticos, e como desenhar a interação para evitar isso.}
+\end{leituras}

@@ -1,0 +1,143 @@
+% Capitulo: Antes e depois da IA no meu trabalho
+\chapter{Antes e depois da IA no meu trabalho}
+\label{cap:antes-depois}
+
+\rascunho{
+  Capítulo escrito como síntese das mudanças discutidas no livro. Acrescentar, em cada seção,
+  um exemplo concreto do meu trabalho (sem nomes e com números só em ordem de grandeza). Se
+  preferir um título menos pessoal: \enquote{Antes e depois da IA no trabalho com dados}.
+}
+
+Ao longo do livro, a IA apareceu em quase todos os capítulos: mudando o que vale estudar, como
+os dados precisam ser organizados, como o código é escrito e revisado, quanto as coisas custam
+e como os times se estruturam. Este capítulo junta essas mudanças num lugar só e compara, tema a
+tema, o mesmo fluxo de trabalho de um time de dados antes e depois da IA. Não é uma lista de
+vantagens. Algumas coisas melhoraram muito, outras pioraram, e quase todas exigiram cuidados
+novos.
+
+\section{Estimativa e refinamento}
+\label{sec:ad-estimativa}
+
+A parte do trabalho que mais encolheu foi a construção: escrever a consulta, montar o modelo,
+gerar a primeira versão do painel. Isso mudou o tamanho relativo das tarefas. O que antes
+ocupava a maior parte de uma história agora ocupa uma fração, e o que antes era rápido, como
+entender a pergunta de negócio e investigar os dados, passou a dominar o tempo.
+
+\antesdepois{A estimativa era dominada pela construção. Uma história grande era uma história
+com muito código para escrever, e o refinamento discutia principalmente como fazer.}
+{A construção encolheu e a descoberta passou a dominar. O refinamento discute principalmente o
+que fazer, quais são as regras e como saber se está certo.}
+
+A consequência para o refinamento é que ele ficou mais importante, e não menos. Uma história mal
+definida, que antes era descoberta no meio da construção, agora é construída rapidamente e da
+forma errada. A separação entre descoberta e entrega (\veja{sec:descoberta}) e os critérios de
+entrada no quadro (\veja{sec:refinamento}) passaram a ser a principal defesa contra retrabalho.
+
+\rascunho{Exemplo meu: como mudou o tamanho ou a natureza das histórias no meu time.}
+
+\section{Código e revisão}
+\label{sec:ad-codigo}
+
+Escrever código ficou muito mais rápido. Revisar ficou mais importante, e não ficou mais fácil.
+O volume de código produzido cresceu, e boa parte dele foi escrita por alguém, a IA, que não
+estará na reunião quando o número estiver errado (capítulo~\ref{cap:programar}).
+
+\antesdepois{O autor escrevia devagar e entendia cada linha. A revisão conferia principalmente
+estilo e regras de negócio.}
+{O código chega rápido e em volume. A revisão passou a ser o principal controle de qualidade, e
+precisa conferir também se o autor entendeu o que a IA escreveu.}
+
+Na prática, isso levou a algumas regras que antes pareciam excesso de zelo: alterações pequenas,
+mesmo quando a IA consegue gerar uma grande; o autor revisando o próprio código gerado antes de
+pedir revisão; e as perguntas de grão e de junção feitas em toda revisão de SQL
+(\veja{sec:revisao-codigo}).
+
+\rascunho{Exemplo meu: um caso em que a revisão pegou um erro de código gerado por IA.}
+
+\section{Testes}
+\label{sec:ad-testes}
+
+Talvez a mudança mais importante tenha sido nos testes. O desenvolvimento guiado por testes
+sempre foi recomendado e quase nunca praticado em dados, porque escrever testes custava um tempo
+que o prazo não dava. Com a IA, esse custo caiu, e os testes passaram a vir antes dos modelos
+(\veja{sec:tdd}).
+
+\antesdepois{Os testes ficavam para quando sobrasse tempo. As regras de negócio eram conferidas
+com o stakeholder a cada versão do modelo, o que exigia a presença dele em cada iteração.}
+{Os testes vêm antes do modelo e viram a especificação da regra. A validação com o stakeholder
+acontece uma vez, sobre os casos de teste, e o time itera sem depender da agenda dele.}
+
+\rascunho{Exemplo meu: um projeto em que escrever os testes antes mudou o tempo de validação.}
+
+\section{Documentação}
+\label{sec:ad-documentacao}
+
+A documentação era a eterna pendência de todo time de dados: todos concordavam que era
+importante, e ela sempre ficava para depois. Duas coisas mudaram. A IA passou a escrever a
+primeira versão das descrições de tabelas, colunas e métricas, a partir do código e dos dados. E a
+documentação ganhou um consumidor novo, os assistentes que respondem perguntas sobre os dados, para
+os quais ela é insumo essencial (capítulo~\ref{cap:contexto-ia}).
+
+\antesdepois{A documentação ficava num documento à parte, desatualizado, e servia
+principalmente para quem chegava ao time.}
+{A documentação vive junto com o código, a IA escreve a primeira versão e alguém que conhece o
+negócio revisa. Ela serve ao time e à IA, que a usa a cada pergunta.}
+
+O mesmo vale para a transferência de conhecimento. Explicar um modelo antigo a uma pessoa nova
+ficou muito mais fácil quando um assistente consegue ler o código e responder às perguntas dela.
+O que não ficou mais fácil é transferir o conhecimento de negócio, que continua dependendo de
+pessoas.
+
+\section{Custo}
+\label{sec:ad-custo}
+
+A forma de pagar pelas ferramentas mudou junto com elas. O que era uma licença fixa por usuário
+passou a ser, cada vez mais, consumo: créditos de processamento no armazém de dados e tokens nos
+modelos de linguagem (capítulo~\ref{cap:custo-consumo}).
+
+\antesdepois{O custo das ferramentas era fixo e previsível, negociado na renovação. O gerente
+controlava o acesso.}
+{O custo acompanha o uso. O gerente acompanha o consumo de forma contínua, por time e por
+produto, e a eficiência técnica aparece diretamente na fatura.}
+
+\rascunho{Exemplo meu: como passei a acompanhar consumo, e uma otimização que fez diferença.}
+
+\section{O que exigiu novos cuidados}
+\label{sec:ad-cuidados}
+
+Nem tudo melhorou. Algumas mudanças exigiram cuidados que antes não existiam, e vale
+reuni-los aqui.
+
+O primeiro é a privacidade. Ficou fácil colar num assistente um trecho de dados que nunca
+deveria sair da empresa, e as regras sobre o que pode e o que não pode ir para um modelo
+precisaram ser escritas e comunicadas (\veja{sec:seguranca}).
+
+O segundo é a confiança excessiva. O código gerado parece correto, a resposta vem com
+segurança, e a tendência humana é aceitar. Os estudos citados ao longo do livro mostram que
+essa confiança nem sempre é justificada, e que a percepção de ganho de produtividade pode não
+corresponder ao ganho real \parencite{becker2025,perry2023}.
+
+O terceiro é a formação de quem está chegando. Quem aprende com a IA fazendo tudo aprende menos
+\parencite{shen2026}, e um time que só contrata quem já sabe vai ficar sem seniores no futuro
+(\veja{sec:ia-comprime}).
+
+O quarto é o custo invisível do excesso. Ficou tão fácil criar painéis, modelos, aplicações e
+agentes que a quantidade cresce mais rápido do que a capacidade de manter. As métricas de uso
+dos próprios produtos de dados (\veja{sec:metricas-uso}) e a disciplina de desligar o que não é
+usado passaram a ser parte do trabalho.
+
+\begin{destaque}
+A IA não diminuiu o trabalho de um time de dados. Ela mudou de lugar: menos construção, mais
+definição, revisão, governança e conhecimento de negócio.
+\end{destaque}
+
+\rascunho{Exemplo meu: o cuidado novo que mais me custou aprender.}
+
+\begin{leituras}
+  \leitura{dellacqua2023}{Para entender por que a IA ajuda muito em algumas tarefas e
+    atrapalha em outras, e como identificar a diferença.}
+  \leitura{becker2025}{Para a distância entre o ganho percebido e o ganho medido, um bom
+    antídoto contra o entusiasmo sem critério.}
+  \leitura{forsgren2018}{Para medir, com indicadores objetivos, se a forma de trabalhar do
+    time de fato melhorou.}
+\end{leituras}

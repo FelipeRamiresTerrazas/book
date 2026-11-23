@@ -1,0 +1,26 @@
+% Exemplo de quadro de Scrum com Kanban para um time de dados (cap. 28).
+\begin{tikzpicture}[diagrama, x=1mm, y=1mm,
+    cab/.style={font=\scriptsize\bfseries, align=center, text width=14mm},
+    raia/.style={font=\tiny, text=cinza, align=left, text width=13mm, anchor=west},
+    cartao/.style={draw=tinta, fill=white, minimum width=11mm, minimum height=3.2mm, inner sep=0pt},
+    cartaourg/.style={cartao, fill=fundo, line width=0.7pt}]
+  % colunas
+  \foreach \i/\nome in {0/Entrada, 1/Descoberta, 2/{Pronto p/\\fazer}, 3/{Fazendo\\(até 3)},
+                        4/{Revisão\\(até 2)}, 5/{Validação\\negócio}, 6/Pronto} {
+    \node[cab] at (21.5+\i*15,-3) {\nome};
+  }
+  % grade
+  \draw[fio] (14,-7.5) -- (119,-7.5);
+  \foreach \i in {0,...,7} \draw[fio] (14+\i*15,0) -- (14+\i*15,-49);
+  \foreach \y in {-21.5,-35.5,-49} \draw[fio] (0,\y) -- (119,\y);
+  % raias
+  \node[raia] at (0,-14.5) {Urgente};
+  \node[raia] at (0,-28.5) {Projeto};
+  \node[raia] at (0,-42.5) {Sustentação};
+  % cartoes (exemplo)
+  \node[cartaourg] at (66.5,-14.5) {};
+  \foreach \c/\y in {0/-25.5, 0/-30.5, 1/-28, 2/-25.5, 2/-30.5, 3/-25.5, 3/-30.5, 4/-28, 5/-28, 6/-25.5, 6/-30.5}
+    \node[cartao] at (21.5+\c*15,\y) {};
+  \foreach \c/\y in {0/-40, 0/-45, 3/-42.5, 6/-40, 6/-45}
+    \node[cartao] at (21.5+\c*15,\y) {};
+\end{tikzpicture}

@@ -1,0 +1,94 @@
+% Capitulo: Na prática: projetos de visualização
+\chapter{Na prática: projetos de visualização}
+\label{cap:proj-visualizacao}
+
+Projetos de visualização têm uma armadilha própria: o produto final é tão visível que todo
+mundo tem opinião sobre ele, e tão fácil de começar que a tentação é abrir a ferramenta e
+sair montando gráficos. Este capítulo mostra como o modelo de Scrum com Kanban funciona num
+projeto desse tipo, do pedido vago ao painel publicado, passando pelo que mais costuma dar
+errado: construir antes de entender e entregar tudo de uma vez.
+
+\section{Do pedido à pergunta}
+\label{sec:pedido-pergunta}
+
+Quase todo projeto de visualização começa com um pedido como \enquote{quero um dashboard de
+vendas}. O pedido é legítimo, mas não é uma especificação. Ele não diz quem vai usar, com que
+frequência, para decidir o quê, e o que conta como sucesso. Construir a partir dele é
+apostar que o resultado vai coincidir com o que a pessoa tinha em mente, e a aposta quase
+sempre perde.
+
+O primeiro trabalho, portanto, é transformar o pedido em perguntas. Quem vai abrir o painel?
+Que decisão essa pessoa toma, e com que frequência? O que ela faz hoje para tomar essa
+decisão, e o que falta? Que número, se mudasse, faria ela agir de forma diferente? As
+respostas costumam mostrar que o \enquote{dashboard de vendas} é, na verdade, a necessidade de
+acompanhar três indicadores por região toda segunda-feira, com um alerta quando algum deles
+sai da faixa normal. É um produto bem menor e bem mais útil do que o painel com trinta gráficos
+que seria construído a partir do pedido original.
+
+Essa conversa é também o momento de definir a frequência de atualização a partir do ritmo da
+decisão (\veja{sec:ritmo-decisao}), de identificar o dono de cada métrica
+(\veja{sec:donos}) e de escrever as primeiras regras que vão virar testes (\veja{sec:tdd}).
+No quadro, ela corresponde à coluna de descoberta: nada vai para construção antes que essas
+perguntas estejam respondidas.
+
+\section{Protótipo e validação}
+\label{sec:prototipo}
+
+Com as perguntas respondidas, o passo seguinte ainda não é construir o painel de verdade. É
+fazer um protótipo, o mais barato possível, e mostrá-lo a quem vai usar. Um rascunho em papel,
+uma imagem montada numa ferramenta de desenho ou uma versão rápida na própria ferramenta de
+BI, com dados fictícios ou com uma amostra, bastam. O objetivo é descobrir o que está errado
+quando mudar ainda custa pouco.
+
+A validação do protótipo deve ser feita com a pessoa que vai usar o painel, e não só com quem
+pediu, porque nem sempre são a mesma pessoa. E deve ser conduzida com perguntas concretas:
+olhando para este painel, que decisão você tomaria hoje? O que você procuraria primeiro? O que
+está faltando? Quase sempre aparecem surpresas: o indicador que parecia central é ignorado, e
+um detalhe que ninguém tinha mencionado é o que a pessoa procura primeiro.
+
+As referências de visualização do capítulo~\ref{cap:self-service} ajudam a fazer protótipos
+melhores desde o começo: uma tela só, poucos elementos, comparações sempre presentes e a
+mensagem principal no título (\veja{sec:visualizacao}). A IA também ajuda aqui, gerando
+rapidamente variações de layout ou dados fictícios realistas para o protótipo. O que ela não
+faz é a conversa com quem vai usar.
+
+\section{Entregas pequenas}
+\label{sec:fatiar-dashboard}
+
+O último erro comum é entregar o painel inteiro de uma vez, depois de semanas de construção.
+Mesmo com protótipo validado, um painel grande entregue no fim acumula riscos: a fonte que
+tinha um problema que ninguém viu, a regra que foi entendida de outro jeito, a mudança de
+prioridade do negócio no meio do caminho.
+
+A alternativa é fatiar. A unidade de entrega não é o painel, e sim a pergunta: a primeira
+entrega responde à pergunta mais importante, com dados reais, testados e atualizados, mesmo
+que o painel tenha só um gráfico. As entregas seguintes acrescentam as outras perguntas, uma de
+cada vez, em ordem de valor. Cada fatia passa por todas as colunas do quadro, inclusive a
+validação com o negócio, e por todos os itens da definição de pronto
+(\veja{sec:definicao-pronto}).
+
+Fatiar tem efeitos que vão além do risco. O usuário começa a usar o painel cedo, e o uso real
+mostra o que importa mais do que qualquer conversa. Algumas fatias planejadas deixam de ser
+necessárias, porque a primeira já resolveu o problema. E as métricas de uso, desde a primeira
+entrega, indicam se o painel está sendo aberto na frequência imaginada
+(\veja{sec:metricas-uso}).
+
+\begin{dica}
+Se um painel não pode ser dividido em entregas menores que façam sentido sozinhas, é
+provável que ele esteja tentando responder perguntas demais. Vale voltar à descoberta.
+\end{dica}
+
+\rascunho{
+  Relato de um projeto real de visualização, do pedido à entrega, sem nomes de empresa ou
+  cliente: o pedido original, o que a descoberta revelou, o protótipo, como foi fatiado e o
+  que aconteceu depois da primeira entrega. É o relato central do capítulo.
+}
+
+\begin{leituras}
+  \leitura{few2006}{Para desenhar painéis que respondem a perguntas de relance, base de bons
+    protótipos.}
+  \leitura{knaflic2015}{Para conduzir a conversa com quem vai usar e para apresentar as
+    entregas de forma que a mensagem fique clara.}
+  \leitura{cohn2004}{Para escrever cada fatia como uma história com valor próprio para o
+    usuário.}
+\end{leituras}

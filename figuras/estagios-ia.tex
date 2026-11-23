@@ -1,0 +1,17 @@
+% Os quatro estagios da IA no trabalho com dados (cap. 6).
+\begin{tikzpicture}[diagrama, x=1mm, y=1mm,
+    degrau/.style={caixa, anchor=south west, minimum width=27mm, text width=24mm,
+      minimum height=17mm, align=center, font=\scriptsize},
+    humano/.style={rotulo, anchor=north, text width=27mm}]
+  \node[degrau] (e1) at (0,0)  {\textbf{1. Conversa}\\[0.5mm]a IA responde numa janela à parte};
+  \node[degrau] (e2) at (30,7) {\textbf{2. Código}\\[0.5mm]a IA trabalha dentro do editor e do repositório};
+  \node[degrau] (e3) at (60,14) {\textbf{3. Aplicações}\\[0.5mm]a IA constrói, publica e mantém sistemas inteiros};
+  \node[degrau, fill=fundo, line width=0.7pt] (e4) at (90,21)
+    {\textbf{4. Proativa}\\[0.5mm]a IA monitora, decide nos limites e avisa};
+  \node[humano] at (e1.south) [yshift=-1mm] {a pessoa pergunta, copia e integra};
+  \node[humano] at (e2.south) [yshift=-1mm] {a pessoa dirige e revisa};
+  \node[humano] at (e3.south) [yshift=-1mm] {a pessoa especifica e supervisiona};
+  \node[humano] at (e4.south) [yshift=-1mm] {a pessoa define as regras e decide nas exceções};
+  \draw[seta, draw=cinza] (0,-12) -- (117,-12);
+  \node[rotulo, anchor=north] at (58.5,-12.5) {mais autonomia para a IA, mais importância para as regras e para a revisão};
+\end{tikzpicture}

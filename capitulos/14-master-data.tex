@@ -1,0 +1,203 @@
+% Capitulo: Master data: de projeto eterno a oportunidade
+\chapter{Master data: de projeto eterno a oportunidade}
+\label{cap:master-data}
+
+Toda empresa tem algumas entidades que aparecem em quase todos os processos: clientes,
+produtos, fornecedores, locais, funcionários. Os dados que descrevem essas entidades são
+chamados de dados mestres, ou master data. Quando eles estão bem cuidados, quase ninguém
+repara. Quando não estão, tudo dá errado: a receita por cliente não bate, o mesmo produto
+aparece com três códigos, o relatório de compras não conversa com o de estoque.
+
+Por muito tempo, cuidar disso foi visto como um projeto caro, lento e difícil de
+justificar, e muitas empresas preferiram conviver com as planilhas. Este capítulo
+argumenta que essa conta mudou. Com a abordagem certa, e com a ajuda da IA, master data
+pode deixar de ser um projeto eterno e virar uma oportunidade.
+
+\section{O que é master data}
+\label{sec:o-que-e-master-data}
+
+Dados mestres são as entidades centrais do negócio, compartilhadas por vários processos e
+sistemas \parencite{dama2017,loshin2009}. Eles se distinguem de dois outros tipos de dado.
+O dado transacional registra eventos: a venda, a viagem, o lançamento contábil. Ele é
+volumoso, cresce todo dia e quase nunca muda depois de registrado. O dado de referência
+são listas de valores usadas para classificar outros dados: estados, moedas, códigos de
+unidade de medida. Ele é pequeno, muda pouco e muitas vezes vem de fora da empresa.
+
+O dado mestre fica no meio. É menos volumoso que o transacional, mas muda com frequência
+(o cliente muda de endereço, o produto ganha uma nova embalagem) e é usado por quase todas
+as transações. E, principalmente, costuma existir em vários sistemas ao mesmo tempo. O
+ERP tem o seu cadastro de clientes, o CRM tem outro, a área comercial mantém uma planilha
+com um terceiro. Cada um com os seus códigos e a sua forma de escrever os nomes
+(Tabela~\ref{tab:registro-mestre}).
+
+\begin{table}[htbp]
+  \centering
+  \caption{O mesmo cliente em três fontes e o registro mestre que as concilia.}
+  \label{tab:registro-mestre}
+  \small
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Fonte & ID na fonte & Nome como está na fonte \\
+    \midrule
+    ERP                & 4471          & AGRO SILVA LTDA \\
+    CRM                & C-0932        & Agro Silva \\
+    Planilha comercial & (sem ID)      & Agrosilva Faz. Boa Vista \\
+    \midrule
+    \textbf{Registro mestre} & \textbf{1001} & \textbf{Agro Silva Ltda} \\
+    \bottomrule
+  \end{tabular}
+  \fonte{exemplo fictício elaborado pelo autor.}
+\end{table}
+
+Gerir master data é, no essencial, manter duas coisas. A primeira é o registro mestre
+(\emph{golden record}): a versão única e confiável de cada entidade, com um identificador
+próprio. A segunda é a tabela de correspondência, que liga o identificador de cada fonte ao
+identificador mestre. Com as duas, qualquer análise pode juntar dados de sistemas
+diferentes sabendo que está falando do mesmo cliente.
+
+Quem leu o capítulo~\ref{cap:dw} já viu esse problema com outro nome. As dimensões
+conformadas de Kimball, compartilhadas por todos os processos de negócio, são master data
+aplicado ao data warehouse (\veja{sec:kimball}). Sem um cadastro mestre por trás, não há
+dimensão conformada que se sustente.
+
+\section{Como master data era visto}
+\label{sec:master-data-antes}
+
+O jeito tradicional de resolver master data era um programa grande, separado de qualquer
+entrega de negócio. Primeiro se mapeavam todas as fontes de todos os domínios. Depois se
+conciliavam os nomes e os códigos, registro por registro. Depois se definia a governança:
+quem cria, quem altera, quem aprova. Só então havia alguma coisa para entregar.
+
+Esse caminho exigia gente e tempo. Era preciso contratar analistas de dados para
+conversar com os analistas de negócio de cada área, entender como cada sistema registrava
+os dados, negociar regras que nenhuma área queria ceder. Até que o resultado aparecesse,
+passavam meses, muitas vezes anos (parte de cima da Figura~\ref{fig:master-data-abordagens}).
+E o resultado, quando aparecia, era difícil de mostrar: \enquote{dados mais consistentes}
+não é algo que a diretoria vê numa reunião.
+
+Diante disso, muitas empresas fizeram uma escolha racional: continuar com as planilhas. A
+planilha com o \enquote{de-para} mantido à mão já existia, funcionava mais ou menos e não
+pedia orçamento. O custo dela era real, mas espalhado: retrabalho a cada fechamento, cada
+área com a sua versão, números que não batiam e consumiam a primeira meia hora de cada
+reunião. Ninguém via esse custo numa linha do orçamento, e por isso ele nunca competia com
+o custo visível de um programa de master data.
+
+\rascunho{
+  Relato: uma situação em que a falta de master data causou um problema concreto
+  (números divergentes, retrabalho no fechamento, decisão tomada com base errada). Sem
+  nomes e com valores só em ordem de grandeza.
+}
+
+\section{Master data puxado por um projeto de negócio}
+\label{sec:master-data-puxado}
+
+A abordagem que tem funcionado melhor na minha experiência inverte a lógica. Em vez de
+começar um programa de master data e procurar quem vai usá-lo, começa-se por um projeto de
+negócio que já foi aprovado, já tem patrocinador e orçamento, e identificam-se os braços
+desse projeto que dependem de master data.
+
+Um exemplo típico: um projeto comercial precisa juntar a carteira de clientes de três
+sistemas para acompanhar o desempenho de cada vendedor. Sem um cadastro mestre de clientes,
+o projeto não fica de pé, porque o mesmo cliente aparece três vezes com nomes diferentes. É
+esse o momento de abrir, em paralelo, um projeto de master data só para o domínio de
+clientes. A necessidade já está justificada, porque sem ele o projeto de negócio não
+entrega. O recurso já está garantido, porque faz parte do projeto aprovado. E o escopo é
+pequeno, porque é um domínio só.
+
+O projeto de negócio vira o primeiro cliente do master data, e é ele que valida o
+resultado na prática: se os vendedores reconhecem as próprias carteiras no painel, a
+conciliação funcionou. Quando o próximo projeto de negócio chegar e precisar de clientes,
+o domínio já está pronto, e ele só precisa puxar o domínio que falta, digamos, produtos. A
+cada projeto, um domínio novo; a cada domínio, o próximo projeto fica mais barato (parte de
+baixo da Figura~\ref{fig:master-data-abordagens}).
+
+\begin{figure}[htbp]
+  \centering
+  \input{figuras/master-data-abordagens}
+  \caption{Dois jeitos de construir master data: um programa único, que entrega no
+    fim, ou um domínio por vez, puxado por projetos de negócio que já precisam dele.}
+  \label{fig:master-data-abordagens}
+  \fonte{elaborado pelo autor.}
+\end{figure}
+
+A abordagem tem cuidados próprios. O primeiro é não deixar o prazo do projeto de negócio
+atropelar a qualidade do domínio: um cadastro mestre feito às pressas, só para destravar
+uma entrega, vira mais uma versão da verdade. O segundo é desenhar o domínio pensando no
+reuso, e não só no primeiro projeto. O cadastro de clientes que nasce para o projeto
+comercial vai ser usado pelo financeiro e pela logística, e precisa ter os atributos e as
+regras que eles vão precisar. O terceiro é dar visibilidade ao projeto paralelo: ele entra
+no quadro do time como um épico próprio, com histórias amarradas às do projeto de negócio
+(\veja{sec:projeto-sustentacao}), para que o trabalho não fique escondido.
+
+\rascunho{
+  Relato completo de um caso real dessa abordagem: o projeto de negócio, o domínio que
+  ele puxou, quanto tempo levou, quem validou e o que foi reaproveitado depois. É o relato
+  mais importante do capítulo.
+}
+
+\section{O que a IA muda na conciliação}
+\label{sec:master-data-ia}
+
+A etapa que fazia o master data levar meses era a conciliação: decidir, registro por
+registro, se dois cadastros representam a mesma entidade. É um problema com teoria antiga.
+Em 1969, Ivan Fellegi e Alan Sunter formalizaram a conciliação probabilística de registros,
+que compara os campos de cada par e calcula a probabilidade de os dois serem o mesmo
+\parencite{fellegi1969}. As técnicas que vieram depois, de normalização, comparação e
+bloqueio, estão reunidas em \textcite{christen2012}, e há bibliotecas de código aberto
+que implementam esse modelo em escala \parencite{linacre2022}.
+
+A IA acrescenta a essas técnicas a capacidade de lidar com o que as regras não pegam: nomes
+abreviados, razões sociais escritas de jeitos diferentes, endereços incompletos, a filial
+que aparece com o nome da fazenda. Ela pode sugerir pares prováveis, padronizar textos e,
+principalmente, explicar por que dois registros parecem ser o mesmo, o que acelera muito
+a revisão humana. A pessoa continua decidindo; a IA tira o trabalho braçal.
+
+\rascunho{
+  Validar com a minha experiência: em que medida a IA de fato encurtou a conciliação nos
+  projetos de master data que eu acompanhei, e onde ela errou.
+}
+
+O efeito sobre a abordagem por domínio é direto. Conciliar um domínio inteiro dentro do
+prazo de um projeto de negócio ficou viável, o que antes exigiria um time dedicado por
+meses. Um motor simples de conciliação, com regras, similaridade e sugestões da IA, está
+descrito no capítulo~\ref{cap:aplicacao-propria} (\veja{sec:motor-conciliacao}).
+
+Há um cuidado que não pode ser esquecido. Cadastro de cliente tem dado pessoal, e o que vai
+para um modelo de IA externo sai do ambiente da empresa. A limpeza do que pode e do que não
+pode ser enviado precisa acontecer antes (\veja{sec:seguranca}).
+
+\section{Governança mínima que funciona}
+\label{sec:governanca-master-data}
+
+Um domínio de master data sem governança volta a se degradar em poucos meses: alguém cria
+um cliente novo direto no sistema de origem, outro corrige o nome na planilha, e a
+correspondência deixa de valer. A governança não precisa ser grande, mas precisa existir
+desde o primeiro domínio.
+
+\begin{itemize}
+  \item \textbf{Um dono de negócio por domínio}, que decide as regras: o que é um cliente
+    ativo, quando dois cadastros são o mesmo, quais atributos são obrigatórios.
+  \item \textbf{Regras de criação e alteração}: quem pode criar um cliente novo e em qual
+    sistema, e como essa criação chega ao cadastro mestre.
+  \item \textbf{Testes automáticos} de unicidade e de correspondência, rodando a cada carga
+    (\veja{sec:tdd}).
+  \item \textbf{A tabela de correspondência versionada e auditável}, num banco de dados e
+    não numa planilha, com o registro de quem decidiu cada vínculo.
+  \item \textbf{Crescimento junto com os domínios}: governança do tamanho do que já foi
+    entregue, ampliada a cada domínio novo.
+\end{itemize}
+
+A governança completa, com o papel do data steward na era da IA, é o assunto do próximo
+capítulo. Como construir uma aplicação própria para tudo isso, do motor de conciliação à
+fila de revisão, fica para o capítulo~\ref{cap:aplicacao-propria}.
+
+\begin{leituras}
+  \leitura{dama2017}{O guia de referência de gestão de dados. O capítulo sobre dados
+    mestres e de referência dá o vocabulário e as responsabilidades.}
+  \leitura{loshin2009}{Um livro inteiro sobre master data, do caso de negócio à
+    arquitetura e à governança.}
+  \leitura{christen2012}{Para quem vai implementar a conciliação: técnicas de
+    comparação, bloqueio e avaliação da qualidade dos pares encontrados.}
+  \leitura{fellegi1969}{O artigo clássico que formalizou a conciliação probabilística
+    de registros, ainda base de muitas ferramentas.}
+\end{leituras}

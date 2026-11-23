@@ -1,0 +1,152 @@
+% Capitulo: De usuários a tokens: custo e consumo
+\chapter{De usuários a tokens: custo e consumo}
+\label{cap:custo-consumo}
+
+Durante muito tempo, o custo de uma ferramenta de dados era uma linha fixa no orçamento: um
+valor por usuário, negociado na renovação do contrato. O uso, alto ou baixo, não mudava a
+fatura. Essa lógica está mudando. Os armazéns de dados na nuvem passaram a cobrar pelo
+processamento, as ferramentas de BI passaram a oferecer modelos por capacidade ou por
+crédito, e os modelos de linguagem cobram por token, a unidade de texto que entra e sai de
+cada pergunta. Com isso, gerir o consumo virou uma preocupação de todo gerente de dados. Este
+capítulo trata dessa mudança, do que ela exige de quem lidera um time e de como os tokens
+entram na conta.
+
+\section{O modelo por usuário}
+\label{sec:modelo-usuario}
+
+No modelo tradicional, paga-se uma licença por pessoa com acesso à ferramenta, muitas vezes
+em níveis diferentes: quem cria conteúdo paga mais, quem só visualiza paga menos. O custo é
+previsível, e é negociado de tempos em tempos, quase sempre por compras e TI.
+
+A alavanca de controle do gerente, nesse modelo, é o acesso: quem precisa de licença e de
+qual nível. O desperdício típico também é de acesso: licenças pagas para pessoas que saíram da
+área, que nunca usaram a ferramenta ou que precisariam só do nível mais barato. É um
+desperdício real, mas limitado e fácil de enxergar numa planilha de usuários.
+
+O que o modelo por usuário não faz é ligar o custo ao uso. Um painel que atualiza de hora em
+hora custa o mesmo que um que atualiza uma vez por dia; uma consulta que lê a base inteira custa
+o mesmo que uma bem escrita. Para o orçamento, a eficiência do trabalho técnico é invisível.
+
+\section{Créditos, consumo e tokens}
+\label{sec:modelo-consumo}
+
+No modelo por consumo, paga-se pelo que foi processado: horas de computação, volume de dados
+lido por consulta, atualizações executadas, tokens de entrada e de saída de um modelo de
+linguagem. A Tabela~\ref{tab:usuario-consumo} compara os dois modelos.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Cobrança por usuário e por consumo.}
+  \label{tab:usuario-consumo}
+  \small
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.2\textwidth}
+      >{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
+    \toprule
+    & Por usuário & Por consumo (créditos, tokens) \\
+    \midrule
+    O que se paga & Uma licença por pessoa com acesso & O que foi processado: consultas, atualizações, tokens \\
+    \addlinespace
+    Previsibilidade & Alta, custo fixo por período & Baixa, varia com o uso \\
+    \addlinespace
+    Alavanca de controle & Quem tem acesso e com qual nível & O que roda, com que frequência e com qual modelo \\
+    \addlinespace
+    Desperdício típico & Licença de quem não usa & Atualização ou consulta que ninguém aproveita \\
+    \addlinespace
+    Quem acompanha & Compras e TI, na renovação & O gerente do time, de forma contínua \\
+    \bottomrule
+  \end{tabularx}
+  \fonte{elaborado pelo autor.}
+\end{table}
+
+A mudança começou com os armazéns de dados na nuvem, que separaram armazenamento de
+processamento e passaram a cobrar o processamento pelo uso (\veja{sec:dw-nuvem}). A IA
+acelerou a tendência, porque cada pergunta feita a um modelo tem um custo em tokens, e cada
+agente que executa uma tarefa faz dezenas ou centenas de chamadas ao modelo. E ferramentas de
+BI e de dados que antes cobravam só por usuário passaram a oferecer, ou a impor, modelos por
+capacidade ou por crédito. \pendente{conferir e citar exemplos atuais de ferramentas de BI
+com cobrança por crédito ou capacidade}
+
+O modelo por consumo tem vantagens reais. Paga-se pelo uso efetivo, um time pequeno começa
+barato e cresce conforme precisa, e a eficiência técnica passa a aparecer na fatura, o que dá
+ao time um incentivo concreto para fazer bem feito. O risco é a imprevisibilidade: um processo
+mal configurado, um agente em laço ou uma consulta pesada agendada por engano podem consumir o
+orçamento do mês em poucos dias, e só aparecer na fatura depois.
+
+\antesdepois{O custo da ferramenta era uma linha fixa no orçamento. O gerente controlava
+  quem tinha licença, e o uso, alto ou baixo, não mudava a fatura.}
+{O custo acompanha o uso. O gerente controla o que roda, com que frequência e com qual
+  modelo, e acompanha o consumo como acompanha qualquer outro indicador do time.}
+
+\section{O gerente como gestor de consumo}
+\label{sec:gestao-consumo}
+
+No modelo por consumo, o gerente de dados passa a ser, também, gestor de um orçamento
+variável. Isso não é exclusivo de dados: a disciplina de gestão de custos de nuvem, conhecida
+como FinOps, propõe exatamente isso para qualquer área que consome recursos de nuvem, com três
+ideias centrais: dar visibilidade ao custo, tornar cada time responsável pelo próprio consumo
+e otimizar de forma contínua, e não em campanhas \parencite{storment2023,finops2026}.
+
+Para um time de dados, algumas práticas traduzem essas ideias para o dia a dia:
+
+\begin{itemize}
+  \item \textbf{Orçamento por time e por produto}, com alertas quando o consumo se aproxima do
+    limite, e não só depois que a fatura chega.
+  \item \textbf{Custo por produto de dados}, a partir das métricas de metadados do capítulo
+    anterior (\veja{sec:metricas-uso}): quanto custa manter cada painel, cada pipeline, cada
+    assistente.
+  \item \textbf{Regras técnicas que evitam desperdício}, verificadas automaticamente na
+    integração contínua: não ler todas as colunas de uma tabela em modelos de consumo, não
+    fazer junções sem condição, preferir cargas incrementais (\veja{sec:ci}).
+  \item \textbf{Ambientes dimensionados para cada uso}, com o processamento de
+    desenvolvimento separado e menor que o de produção, e desligado quando ninguém usa.
+  \item \textbf{Custo visível para quem pede.} Quando o stakeholder vê quanto custa atualizar
+    o painel de hora em hora, a conversa sobre frequência muda de natureza
+    (\veja{sec:papeis-frequencia}).
+\end{itemize}
+
+A última prática é a que mais muda a relação com o negócio. No modelo por usuário, pedir mais
+uma atualização ou mais um painel parecia gratuito. No modelo por consumo, cada pedido tem
+um custo que pode ser mostrado, e a decisão passa a ser de valor: vale pagar isso por esse
+benefício?
+
+\rascunho{
+  Relato: como eu acompanho o consumo hoje (que indicadores olho, com que frequência, que
+  alertas existem) e um caso de otimização que reduziu o custo de forma relevante. Sem nomes
+  e com valores só em ordem de grandeza.
+}
+
+\section{Tokens no trabalho com dados}
+\label{sec:tokens-dados}
+
+Os tokens aparecem em vários pontos do trabalho com dados: no assistente que ajuda a escrever
+consultas, na pergunta em linguagem natural feita sobre um painel, no agente que executa uma
+tarefa inteira, na documentação gerada automaticamente, no motor de conciliação que pede uma
+sugestão à IA (\veja{sec:motor-conciliacao}). Em cada caso, o custo depende do tamanho do que
+entra (o pedido e o contexto) e do que sai (a resposta), e do modelo usado.
+
+Três fatores costumam fazer o custo crescer mais do que o necessário. O primeiro é o contexto
+grande: mandar a tabela inteira, a documentação inteira ou o histórico inteiro a cada
+pergunta. Além de caro, nem sempre melhora a resposta (\veja{sec:modelo-so-sabe}). O segundo
+são as perguntas repetidas sem reaproveitamento: a mesma pergunta, feita por dez pessoas,
+processada dez vezes. O terceiro é usar o modelo mais caro para tudo, inclusive para tarefas
+simples que um modelo menor faria igualmente bem.
+
+As práticas que ajudam seguem a mesma lógica do resto do capítulo. Pré-calcular o que é
+perguntado sempre, em vez de responder do zero a cada vez. Escolher o modelo pelo tamanho da
+tarefa. Limitar o contexto ao necessário, com recuperação de trechos relevantes em vez de
+documentos inteiros. E medir tokens por resposta útil, do mesmo jeito que se mede créditos por
+acesso num painel.
+
+Vale, por fim, a mesma pergunta do capítulo anterior, agora aplicada à IA: não adianta
+responder em segundos, com um modelo caro, uma pergunta que poderia ser atendida por um
+relatório semanal. A frequência e a forma de entrega certas continuam sendo decisões de
+negócio, e são elas que separam o uso da IA que gera valor do que só gera fatura.
+
+\begin{leituras}
+  \leitura{storment2023}{A referência sobre FinOps: como dar visibilidade ao custo de
+    nuvem, distribuir a responsabilidade entre os times e otimizar sem travar o trabalho.}
+  \leitura{finops2026}{O modelo mantido pela comunidade de FinOps, atualizado com frequência
+    e com material específico sobre custos de IA.}
+  \leitura{dageville2016}{Para entender, na fonte, por que o custo dos armazéns de dados na
+    nuvem passou a acompanhar o processamento.}
+\end{leituras}

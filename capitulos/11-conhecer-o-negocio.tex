@@ -1,0 +1,144 @@
+% Capitulo: Conhecer o negócio
+\chapter{Conhecer o negócio}
+\label{cap:negocio}
+
+Durante muito tempo, o que separava um bom profissional de dados de um mediano era a
+técnica: quem escrevia SQL melhor, quem dominava a ferramenta, quem montava o pipeline mais
+robusto. Com a IA acelerando a parte técnica, essa diferença diminuiu. Quem sabe pouco
+consegue produzir algo razoável, e quem sabe muito produz mais rápido. O que passa a
+separar o bom do excelente é outra coisa: a capacidade de antecipar o que o negócio precisa
+e entregar o que ainda não foi pedido. Essa capacidade vem de conhecer a fundo um negócio
+específico, e é o assunto deste capítulo.
+
+\section{O gargalo mudou de lugar}
+\label{sec:gargalo}
+
+Todo processo tem um gargalo, a etapa que limita a velocidade do todo. No trabalho com
+dados, o gargalo costumava ser a construção: escrever a consulta, montar o modelo, desenhar
+o painel. Com a IA, construir ficou muito mais rápido, e o gargalo se deslocou para antes:
+saber o que construir.
+
+A IA responde muito bem ao que foi perguntado. Ela não sabe o que deixou de ser perguntado.
+Se o gestor pede a receita por região, ela entrega a receita por região. Não pergunta se a
+queda numa região é efeito de um cliente grande que mudou de prazo de pagamento, nem
+sugere olhar a margem junto com a receita porque o problema daquela empresa costuma ser
+desconto, e não volume. Essas perguntas exigem saber como aquele negócio funciona.
+
+Esse ponto não é novo na literatura de ciência de dados. O modelo de processo mais usado
+para projetos de mineração de dados, o CRISP-DM, começa por uma fase chamada entendimento
+do negócio, antes de qualquer contato com os dados \parencite{chapman2000}. E
+\textcite{provost2013} defendem que o mais importante para um projeto de dados dar certo é
+o pensamento analítico orientado ao problema de negócio, mais do que o domínio de qualquer
+algoritmo. O que muda com a IA é a proporção: quando a técnica fica barata, o entendimento
+do negócio passa a ser quase todo o diferencial.
+
+\section{Do bom ao excelente: entregar o que não foi pedido}
+\label{sec:bom-excelente}
+
+O bom profissional entrega o pedido com qualidade. O número está certo, o painel está
+claro, o prazo foi cumprido. O excelente faz isso e mais uma coisa: percebe a pergunta por
+trás do pedido e chega com a resposta para a próxima.
+
+Um pedido como \enquote{preciso do relatório de vendas por vendedor} raramente é sobre o
+relatório. Pode ser sobre a revisão das metas do semestre, sobre um vendedor que o gestor
+desconfia que está concedendo desconto demais, ou sobre a preparação de uma reunião com a
+diretoria. Cada uma dessas perguntas pede um recorte diferente. Quem conhece o negócio
+pergunta o que está por trás, ou já sabe, e entrega o que vai ser útil, não só o que foi
+pedido.
+
+Antecipar também significa perceber necessidades que ninguém verbalizou. Notar que o
+fechamento do mês sempre atrasa porque duas áreas conciliam números à mão, e propor uma
+base única antes que alguém peça. Perceber que a operação vai precisar acompanhar um
+indicador novo porque mudou a regra de um contrato. Esse tipo de entrega não aparece em
+nenhuma lista de requisitos e é, muitas vezes, a que mais gera valor.
+
+\begin{destaque}
+A IA entrega bem o que foi pedido. Quem conhece o negócio entrega o que era preciso.
+\end{destaque}
+
+Há um cuidado aqui. Antecipar não é decidir pelo negócio, nem encher o gestor de análises
+que ele não pediu. É fazer as perguntas certas cedo e propor o que tem chance real de ser
+útil, sabendo que a decisão continua sendo de quem é dono do problema.
+
+\section{Três domínios: agricultura, finanças e logística}
+\label{sec:tres-dominios}
+
+Cada setor tem os seus ciclos, o seu vocabulário e as suas armadilhas, e é isso que o
+profissional de dados precisa aprender para antecipar alguma coisa. Três setores ajudam a
+ilustrar o que muda de um para outro.
+
+Na \textbf{agricultura}, o tempo é o da safra. As decisões importantes acontecem em
+janelas curtas (plantio, aplicação de insumos, colheita) e dependem de clima, de solo e de
+preço, coisas que mudam de um ano para outro. A unidade de análise muitas vezes não é o
+cliente nem o produto, e sim a área: a fazenda, o talhão, o ponto de amostragem. Comparar
+um mês com o mesmo mês do ano anterior pode não fazer sentido se a safra atrasou. E a
+variabilidade espacial é parte do problema: a média de uma fazenda esconde as diferenças
+entre os talhões que justificam um manejo diferente em cada um.
+
+Nas \textbf{finanças}, o tempo é o do fechamento. Há a data em que a venda aconteceu, a data
+em que foi faturada e a data em que o dinheiro entrou, e confundir competência com caixa
+gera discussões intermináveis sobre qual é o número certo. A precisão importa ao centavo, a
+reconciliação entre sistemas é rotina, e um dado que muda depois do fechamento é um
+problema sério. Quem conhece esse mundo sabe que o painel financeiro precisa dizer em que
+critério cada número está e se o período já foi fechado.
+
+Na \textbf{logística}, o tempo é o da operação, muitas vezes medido em horas. Os
+indicadores giram em torno de prazo, ocupação e custo: entregas no prazo e completas, uso
+da capacidade dos veículos e dos armazéns, custo por entrega ou por quilômetro. A demanda
+tem sazonalidade forte, a operação depende de muitos parceiros, e um atraso de um dia pode
+custar um cliente. Aqui, mais do que nos outros dois, a frequência de atualização dos dados
+é decisiva (capítulo~\ref{cap:frequencia}).
+
+\rascunho{
+  Relatos: um caso de cada domínio em que eu antecipei uma necessidade, ou seja, entreguei
+  algo que ainda não tinha sido pedido e que se mostrou importante. Para cada caso: o
+  contexto (sem nome de empresa), o que eu percebi, o que entreguei e o que aconteceu
+  depois. Usar uma caixa \codigo{relato} por caso.
+}
+
+O ponto de mostrar os três lado a lado é que o conhecimento técnico é o mesmo nos três, e
+o que torna alguém excelente em cada um é completamente diferente. Quem muda de setor leva
+a técnica consigo e precisa reconstruir o resto.
+
+\section{Como estudar um domínio de negócio}
+\label{sec:estudar-dominio}
+
+Diferente da técnica, o conhecimento de negócio não vem em curso estruturado. Mas dá para
+estudá-lo de forma deliberada, e alguns hábitos aceleram muito o processo.
+
+\begin{itemize}
+  \item \textbf{Conversar com a operação.} Passar um tempo com quem gera os dados: o
+    vendedor, o operador do armazém, o agrônomo, o analista do contas a pagar. Entender
+    como o dado nasce explica a maior parte das inconsistências que aparecem depois.
+  \item \textbf{Ler o que a diretoria lê.} Os relatórios de resultado, as apresentações de
+    planejamento, as atas de reunião que estiverem acessíveis. Eles mostram o que de fato
+    importa para quem decide.
+  \item \textbf{Aprender o vocabulário.} Cada setor tem termos próprios, e muitos
+    significam coisas diferentes em áreas diferentes da mesma empresa. Um glossário pessoal,
+    mantido ao longo do tempo, vale muito.
+  \item \textbf{Acompanhar um ciclo completo.} Uma safra, um ano fiscal, um pico de
+    demanda. Muitas regras só fazem sentido quando se vê o ciclo inteiro.
+  \item \textbf{Estudar o setor fora da empresa.} Publicações setoriais, dados públicos,
+    associações, cursos técnicos de curta duração. Ajudam a entender o que é particular da
+    empresa e o que é do setor.
+  \item \textbf{Perguntar o porquê.} Diante de qualquer pedido, perguntar que decisão ele
+    vai apoiar. Com o tempo, as respostas formam um mapa de como o negócio funciona.
+\end{itemize}
+
+A IA pode ajudar nesse estudo, explicando conceitos de um setor, resumindo publicações e
+sugerindo perguntas para fazer à operação. O que ela não substitui é o contato com as
+pessoas e com o dia a dia da empresa, onde está o conhecimento que nenhum modelo tem.
+
+Esse conhecimento também se conecta com o resto do livro. É ele que permite escrever os
+testes certos antes do modelo, porque quem conhece o negócio sabe quais regras não podem
+quebrar (\veja{sec:tdd}). E é ele que permite levar ao quadro do time uma história já bem
+definida, em vez de um pedido vago (Parte~\ref{parte:agil}).
+
+\begin{leituras}
+  \leitura{provost2013}{Um livro sobre ciência de dados escrito para quem precisa pensar
+    em problemas de negócio, não só em algoritmos.}
+  \leitura{chapman2000}{O guia original do CRISP-DM. Vale ler ao menos a fase de
+    entendimento do negócio, que costuma ser a mais pulada.}
+  \leitura{davenport2007}{Uma visão gerencial de como empresas usam dados para competir, útil
+    para entender o que a diretoria espera do time de dados.}
+\end{leituras}

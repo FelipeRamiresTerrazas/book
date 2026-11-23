@@ -1,0 +1,133 @@
+% Capitulo: A trilha hoje
+\chapter{A trilha hoje}
+\label{cap:trilha-hoje}
+
+Quem começa hoje tem algo que nenhuma geração anterior teve: um tutor disponível a
+qualquer hora, que explica um erro com paciência infinita, gera exercícios sob medida e
+revisa uma consulta em segundos. É uma vantagem enorme, e também uma armadilha. O mesmo
+assistente que explica pode simplesmente fazer, e quem deixa a IA fazer durante o
+aprendizado termina o curso sem ter aprendido. Este capítulo trata das duas coisas: como
+usar a IA para aprender mais rápido, e como não usá-la para deixar de aprender. No fim,
+propõe uma ordem de estudo para quem está começando agora.
+
+\section{A IA como tutor}
+\label{sec:ia-tutor}
+
+Os usos da IA que mais ajudam no aprendizado têm algo em comum: neles, quem está
+aprendendo continua fazendo o trabalho de pensar. Alguns exemplos:
+
+\begin{itemize}
+  \item \textbf{Explicar um erro.} Em vez de pedir a consulta corrigida, colar a mensagem
+    de erro e pedir uma explicação do que ela significa e de onde costuma vir.
+  \item \textbf{Explicar código alheio.} Pedir que a IA explique, linha por linha, uma
+    consulta ou um script herdado, e depois tentar reescrevê-lo sem olhar.
+  \item \textbf{Gerar exercícios.} Pedir dez exercícios de junção, em dificuldade
+    crescente, sobre um conjunto de dados conhecido, com as respostas guardadas para
+    depois.
+  \item \textbf{Revisar uma solução.} Escrever a consulta primeiro e só então pedir uma
+    revisão: o que pode dar errado, que caso de borda ficou de fora, como ficaria mais
+    legível.
+  \item \textbf{Ser questionado.} Pedir que a IA faça perguntas sobre um assunto recém
+    estudado, sem dar as respostas, e corrija o que estiver errado.
+\end{itemize}
+
+A evidência mais clara de que a forma de usar faz diferença vem de um experimento com
+quase mil estudantes de ensino médio, em aulas de matemática. Um grupo usou um assistente
+parecido com os de uso geral; outro usou um assistente configurado como tutor, que conhecia
+a solução de cada exercício e os erros comuns, mas tinha instrução de dar dicas
+progressivas sem entregar a resposta. Os dois grupos foram muito melhor que o grupo de
+controle nos exercícios feitos com ajuda. Na prova, sem ajuda, o grupo do assistente comum
+foi pior do que quem nunca teve acesso, e o grupo do tutor ficou no mesmo nível do controle
+\parencite{bastani2025}. O assistente sem limites virou muleta; o tutor, não.
+
+\begin{dica}
+Ao estudar com IA, comece o pedido com algo como: \enquote{Estou aprendendo. Não me dê a
+resposta. Me ajude a chegar nela com perguntas e dicas, uma de cada vez.} A diferença no
+que fica aprendido é grande.
+\end{dica}
+
+\section{O risco do atalho}
+\label{sec:risco-atalho}
+
+O risco não é hipotético nem restrito a estudantes de ensino médio. Em 2026, um experimento
+com programadores, na maioria em início de carreira, pediu que aprendessem uma biblioteca de
+Python que não conheciam. Metade podia usar um assistente de IA; metade programou à mão. No
+teste de compreensão feito depois, o grupo com IA acertou, em média, metade das questões;
+o grupo sem IA, cerca de dois terços. A maior diferença apareceu justamente nas questões de
+depuração, a habilidade necessária para perceber quando o código gerado está errado
+\parencite{shen2026}. E o grupo com IA nem chegou a terminar a tarefa significativamente
+mais rápido.
+
+O mesmo estudo traz a parte animadora. Entre os que usaram IA, os que se saíram melhor
+foram os que a usaram para entender, fazendo perguntas sobre o código, e não só para gerar
+o código. A ferramenta era a mesma; o resultado dependeu de como foi usada.
+
+Uma pesquisa com profissionais do conhecimento aponta na mesma direção, por outro caminho:
+quanto mais as pessoas confiavam na IA para uma tarefa, menos esforço de pensamento crítico
+diziam aplicar a ela; quanto mais confiavam na própria capacidade, mais esforço aplicavam
+\parencite{lee2025}. O atalho é confortável, e o conforto é exatamente o problema.
+
+A explicação para tudo isso é antiga. A pesquisa sobre aprendizagem mostra há décadas que
+o esforço de recuperar uma informação, errar e corrigir é o que consolida o conhecimento
+\parencite{bjork1994}, e que a habilidade de especialista vem de prática deliberada: tarefas
+um pouco além da capacidade atual, com feedback, repetidas com atenção
+\parencite{ericsson1993}. Quando a IA faz a parte difícil, ela remove justamente o esforço
+que geraria o aprendizado. O resultado parece bom na hora e não fica.
+
+\begin{destaque}
+Usar IA para fazer é ótimo para quem já sabe. Para quem está aprendendo, é preciso usá-la
+para entender, ou ela ensina só a pedir.
+\end{destaque}
+
+Isso não significa estudar sem IA. Significa separar dois momentos. No momento de
+aprender uma coisa nova, a IA explica, pergunta e revisa, mas quem escreve é a pessoa. No
+momento de produzir algo que já se sabe fazer, a IA pode escrever, e a pessoa revisa. O
+erro é usar o segundo modo no primeiro momento.
+
+\section{Uma ordem de estudo para hoje}
+\label{sec:ordem-estudo}
+
+Com essas ideias em mente, esta é a ordem que eu recomendaria para quem começa agora em
+análise ou engenharia de dados. Ela não é muito diferente da trilha tradicional no
+conteúdo. Muda na ordem, na profundidade de cada etapa e na forma de usar a IA em cada uma.
+
+\begin{enumerate}
+  \item \textbf{Dados em tabela e SQL, à mão.} Seleção, filtro, agregação, junções, funções
+    de janela. É a base de tudo e a linguagem que mais tempo vai durar. A IA entra como
+    tutor e gerador de exercícios, nunca como quem escreve as consultas.
+  \item \textbf{Modelagem.} Grão, chaves, fatos e dimensões (capítulo~\ref{cap:dw}). Na
+    trilha tradicional isso vinha tarde, quando vinha. Hoje vem cedo, porque é o que
+    permite avaliar se o que a IA produziu faz sentido.
+  \item \textbf{Python para dados.} Ler, limpar, transformar e visualizar dados com
+    código. Aqui a IA já pode ajudar mais, desde que cada trecho gerado seja lido e
+    entendido antes de ser usado.
+  \item \textbf{Estatística aplicada e pensamento crítico.} Distribuições, comparação,
+    incerteza, correlação e causalidade (\veja{sec:fund-estatistica}). É o que impede
+    conclusões erradas tiradas de números certos.
+  \item \textbf{Visualização e comunicação.} Escolher o gráfico, escrever a conclusão
+    primeiro, apresentar para quem decide (\veja{sec:visualizacao}).
+  \item \textbf{Práticas de engenharia.} Versionamento, testes, automação
+    (Parte~\ref{parte:devops}). Antes eram território do engenheiro; hoje qualquer
+    analista que trabalha com IA precisa delas para revisar e manter o que produz.
+  \item \textbf{IA como ferramenta de produção.} Usar assistentes e agentes para
+    acelerar o que já se sabe fazer, com critério para revisar e saber de que lado da
+    fronteira está cada tarefa (\veja{sec:copiloto}).
+\end{enumerate}
+
+Em paralelo a tudo isso, desde o primeiro dia, aprender o negócio onde os dados nascem.
+O capítulo~\ref{cap:negocio} explica por que essa é a parte que mais diferencia um
+profissional, e o capítulo~\ref{cap:mapas} detalha a trilha para cada carreira.
+
+\rascunho{
+  Opcional: um parágrafo meu sobre como eu oriento hoje quem entra no time, ou o que
+  observo de diferente entre quem aprendeu antes e quem está aprendendo com IA.
+}
+
+\begin{leituras}
+  \leitura{bastani2025}{O experimento com estudantes que mostra a diferença entre usar a
+    IA como muleta e como tutor. Leitura rápida e muito clara.}
+  \leitura{shen2026}{Um experimento controlado sobre como a IA afeta a formação de
+    habilidades de programação, com atenção especial à depuração.}
+  \leitura{ericsson1993}{O artigo clássico sobre prática deliberada, a base de boa parte do
+    que se sabe sobre como alguém se torna especialista.}
+\end{leituras}

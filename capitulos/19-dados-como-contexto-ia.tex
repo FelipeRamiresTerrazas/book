@@ -1,0 +1,143 @@
+% Capitulo: Dados como contexto para IA
+\chapter{Dados como contexto para IA}
+\label{cap:contexto-ia}
+
+O uso mais comum de IA com dados nas empresas não é treinar modelos. É dar contexto: no
+momento da pergunta, o assistente recebe as definições, os documentos e os dados de que
+precisa para responder. A qualidade da resposta passa a depender de como esse contexto está
+organizado, e organizar contexto é, no fundo, modelar e documentar dados para um consumidor
+novo. Este capítulo fecha a Parte~\ref{parte:modelagem} tratando desse consumidor: o que ele
+precisa, onde ele erra e como preparar os dados para ele.
+
+\section{O modelo só sabe o que recebe}
+\label{sec:modelo-so-sabe}
+
+Um modelo de linguagem sabe muito sobre o mundo em geral e nada sobre a sua empresa. Ele não
+conhece as tabelas, as métricas, as siglas internas nem os documentos de procedimento. Quando
+recebe uma pergunta sobre esses assuntos, responde com o que está no contexto que recebeu
+junto com a pergunta. Quando o contexto não basta, ele não costuma dizer que não sabe: completa
+a lacuna com o que parece plausível, e responde com a mesma segurança de sempre.
+
+Há duas formas principais de dar contexto. A primeira é buscar, a cada pergunta, os trechos de
+documentos mais relevantes e entregá-los ao modelo junto com a pergunta. A técnica se chama
+geração aumentada por recuperação, ou RAG, e foi proposta em 2020 como forma de combinar o
+conhecimento geral do modelo com uma base de documentos consultada na hora
+\parencite{lewis2020}. A segunda é dar ao modelo acesso a dados estruturados (tabelas,
+métricas, consultas) junto com as definições de negócio de que ele precisa para usá-los
+corretamente. Padrões abertos para conectar assistentes a fontes de dados e ferramentas, como
+o Model Context Protocol \parencite{anthropic2024mcp}, tornaram essa segunda forma muito mais
+fácil de montar.
+
+Uma tentação comum é resolver tudo colocando mais contexto: a documentação inteira, todas as
+tabelas, todo o histórico. Não funciona tão bem quanto parece. Estudos mostraram que modelos de
+linguagem usam pior a informação que fica no meio de contextos muito longos do que a que fica
+no começo ou no fim \parencite{liu2024}. E contexto grande custa caro, porque cada token
+enviado é cobrado (capítulo~\ref{cap:custo-consumo}). O objetivo é dar o contexto certo, não o
+maior possível.
+
+\section{Metadados e camada semântica como contexto}
+\label{sec:metadados-contexto}
+
+Para responder perguntas sobre dados estruturados, o assistente precisa do que um analista
+novo precisaria: a descrição de cada tabela e coluna, a definição de cada métrica, como as
+tabelas se relacionam, quais filtros aplicar por padrão e alguns exemplos de perguntas com a
+consulta correta. Uma definição de métrica escrita pensando nesse leitor pode ser simples
+assim:
+
+\begin{terminal}
+metrica: receita_liquida
+descricao: Soma do valor dos itens faturados, menos devoluções e descontos.
+  Não inclui frete nem impostos. Usa a data de faturamento.
+tabela: fato_vendas
+grão: uma linha por item vendido
+filtro_padrao: status = 'faturado'
+dono: Controladoria
+perguntas_exemplo:
+  - Qual foi a receita líquida de março?
+  - Receita líquida por região no último trimestre
+\end{terminal}
+
+Nada nesse trecho é novo para quem trabalha com dados. É a documentação que sempre foi
+considerada boa prática e que sempre ficava para depois. A diferença é que agora ela tem um
+consumidor que a usa a cada pergunta, e a falta dela aparece imediatamente na forma de
+respostas erradas. É o mesmo movimento que transformou os testes em requisito
+(\veja{sec:tdd}) e o data steward em revisor (\veja{sec:steward-tutor}): a IA tornou barato,
+e necessário, o que antes não cabia no tempo de ninguém. E a própria IA pode ajudar a
+escrever a primeira versão dessas descrições, desde que alguém que conhece o negócio revise.
+
+Um modelo dimensional bem feito já é meio caminho andado. Grão explícito, nomes claros,
+métricas definidas uma vez numa camada semântica (\veja{sec:camada-semantica}): tudo isso
+reduz a chance de o assistente somar a coisa errada ou escolher a coluna de data errada. O
+exemplo da receita com frete multiplicado (\veja{sec:consulta-errada}) é exatamente o tipo
+de erro que um grão bem documentado ajuda a evitar.
+
+\section{Documentos e recuperação}
+\label{sec:documentos-recuperacao}
+
+Para responder com base em documentos (procedimentos, contratos, políticas, relatórios), os
+documentos precisam ser preparados. Eles são divididos em trechos de tamanho adequado, cada
+trecho recebe metadados (de que documento veio, de que data, quem é o dono, quem pode ler) e
+é indexado de forma que a busca encontre os trechos pelo significado, e não só pelas
+palavras exatas. Essa busca por significado usa representações numéricas dos textos
+(\emph{embeddings}), em que textos parecidos ficam próximos.
+
+O raciocínio da arquitetura medalhão serve aqui também (Figura~\ref{fig:medalhao}). O
+documento original fica guardado como chegou, como no bronze. A versão limpa e dividida em
+trechos, com os metadados, faz o papel da prata. O índice pronto para a consulta do
+assistente é o ouro. Separar as camadas permite refazer a divisão ou trocar a forma de
+indexar sem voltar a coletar os documentos.
+
+Dois cuidados são decisivos. O primeiro é a permissão: o assistente não pode responder a uma
+pessoa com base num documento que ela não poderia ler. As permissões precisam vir da fonte e
+ser respeitadas na busca, e não aplicadas depois, na resposta. O segundo é a atualização:
+contexto velho gera resposta velha com cara de nova. Se a política mudou e o índice não foi
+atualizado, o assistente vai responder com a regra antiga, com toda a segurança. Tudo o que o
+capítulo~\ref{cap:frequencia} discute sobre frequência de atualização vale para o contexto da
+IA.
+
+\section{Organizar para a IA}
+\label{sec:organizar-para-ia}
+
+Juntando o que foi dito, organizar os dados para servirem de contexto à IA se resume a uma
+lista curta, e quase toda ela já apareceu neste livro com outros nomes:
+
+\begin{itemize}
+  \item um catálogo em que cada fonte tem dono e descrição;
+  \item um glossário de negócio, com os termos e siglas internos;
+  \item métricas definidas uma vez, com grão, filtros e dono;
+  \item master data conciliado, para que \enquote{Agro Silva} e \enquote{AGRO SILVA LTDA}
+    sejam reconhecidos como o mesmo cliente (capítulo~\ref{cap:master-data});
+  \item exemplos de perguntas com a resposta ou a consulta correta;
+  \item permissões herdadas da fonte;
+  \item frequência de atualização definida para cada fonte de contexto.
+\end{itemize}
+
+E, para saber se tudo isso funciona, um conjunto de avaliação: perguntas com a resposta
+certa conhecida, rodadas a cada mudança de dado, de contexto ou de modelo
+(\veja{sec:consumidor-modelo}). Sem ele, cada ajuste é feito no escuro, e uma melhoria numa
+pergunta pode piorar outras dez sem que ninguém perceba.
+
+\begin{destaque}
+Um assistente que responde perguntas sobre os dados da empresa é tão bom quanto a
+documentação e a modelagem que estão por trás dele.
+\end{destaque}
+
+\rascunho{
+  Relato: o que eu precisei organizar para uma IA responder bem perguntas sobre os nossos
+  dados (descrições, métricas, exemplos), o que deu errado no começo e o que mais fez
+  diferença. Sem nomes.
+}
+
+Com isso, a Parte~\ref{parte:modelagem} se fecha. Ela mostrou que o mesmo dado precisa ser
+organizado de formas diferentes para usos diferentes, e que os cadastros, a governança e a
+documentação são a base comum de todos eles. A próxima parte trata de como construir e operar
+tudo isso com a disciplina da engenharia de software.
+
+\begin{leituras}
+  \leitura{lewis2020}{O artigo que propôs a geração aumentada por recuperação (RAG),
+    base da maior parte dos assistentes que respondem com documentos da empresa.}
+  \leitura{liu2024}{O estudo que mostra por que mais contexto nem sempre é melhor: modelos
+    usam pior a informação no meio de contextos longos.}
+  \leitura{huyen2022}{Para a visão de sistema: como dados, modelo e avaliação se
+    encaixam em produção.}
+\end{leituras}

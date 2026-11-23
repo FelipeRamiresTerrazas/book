@@ -1,0 +1,129 @@
+% Capitulo: Dados como código
+\chapter{Dados como código}
+\label{cap:dados-codigo}
+
+Durante muito tempo, o trabalho de dados viveu fora das práticas que a engenharia de
+software levou décadas para construir. Consultas ficavam salvas no computador de quem as
+escreveu, a lógica de transformação estava escondida dentro da ferramenta de BI, e a versão
+\enquote{oficial} de um painel era a que estava publicada, sem histórico de como chegou até
+ali. Quando algo dava errado, ninguém sabia o que tinha mudado. Esta parte do livro trata de
+trazer para os dados a disciplina da engenharia de software, e começa pela base: tratar
+transformações, testes e, sempre que possível, painéis como código.
+
+O movimento tem nome e uma literatura própria. A cultura DevOps nasceu para aproximar
+desenvolvimento e operação de software, e se apoia em três ideias: fazer o trabalho fluir
+em pequenos lotes do desenvolvimento à produção, ter retorno rápido sobre o que dá errado, e
+aprender continuamente com isso \parencite{kim2016}. As três se aplicam aos dados quase sem
+adaptação.
+
+\section{Por que versionar}
+\label{sec:versionar}
+
+Versionar é guardar cada mudança no código com a informação de quem mudou, quando e por
+quê, num sistema que permite ver o histórico, comparar versões e voltar atrás. A ferramenta
+padrão para isso é o Git, e há um livro completo e gratuito sobre ela \parencite{chacon2014}.
+Para quem vem da análise, o mínimo necessário cabe em poucos comandos:
+
+\begin{terminal}
+git switch -c receita-por-cliente         # cria um ramo para a mudança
+# edita o modelo e o teste correspondente
+git add modelos/ testes/
+git commit -m "Receita por cliente com frete no grão do pedido"
+git push -u origin receita-por-cliente    # envia e abre o pedido de revisão
+\end{terminal}
+
+Esse pequeno ritual muda muita coisa. Quando um número muda de um dia para o outro, o
+histórico mostra qual alteração causou a mudança. Quando uma alteração quebra algo, voltar à
+versão anterior leva minutos. Quando duas pessoas mexem no mesmo modelo, o sistema mostra o
+conflito em vez de uma sobrescrever o trabalho da outra. E quando alguém novo chega ao time,
+o histórico conta como cada regra de negócio chegou ao formato atual.
+
+O que deve ser versionado vai além das consultas: os modelos de transformação, os testes, as
+definições de métricas, a configuração dos pipelines, a documentação e, quando a ferramenta
+permite, os próprios painéis. Muitas ferramentas de BI já conseguem exportar a definição dos
+painéis como arquivos de texto, o que permite tratá-los com as mesmas práticas. Onde isso
+não é possível, vale ao menos manter a lógica fora do painel, na camada de transformação,
+onde ela pode ser versionada e testada.
+
+Com a IA, o versionamento ganha uma importância nova. Quando parte do código é escrita por
+um assistente ou por um agente, o histórico é o registro de cada alteração e de quem a
+aprovou. É ele que permite responder, semanas depois, por que aquele filtro está ali.
+
+\section{Revisão de código}
+\label{sec:revisao-codigo}
+
+Revisão de código é a prática de uma segunda pessoa ler cada alteração antes que ela chegue à
+produção. Na forma moderna, acontece pelo pedido de revisão (\emph{pull request}): a mudança
+fica num ramo separado, o revisor lê as diferenças, comenta, pede ajustes e só então aprova a
+integração ao código principal.
+
+O motivo mais citado para revisar código é encontrar defeitos. Um estudo com desenvolvedores
+de uma grande empresa de software mostrou que, embora encontrar defeitos fosse a principal
+expectativa, boa parte do valor real da revisão estava em outras coisas: transferência de
+conhecimento, consciência do time sobre o que está mudando, e soluções alternativas que o
+autor não tinha considerado \parencite{bacchelli2013}. Em times de dados, isso é especialmente
+verdadeiro. A revisão é muitas vezes o momento em que alguém que conhece o negócio percebe que
+a regra implementada não é a regra que a área usa.
+
+Revisar SQL tem algumas perguntas próprias, que valem mais do que qualquer guia de estilo:
+
+\begin{itemize}
+  \item Qual é o grão de cada tabela que entra nesta consulta, e qual é o grão do resultado?
+  \item Alguma junção pode multiplicar linhas (\veja{sec:consulta-errada})?
+  \item Os filtros fazem sentido para o negócio? Algum registro legítimo está ficando de fora?
+  \item Os nomes de tabelas e colunas são claros para quem não escreveu o código?
+  \item Há testes que garantem as regras importantes, e eles passam?
+\end{itemize}
+
+Com a IA, a revisão vira o principal ponto de controle do processo. Quando o código é gerado
+em segundos, a etapa que limita a qualidade deixa de ser a escrita e passa a ser a leitura.
+Isso tem duas consequências práticas. A primeira é que o autor de uma alteração gerada por IA
+continua sendo o responsável por ela, e deve revisá-la antes de pedir a revisão de outra
+pessoa. A segunda é que alterações grandes, geradas de uma vez, são difíceis de revisar bem.
+Vale pedir à IA alterações pequenas e focadas, do mesmo jeito que se pediria a um colega.
+
+\antesdepois{A revisão era uma etapa entre muitas. O autor escrevia o código devagar,
+entendia cada linha, e o revisor conferia principalmente estilo e regras de negócio.}
+{A revisão é o principal controle de qualidade. O código chega rápido e em volume, e o revisor
+precisa conferir também se o autor entendeu o que a IA escreveu.}
+
+\section{Desenvolvimento e produção}
+\label{sec:ambientes}
+
+Testar em produção é a forma mais rápida de descobrir que algo estava errado, e a mais cara.
+Um modelo alterado direto no ambiente que alimenta os painéis da diretoria pode publicar
+números errados por horas antes de alguém perceber. A solução, conhecida há décadas na
+engenharia de software, é separar ambientes.
+
+O mínimo é ter dois: desenvolvimento, onde cada pessoa trabalha e testa as próprias
+alterações, e produção, onde ficam os dados que as pessoas usam para decidir. Em armazéns de
+dados na nuvem, isso costuma se traduzir em esquemas ou bancos separados, com a mesma
+estrutura e permissões diferentes. Cada desenvolvedor pode ter o seu espaço de trabalho, com
+uma cópia ou uma amostra dos dados de produção.
+
+Um terceiro ambiente, de integração, completa o desenho. Nele, cada pedido de revisão é
+construído e testado de forma isolada, antes de qualquer integração ao código principal. É o
+que permite que o revisor veja não só o código, mas também o resultado: as tabelas geradas,
+os testes que passaram e os que falharam. O capítulo~\ref{cap:ci-cd} trata de como
+automatizar esse caminho.
+
+Dois cuidados acompanham a separação de ambientes. O primeiro são as credenciais: senhas e
+chaves de acesso nunca entram no código versionado, e cada ambiente usa as suas, com o
+mínimo de permissão necessário. O segundo são os dados sensíveis: ambientes de
+desenvolvimento costumam ter controles mais frouxos, e dados pessoais copiados de produção
+para lá precisam ser mascarados (\veja{sec:seguranca}).
+
+\rascunho{
+  Relato: como foi introduzir versionamento, revisão e ambientes separados num time que
+  não tinha essas práticas (resistências, o que convenceu as pessoas, o que mudou nos
+  resultados).
+}
+
+\begin{leituras}
+  \leitura{kim2016}{O manual da cultura DevOps. Os princípios de fluxo, retorno rápido e
+    aprendizado contínuo se aplicam diretamente a times de dados.}
+  \leitura{chacon2014}{O livro de referência sobre Git, completo e disponível gratuitamente
+    na internet.}
+  \leitura{bacchelli2013}{O estudo que mostra que o valor da revisão de código vai muito além
+    de encontrar defeitos.}
+\end{leituras}

@@ -1,0 +1,167 @@
+% Capitulo: Modelagem para ciência de dados
+\chapter{Modelagem para ciência de dados}
+\label{cap:modelagem-cd}
+
+O esquema estrela é ótimo para somar, filtrar e comparar. Para treinar um modelo que prevê o
+futuro, ele quase nunca serve do jeito que está. Modelos preditivos precisam de outra forma
+de dado, com outro grão e outros cuidados, e modelos prescritivos precisam ainda de um tipo
+de dado que a análise descritiva nunca guardou: o registro das decisões tomadas. Este
+capítulo trata dessas diferenças e do erro mais caro da modelagem para ciência de dados, o
+vazamento de informação do futuro para o passado.
+
+\section{Descritiva, preditiva e prescritiva}
+\label{sec:tres-niveis}
+
+É comum separar a análise de dados em três níveis de ambição. A descritiva responde ao que
+aconteceu. A preditiva responde ao que vai acontecer. A prescritiva responde ao que fazer a
+respeito. Uma das formulações mais conhecidas dessa escada, do relatório padrão à
+otimização, vem de \textcite{davenport2007}, que associam cada degrau a uma vantagem
+competitiva maior para quem chega lá.
+
+Um exemplo de logística ajuda a ver a diferença. A análise descritiva mostra que, no último
+trimestre, as entregas de uma certa região atrasaram mais do que as das outras, e
+principalmente às segundas-feiras. A preditiva estima, para cada entrega programada para
+amanhã, a probabilidade de ela atrasar. A prescritiva usa essas probabilidades, junto com o
+custo de cada veículo, a capacidade disponível e as janelas de cada cliente, para recomendar
+como montar as rotas de forma a minimizar atrasos e custo ao mesmo tempo.
+
+Cada nível depende do anterior. Não se prevê bem o que não se descreve bem: se o atraso é
+registrado de formas diferentes em cada filial, o modelo aprende a diferença entre as
+filiais, e não o atraso. E não se prescreve bem sem uma previsão confiável. Por isso a
+qualidade da camada descritiva, com tudo o que os capítulos anteriores discutiram, é
+pré-requisito para os outros dois.
+
+\rascunho{
+  Opcional: ligar com a minha experiência de pesquisa, que segue os três níveis
+  (descritivo, preditivo, prescritivo), sem detalhar dados ou empresa.
+}
+
+\section{A tabela de variáveis}
+\label{sec:tabela-features}
+
+Um modelo preditivo aprende a partir de exemplos. Cada exemplo é uma linha com as
+informações disponíveis num certo momento, as variáveis (\emph{features}), e o que aconteceu
+depois, o alvo. Para prever se uma entrega vai atrasar, cada linha seria uma entrega, com
+variáveis como a região, o dia da semana, a distância, o histórico recente de atrasos do
+motorista e da rota, e o alvo: atrasou ou não.
+
+Isso muda o grão. No modelo dimensional, a tabela de fatos tem uma linha por evento (cada
+entrega realizada), e as perguntas são respondidas agregando. Na tabela de variáveis, o grão
+é \enquote{uma linha por entidade e por momento de previsão}: um cliente por mês, um veículo
+por dia, uma entrega no momento em que foi programada. E as variáveis muitas vezes já são
+agregações calculadas para aquele momento, como o número de atrasos da rota nos trinta dias
+anteriores.
+
+O resultado são tabelas largas, com dezenas ou centenas de colunas, que um modelador
+dimensional evitaria. Não há problema nisso: a tabela de variáveis é um produto da camada
+ouro feito para um consumidor específico, o modelo, e deve ser desenhada para ele. Na
+arquitetura medalhão, ela costuma ser construída a partir da prata, e não do ouro do BI,
+porque o ouro já vem agregado e perdeu o detalhe de que o modelo precisa
+(\veja{sec:bronze-prata-ouro}).
+
+\section{O futuro não pode vazar para o passado}
+\label{sec:vazamento}
+
+O erro mais comum, e mais caro, na construção de tabelas de variáveis é o vazamento
+(\emph{data leakage}): usar, para treinar o modelo, uma informação que não estaria disponível
+no momento em que a previsão precisa ser feita \parencite{kaufman2012}. O modelo fica
+excelente nos testes, porque está, na prática, olhando a resposta. Em produção, onde essa
+informação não existe ainda, ele erra.
+
+O vazamento raramente é óbvio. Uma variável como \enquote{número de reclamações do cliente}
+parece inocente, mas, se calculada com todos os dados disponíveis hoje, inclui as
+reclamações feitas depois da data que se quer prever, inclusive aquelas causadas justamente
+pelo atraso que o modelo deveria antecipar. Um campo de status que é atualizado quando a
+entrega termina vaza o alvo diretamente. E até a forma de separar treino e teste pode vazar,
+se dados do futuro entram no treino e dados do passado no teste \parencite{huyen2022}.
+
+A defesa é a correção no tempo (\emph{point-in-time}): cada variável é calculada só com o
+que se sabia na data de referência do exemplo. A consulta abaixo mostra a ideia, calculando
+para cada cliente e cada data de referência as compras dos noventa dias anteriores, e nada
+depois.
+
+\begin{sql}
+-- Variáveis de cada cliente calculadas só com o passado de cada data de referência
+SELECT
+    r.id_cliente,
+    r.data_referencia,
+    COUNT(v.id_venda)                AS compras_90d,
+    COALESCE(SUM(v.valor_total), 0)  AS valor_90d,
+    r.cancelou_no_mes_seguinte       AS alvo
+FROM referencias_clientes AS r
+LEFT JOIN vendas AS v
+       ON v.id_cliente = r.id_cliente
+      AND v.data_venda <  r.data_referencia                       -- nada do futuro
+      AND v.data_venda >= r.data_referencia - INTERVAL '90' DAY
+GROUP BY r.id_cliente, r.data_referencia, r.cancelou_no_mes_seguinte;
+\end{sql}
+
+A correção no tempo também vale para os atributos. Se o cliente mudou de segmento no meio do
+ano, o modelo precisa saber o segmento que ele tinha na data de referência, e não o atual.
+Aqui reaparece uma técnica do capítulo~\ref{cap:dw}: as dimensões que mudam devagar, com
+uma linha por versão e datas de validade (\veja{sec:kimball}). O que no BI é um recurso para
+análise histórica, na ciência de dados vira requisito.
+
+\begin{destaque}
+Se o modelo parece bom demais nos testes, a primeira hipótese não é que ele é ótimo. É que
+algum dado do futuro vazou para o treino.
+\end{destaque}
+
+\section{Reuso de variáveis e dívida técnica}
+\label{sec:feature-store}
+
+Quando cada cientista de dados calcula as próprias variáveis, o mesmo conceito ganha várias
+definições. \enquote{Cliente ativo} é calculado de um jeito no modelo de cancelamento e de
+outro no de recomendação, e ninguém sabe qual está certo. É o mesmo problema das métricas
+divergentes que o data warehouse tentou resolver nos anos 1990, agora do lado da ciência
+de dados.
+
+A resposta também é parecida: definir uma vez e reaproveitar. Os repositórios de variáveis
+(\emph{feature stores}) guardam as definições, calculam as variáveis com correção no tempo
+para o treino e servem os mesmos valores para o modelo em produção, garantindo que ele veja
+na operação exatamente o que viu no treino \parencite{huyen2022}. Nem todo time precisa de
+uma ferramenta dedicada para isso; uma camada bem organizada de tabelas de variáveis, com
+testes e documentação, resolve muitos casos.
+
+Vale lembrar uma observação que ficou famosa entre quem constrói sistemas de aprendizado de
+máquina: o código do modelo propriamente dito é uma parte pequena do sistema. Em volta dele
+há coleta, preparação, validação e monitoramento de dados, e é nessa parte maior que a dívida
+técnica se acumula \parencite{sculley2015}. Para quem vem da engenharia e da análise de
+dados, é uma boa notícia. A maior parte do trabalho de colocar um modelo em produção é
+trabalho de dados, e as práticas da Parte~\ref{parte:devops} valem integralmente.
+
+\section{Da previsão à decisão}
+\label{sec:prescritiva}
+
+A análise prescritiva junta a previsão com o que o negócio pode fazer. Isso exige dados que
+as camadas anteriores raramente têm: os custos de cada alternativa, as capacidades (quantos
+veículos, quantas pessoas, quanto estoque), as restrições (janelas de entrega, contratos,
+regras trabalhistas) e os objetivos, muitas vezes em conflito, como custo e nível de
+serviço. Com isso, a recomendação costuma sair de um problema de otimização, e não só de um
+modelo estatístico.
+
+Há um dado novo que a prescritiva exige e que quase nenhuma empresa guarda: o registro das
+decisões. Para saber se a recomendação funciona, é preciso registrar o que foi recomendado,
+o que de fato foi decidido (as pessoas nem sempre seguem a recomendação, e muitas vezes têm
+bons motivos) e o que aconteceu depois. Sem esse registro, não há como avaliar o sistema nem
+melhorá-lo. Com ele, cada decisão vira um exemplo para a próxima.
+
+Vale também modelar cenários como dados, e não como planilhas soltas. Quando o gestor
+pergunta \enquote{e se a demanda crescer 20\%?}, a resposta deveria vir de um conjunto de
+premissas versionado, comparável com outros cenários, e não de uma cópia da planilha com um
+número alterado.
+
+Por fim, as restrições certas vêm de quem conhece a operação. Um modelo prescritivo que
+ignora que um cliente não recebe entregas depois das 16 horas, ou que um motorista não pode
+dirigir mais de um certo número de horas seguidas, recomenda o impossível. É mais um lugar
+em que o conhecimento de negócio (capítulo~\ref{cap:negocio}) é o que separa o modelo
+elegante do modelo útil.
+
+\begin{leituras}
+  \leitura{huyen2022}{A visão mais completa e prática de como dados, variáveis e
+    modelos se organizam num sistema de aprendizado de máquina em produção.}
+  \leitura{kaufman2012}{O artigo de referência sobre vazamento de dados: como ele acontece,
+    como detectar e como evitar.}
+  \leitura{sculley2015}{Artigo curto que mostra por que o modelo é a menor parte do
+    problema e onde a dívida técnica se esconde.}
+\end{leituras}

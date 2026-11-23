@@ -312,6 +312,10 @@
 \RequirePackage[style=authoryear,backend=biber,maxcitenames=2,uniquelist=false,
   uniquename=false,dashed=false,backref=true]{biblatex}
 \renewcommand*{\bibfont}{\small}
+\appto{\bibsetup}{\sloppy}% evita linhas estouradas com URLs e titulos longos
+\setcounter{biburlnumpenalty}{100}
+\setcounter{biburllcpenalty}{100}
+\setcounter{biburlucpenalty}{100}
 % Entradas com note = {CONFERIR}: o aviso aparece na bibliografia so no rascunho.
 \ifrascunho\else
   \DeclareSourcemap{\maps[datatype=bibtex]{\map{

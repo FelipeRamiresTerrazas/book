@@ -1,0 +1,154 @@
+% Capitulo: A estrutura dos times de dados
+\chapter{A estrutura dos times de dados}
+\label{cap:estrutura-times}
+
+Antes de falar de como um time de dados trabalha, vale olhar para quem compõe esse time. A
+estrutura mais comum nas empresas médias e grandes se formou ao longo das ondas descritas na
+Parte~\ref{parte:origens}, e cada onda acrescentou um papel. O resultado é um time grande,
+especializado e com muitas passagens de bastão. Este capítulo descreve essa estrutura, mostra
+o que a IA comprime nela e o que não comprime, propõe uma versão enxuta possível e termina
+com algumas apostas sobre o futuro.
+
+\section{A estrutura tradicional}
+\label{sec:estrutura-tradicional}
+
+Numa estrutura típica, há um responsável pela área de dados, abaixo dele um gerente de
+engenharia, com um time de engenheiros de dados, e um gerente de analytics, com um time de
+analistas de dados e de BI. Muitas vezes há também um product manager, que traduz as
+demandas do negócio em prioridades, e alguém dedicado a práticas ágeis, como um scrum master
+ou um agile coach. E isso sem contar os times de negócio, que têm os seus próprios analistas e
+gestores e são, ao mesmo tempo, clientes e fontes de conhecimento para o time de dados
+(parte de cima da Figura~\ref{fig:estrutura-times}).
+
+Essa estrutura surgiu por bons motivos. As ferramentas de cada etapa eram especializadas e
+difíceis: extrair e carregar dados exigia uma formação, modelar exigia outra, montar painéis
+exigia outra. Ter gente dedicada a cada etapa era a forma de ter qualidade em cada uma.
+
+O custo aparece no caminho de um pedido. Uma pergunta de negócio chega ao product manager,
+vira uma história no quadro, vai para a engenharia, que prepara os dados, volta para os
+analistas, que montam o painel, e só então chega a quem perguntou. Cada passagem perde um
+pouco de contexto e acrescenta um pouco de espera. E, quando o número sai errado, cada etapa
+tende a achar que o problema está na outra.
+
+Há também um custo menos visível, conhecido há meio século. Frederick Brooks observou que o
+número de canais de comunicação num time cresce muito mais rápido do que o número de pessoas:
+com $n$ pessoas, há $n(n-1)/2$ pares que podem precisar conversar \parencite{brooks1975}. Um
+time de quatro pessoas tem seis canais; um de doze tem sessenta e seis. Parte do trabalho de
+um time grande é coordenar a si mesmo.
+
+E há a observação de Melvin Conway, de 1968: a estrutura dos sistemas que uma organização
+constrói tende a copiar a estrutura de comunicação dessa organização \parencite{conway1968}.
+Em dados, dois times separados, um de engenharia e um de visualização, costumam produzir duas
+camadas que não conversam bem, exatamente como o capítulo~\ref{cap:pipeline-dashboard}
+descreveu.
+
+\begin{figure}[htbp]
+  \centering
+  \input{figuras/estrutura-times}
+  \caption{A estrutura tradicional de um time de dados e uma versão enxuta possível com
+    a IA. Em linha tracejada, a relação com o negócio.}
+  \label{fig:estrutura-times}
+  \fonte{elaborado pelo autor.}
+\end{figure}
+
+\rascunho{
+  Relato: as estruturas de time que eu vi ou montei, quantas passagens de bastão havia entre
+  o pedido e a entrega, e o que isso custava. Sem nomes.
+}
+
+\section{O que a IA comprime}
+\label{sec:ia-comprime}
+
+A IA não elimina etapas do trabalho com dados, mas encurta muitas delas e, principalmente,
+diminui a distância entre elas. Com um assistente ajudando nas partes que não domina, a mesma
+pessoa consegue ir da ingestão ao painel: um analista que sabe SQL e negócio escreve o modelo
+com testes, um engenheiro monta um painel razoável, um analytics engineer cuida do caminho
+inteiro (\veja{sec:elt}). A fronteira entre engenharia e análise, que justificava dois times,
+fica mais fina.
+
+Alguns papéis também tendem a se juntar. Em times menores, o líder de dados acumula a gestão
+de produto e a gestão do fluxo, e as práticas ágeis passam a ser responsabilidade do time,
+não de um cargo dedicado. Não porque esses papéis tenham perdido importância, mas porque um
+time de quatro pessoas raramente justifica uma pessoa só para cada um deles.
+
+O que a IA não comprime é igualmente importante. Conhecer o negócio continua exigindo tempo e
+contato com as pessoas (capítulo~\ref{cap:negocio}). Revisar o que a IA produz continua
+exigindo quem saiba ler código e conferir números (capítulo~\ref{cap:programar}). E decidir o
+que construir, com que frequência e a que custo continua sendo trabalho de gente
+(capítulos~\ref{cap:frequencia} e~\ref{cap:custo-consumo}). Um time enxuto que perde essas
+capacidades não ficou eficiente; ficou frágil.
+
+Há dois riscos a evitar. O primeiro é reduzir a estrutura sem reduzir a demanda: um time menor
+com o mesmo volume de pedidos e a mesma forma de trabalhar vira um time sobrecarregado, e a
+qualidade cai justamente na revisão, que é o que a IA mais exige. O segundo é cortar as
+posições de entrada. Se o trabalho de júnior encolher e ninguém mais for contratado para
+aprender, daqui a alguns anos faltarão os seniores que hoje revisam o que a IA faz.
+
+\section{Uma estrutura enxuta}
+\label{sec:estrutura-enxuta}
+
+A parte de baixo da Figura~\ref{fig:estrutura-times} mostra uma possibilidade. Um líder de
+dados, que cuida do produto e do fluxo de trabalho. Alguns profissionais de dados que
+trabalham de ponta a ponta, da fonte ao painel, cada um com uma especialidade mais funda, mas
+todos capazes de atravessar as camadas. Agentes de IA executando parte das tarefas, sempre
+revisados pelo time. E o negócio mais perto dos dados, com analistas próprios que consomem as
+bases certificadas e fazem as suas análises (\veja{sec:governanca}).
+
+Duas referências ajudam a pensar essa organização com mais cuidado. \textcite{skelton2019}
+propõem um vocabulário para tipos de time: times alinhados a um fluxo de valor, que entregam
+ao negócio; times de plataforma, que oferecem serviços internos para os outros; e times de
+apoio, que ajudam os demais a adquirir uma capacidade. E propõem formas de interação entre
+eles, da colaboração próxima ao consumo de um serviço. \textcite{dehghani2022} vai além e
+propõe que os próprios domínios de negócio sejam donos dos seus produtos de dados, com uma
+plataforma comum de autoatendimento e uma governança federada.
+
+Nenhuma das duas propostas precisa ser adotada por inteiro. O que vale extrair delas é a
+pergunta: o que fica centralizado numa plataforma, com poucas pessoas e muita automação, e o
+que vai para perto do negócio? A IA torna viável centralizar menos, porque cada pessoa
+consegue fazer mais sozinha, mas não dispensa a plataforma, a governança e as definições
+comuns que impedem cada área de criar a sua própria verdade.
+
+O Scrum com Kanban descrito nos próximos capítulos foi pensado para funcionar também num time
+assim, de três ou quatro pessoas, sem cargos dedicados a cada prática.
+
+\section{Uma previsão para o futuro}
+\label{sec:previsao-times}
+
+Previsões sobre tecnologia envelhecem mal, e esta deve ser lida como aposta. Algumas
+tendências, porém, já são visíveis o bastante para arriscar uma direção.
+
+Os times de dados tendem a ficar menores e mais seniores, com a IA fazendo parte do trabalho
+que antes era de pessoas em início de carreira: escrever a primeira versão de uma consulta,
+documentar tabelas, montar painéis padronizados. O valor de cada profissional passa a estar
+mais no julgamento do que no volume do que produz.
+
+O analista de dados e o analista de negócio tendem a convergir. Se a técnica fica mais
+acessível, a pessoa que conhece o negócio consegue fazer mais análise sozinha, e a que sabe
+análise precisa conhecer mais o negócio para se diferenciar. O ponto de encontro é um
+profissional que vive perto da área de negócio e domina o suficiente da técnica para
+trabalhar com a IA com critério.
+
+O gerente de dados tende a acumular três gestões: a do produto (o que construir), a do fluxo
+(como o trabalho anda) e a do consumo (quanto custa, em créditos e tokens). E, com a IA
+proativa do capítulo~\ref{cap:estagios-ia}, uma quarta: a das regras e alçadas que dizem o
+que a IA pode decidir sozinha.
+
+E há uma pergunta em aberto, que nenhuma empresa respondeu bem ainda: como se forma um sênior
+se o trabalho de júnior encolher? A resposta provavelmente passa por usar a IA como tutor, e
+não como substituto, na formação de quem entra (\veja{sec:ia-tutor}), mas ainda está para ser
+construída.
+
+\rascunho{
+  A minha aposta pessoal, em primeira pessoa: qual destas tendências eu acho mais provável,
+  qual eu acho exagerada, e o que eu estou fazendo no meu próprio time por causa disso.
+  Alinhar com o epílogo para não repetir.
+}
+
+\begin{leituras}
+  \leitura{skelton2019}{Um vocabulário claro para tipos de time (de fluxo, de plataforma,
+    de apoio) e para as formas de interação entre eles.}
+  \leitura{dehghani2022}{A proposta de organizar dados por domínio de negócio, com times
+    responsáveis pelos próprios produtos de dados.}
+  \leitura{brooks1975}{Um clássico sobre por que times maiores nem sempre entregam mais. A
+    observação sobre os canais de comunicação continua atual.}
+\end{leituras}

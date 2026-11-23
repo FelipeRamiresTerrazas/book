@@ -1,0 +1,104 @@
+% Capitulo: Do pipeline ao dashboard
+\chapter{Do pipeline ao dashboard}
+\label{cap:pipeline-dashboard}
+
+Em muitas empresas, há uma parede entre quem constrói os dados e quem constrói os painéis. O
+time de engenharia entrega tabelas e considera o trabalho terminado; o time de visualização
+recebe as tabelas, aplica as próprias regras dentro da ferramenta de BI e publica. Quando um
+número sai errado, cada lado aponta para o outro. Este capítulo trata de como derrubar essa
+parede: definir as métricas uma vez, deixar claro quem é dono de quê e tratar o caminho do
+dado bruto até o painel como um fluxo só.
+
+\section{Métricas definidas uma vez}
+\label{sec:camada-semantica}
+
+O problema dos \enquote{mil dashboards e nenhuma verdade} (\veja{sec:mil-dashboards}) quase
+sempre tem a mesma origem: a mesma métrica definida em vários lugares. O faturamento é
+calculado num painel com um filtro, em outro com outro, e numa planilha com um terceiro
+critério. Cada definição faz sentido para quem a escreveu, e juntas elas destroem a confiança
+nos números.
+
+A solução é uma camada semântica: um lugar único onde cada métrica é definida, com a fórmula,
+os filtros padrão, o grão em que faz sentido e o dono, e de onde todos os painéis e
+ferramentas leem. Quando a definição muda, muda num lugar só, e todos os consumidores passam a
+usar a definição nova ao mesmo tempo. Como o capítulo~\ref{cap:nuvem} observou, a ideia não é
+nova (\veja{sec:nomes-novos}); o que mudou foi que hoje ela pode viver junto com o código de
+transformação, versionada e testada como ele.
+
+A camada semântica ganhou um consumidor que torna a sua existência ainda mais importante: a
+IA. Um assistente que responde perguntas sobre os dados precisa de definições claras para não
+inventar a própria fórmula de faturamento (\veja{sec:metadados-contexto}). A mesma definição
+que garante que dois painéis mostrem o mesmo número garante que o assistente responda com
+ele.
+
+\section{Quem é dono de quê}
+\label{sec:donos}
+
+A parede entre engenharia e visualização é, em boa parte, um problema de responsabilidade mal
+definida. Quando ninguém sabe quem é dono da métrica, todos acham que é o outro. A
+Tabela~\ref{tab:donos} propõe uma divisão que costuma funcionar.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Uma divisão de responsabilidades do dado de origem ao painel.}
+  \label{tab:donos}
+  \small
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.2\textwidth}
+      >{\raggedright\arraybackslash}p{0.28\textwidth}>{\raggedright\arraybackslash}X@{}}
+    \toprule
+    O quê & Dono & Responde por \\
+    \midrule
+    Dado na origem & Área dona do sistema de origem & Registrar corretamente, avisar mudanças no sistema \\
+    \addlinespace
+    Plataforma & Engenharia de dados & Ingestão, disponibilidade, desempenho, custo \\
+    \addlinespace
+    Modelos de dados & Analytics engineering & Transformação correta, testes, atualização no prazo \\
+    \addlinespace
+    Métrica & Dono de negócio da métrica & A definição: o que entra, o que sai, em que critério \\
+    \addlinespace
+    Painel & Quem o construiu, com a área usuária & Desenho, uso, manutenção e desligamento \\
+    \bottomrule
+  \end{tabularx}
+  \fonte{elaborado pelo autor.}
+\end{table}
+
+Duas linhas da tabela costumam surpreender. A primeira é que o dono da métrica é alguém do
+negócio, e não do time de dados. O time de dados implementa a definição e garante que ela seja
+calculada corretamente, mas quem decide se a devolução desconta do faturamento é a área que
+usa o número para decidir. A segunda é que todo painel tem um dono, inclusive para decidir
+quando ele deixa de existir. Painéis sem dono são os que se acumulam, consomem atualização e
+ninguém tem coragem de apagar (capítulo~\ref{cap:frequencia}).
+
+\section{Um fluxo só}
+\label{sec:fluxo-unico}
+
+Com as métricas centralizadas e os donos definidos, o passo seguinte é tratar o caminho do dado
+até o painel como um fluxo único, e não como duas entregas separadas.
+
+Na prática, isso significa algumas coisas. A primeira é manter a lógica fora do painel: regras
+de negócio, filtros padrão e cálculos ficam na camada de transformação ou na camada semântica,
+onde são versionados e testados; o painel só apresenta. A segunda é conhecer a linhagem até o
+fim: quando um modelo vai ser alterado, o time sabe quais painéis dependem dele e pode avaliar
+o impacto antes, em vez de descobrir depois, por uma reclamação. A terceira, quando a
+ferramenta permite, é versionar e publicar os painéis com o mesmo processo dos modelos
+(capítulo~\ref{cap:ci-cd}). E a quarta é organizacional: um quadro de trabalho único para
+engenharia e visualização, em que uma demanda de painel e a demanda de dados que ela depende
+aparecem juntas, como partes da mesma entrega (Parte~\ref{parte:agil}).
+
+O efeito mais visível dessa integração é na conversa com o negócio. Em vez de o pedido passar
+por dois times, com duas filas e duas interpretações, ele é tratado do começo ao fim por um
+fluxo só, com um responsável pela entrega. O efeito menos visível, e talvez mais importante, é
+na qualidade: quando quem constrói o painel enxerga o modelo, e quem constrói o modelo
+enxerga o painel, os erros aparecem antes de chegar à reunião.
+
+\rascunho{
+  Relato: a integração entre o time de engenharia e o de visualização num projeto real (como
+  era antes, o que mudou na forma de trabalhar, o que melhorou e o que ainda é difícil).
+}
+
+\begin{leituras}
+  \leitura{kimball2013}{Para a base de tudo isto: métricas e dimensões conformadas, definidas
+    uma vez e compartilhadas por todos os processos.}
+  \leitura{skelton2019}{Para pensar a divisão de responsabilidades entre times de plataforma
+    e times que entregam valor ao negócio.}
+\end{leituras}

@@ -1,14 +1,71 @@
 \chapter{Glossário}
 \label{cap:glossario}
 
-\rascunho{
-  Termos em ordem alfabética, com a definição em uma ou duas frases e, quando
-  houver, o termo em inglês entre parênteses. Ir completando enquanto os
-  capítulos são escritos.
-}
+Os termos abaixo aparecem ao longo do livro. Quando há um termo em inglês muito usado na área, ele
+aparece entre parênteses.
 
 \begin{description}[style=nextline, leftmargin=1.5em, font=\normalfont\scshape]
-  \item[ELT] Extração, carga e transformação (\emph{extract, load, transform}). \pendente{definir}
-  \item[ETL] Extração, transformação e carga (\emph{extract, transform, load}). \pendente{definir}
-  \item[WIP] Trabalho em andamento (\emph{work in progress}). \pendente{definir}
+  \item[Agente de IA] Sistema baseado num modelo de linguagem que executa tarefas com vários
+    passos, usando ferramentas, em vez de apenas responder a uma pergunta.
+  \item[Analytics engineer] Profissional entre o engenheiro de dados e o analista, que
+    transforma dados brutos em modelos limpos, testados e documentados para consumo.
+  \item[Arquitetura medalhão] Organização dos dados em camadas de refinamento: bronze (dado
+    bruto), prata (limpo e integrado) e ouro (pronto para um uso específico).
+  \item[Camada semântica] Lugar único onde cada métrica é definida, com fórmula, filtros, grão e
+    dono, e de onde todas as ferramentas leem.
+  \item[Carga incremental] Carga que processa só os registros novos ou alterados desde a última
+    execução, em vez de reprocessar tudo.
+  \item[Chave substituta] (\emph{surrogate key}) Identificador gerado pelo próprio armazém de
+    dados para cada linha de uma dimensão, independente dos códigos dos sistemas de origem.
+  \item[Conciliação de registros] (\emph{record linkage}) Processo de identificar registros de
+    fontes diferentes que representam a mesma entidade.
+  \item[Contrato de dados] Acordo entre quem produz e quem consome um dado sobre a estrutura, o
+    significado e o prazo de entrega, verificado automaticamente.
+  \item[Data lake] Repositório que guarda dados em qualquer formato, no estado em que chegaram,
+    a baixo custo.
+  \item[Data steward] Responsável pelo cuidado diário com a qualidade e a documentação de um
+    domínio de dados; na era da IA, cada vez mais tutor e revisor do que a máquina propõe.
+  \item[Data warehouse] Armazém de dados separado dos sistemas operacionais, orientado por
+    assunto, integrado, variável no tempo e não volátil, usado para análise.
+  \item[Definição de pronto] Lista explícita do que precisa estar feito para um item de trabalho
+    ser considerado entregue.
+  \item[Dimensão conformada] Dimensão compartilhada, com as mesmas chaves e atributos, por
+    todos os processos de negócio de um armazém de dados.
+  \item[Dimensão que muda devagar] (\emph{slowly changing dimension}) Técnica para guardar o
+    histórico de atributos que mudam com o tempo, como a cidade de um cliente.
+  \item[ELT] Extração, carga e transformação (\emph{extract, load, transform}): os dados são
+    carregados brutos no armazém e transformados lá dentro.
+  \item[ETL] Extração, transformação e carga (\emph{extract, transform, load}): os dados são
+    transformados num servidor intermediário antes de serem carregados no armazém.
+  \item[Fato] Medida de um processo de negócio, como quantidade vendida ou valor, guardada numa
+    tabela de fatos.
+  \item[FinOps] Disciplina de gestão de custos de nuvem baseada em visibilidade, responsabilidade
+    de cada time pelo próprio consumo e otimização contínua.
+  \item[Grão] O que uma linha de uma tabela representa, como \enquote{um item vendido} ou
+    \enquote{um cliente por mês}.
+  \item[Lakehouse] Arquitetura que combina o armazenamento aberto e barato do data lake com as
+    garantias de um data warehouse.
+  \item[Linhagem] Mapa de onde cada dado veio e de quais tabelas, modelos e painéis dependem dele.
+  \item[Master data] Dados mestres: as entidades centrais do negócio, como clientes, produtos e
+    fornecedores, compartilhadas por vários processos e sistemas.
+  \item[Modelo de linguagem] Modelo de IA treinado em grandes volumes de texto, capaz de gerar e
+    interpretar linguagem natural e código.
+  \item[Objetivo de nível de serviço] (\emph{SLO}) Compromisso mensurável sobre o comportamento
+    de um serviço, como o prazo em que os dados estarão atualizados.
+  \item[OLAP] Processamento analítico em linha (\emph{online analytical processing}): consultas
+    analíticas sobre dados organizados em dimensões, tradicionalmente em cubos.
+  \item[RAG] Geração aumentada por recuperação (\emph{retrieval-augmented generation}): técnica
+    que busca trechos relevantes de documentos e os entrega ao modelo junto com a pergunta.
+  \item[Registro mestre] (\emph{golden record}) Versão única e confiável de uma entidade, com um
+    identificador próprio, construída a partir de várias fontes.
+  \item[TDD] Desenvolvimento guiado por testes (\emph{test-driven development}): escrever o teste
+    que descreve o comportamento esperado antes de escrever o código.
+  \item[Tempo de ciclo] Tempo que um item de trabalho leva do início ao fim, uma das principais
+    métricas de fluxo.
+  \item[Token] Unidade de texto processada por um modelo de linguagem, usada como base de
+    cobrança.
+  \item[Vazamento de dados] (\emph{data leakage}) Uso, no treino de um modelo, de informação que
+    não estaria disponível no momento da previsão.
+  \item[WIP] Trabalho em andamento (\emph{work in progress}): quantidade de itens sendo trabalhados
+    ao mesmo tempo, limitada no Kanban para acelerar o fluxo.
 \end{description}

@@ -1,0 +1,127 @@
+% Capitulo: Dados para treinar IA
+\chapter{Dados para treinar IA}
+\label{cap:treinar-ia}
+
+Quando o consumidor do dado é um modelo que vai aprender com ele, a modelagem muda de
+natureza. Deixa de ser sobre tabelas e métricas e passa a ser sobre exemplos: quais entram,
+como são rotulados, como são versionados e documentados, e o que nunca pode entrar. Este
+capítulo trata dessas decisões. Ele parte de uma constatação prática: a maioria das empresas
+não vai treinar um modelo de linguagem do zero, mas quase todas vão ajustar modelos
+existentes ou, no mínimo, precisar avaliar se a IA que usam responde certo. As três
+coisas pedem dados organizados com cuidado.
+
+\section{Quando o consumidor é um modelo}
+\label{sec:consumidor-modelo}
+
+Há três necessidades de dados diferentes quando se fala em treinar IA, e elas aparecem nas
+empresas em ordem crescente de frequência.
+
+A primeira é treinar um modelo do zero. Para modelos de linguagem de uso geral, isso exige
+volumes de texto e de processamento que estão fora do alcance de quase todas as empresas.
+Para modelos menores e específicos, como um classificador de documentos ou um detector de
+anomalias, continua sendo comum, e os cuidados do capítulo~\ref{cap:modelagem-cd} valem
+integralmente.
+
+A segunda é ajustar um modelo existente (\emph{fine-tuning}): partir de um modelo pronto e
+treiná-lo um pouco mais com exemplos da empresa, para que aprenda um vocabulário, um formato
+de resposta ou uma tarefa específica. Aqui, poucas centenas ou milhares de exemplos bons
+podem fazer muita diferença, e a qualidade de cada exemplo pesa mais do que a quantidade.
+
+A terceira, e mais comum, é avaliar. Toda empresa que usa IA para responder perguntas,
+classificar documentos ou gerar consultas precisa saber se ela acerta, e para isso precisa de
+um conjunto de avaliação: perguntas ou tarefas com a resposta certa conhecida. Esse conjunto
+é, na prática, um dado de treino que todo time de dados vai precisar montar, mesmo sem
+treinar nada. Ele é a forma de saber se uma mudança no modelo, no contexto ou nos dados
+melhorou ou piorou as respostas, e o capítulo~\ref{cap:contexto-ia} volta a ele.
+
+\section{Curadoria, rotulagem e versionamento}
+\label{sec:curadoria}
+
+Em dados para treino, poucos exemplos bons valem mais do que muitos ruins. Exemplos
+duplicados fazem o modelo decorar em vez de generalizar. Exemplos contraditórios, em que a
+mesma situação tem respostas diferentes, ensinam o modelo a ser inconsistente. Exemplos fora
+do domínio desviam o aprendizado. A curadoria (selecionar, limpar e equilibrar os exemplos)
+é, por isso, a parte mais importante do trabalho, e a mais parecida com o trabalho de
+qualidade de dados que os capítulos anteriores descreveram.
+
+Muitos exemplos precisam de rótulo: a categoria correta de um documento, a resposta certa de
+uma pergunta, se uma consulta gerada está correta ou não. Rotular é um trabalho humano, e
+envolve decisões que precisam ser explícitas. Quem rotula? Com que critério escrito? O que
+fazer nos casos ambíguos? E como saber se os rotuladores concordam entre si? Para essa
+última pergunta há medidas clássicas de concordância, que descontam o acordo que
+aconteceria por acaso \parencite{cohen1960}. Se dois especialistas do negócio discordam em
+um terço dos casos, o problema não é o modelo: é que a regra não está clara, e nenhum
+modelo vai aprender uma regra que as próprias pessoas não aplicam de forma consistente.
+
+O conjunto de dados precisa ser versionado como se versiona código (capítulo~\ref{cap:dados-codigo}).
+Cada modelo treinado ou avaliado deve estar associado a uma versão exata do conjunto, para
+que seja possível reproduzir o resultado, comparar versões e entender por que um modelo novo
+se comporta diferente do anterior.
+
+E a separação entre treino, validação e teste deve acontecer antes de qualquer outra coisa,
+e ser respeitada. Se exemplos do teste aparecem no treino, ou se o teste é usado
+repetidamente para escolher entre versões, a avaliação deixa de medir o que o modelo faria
+com dados novos. É uma forma de vazamento, parente da que o capítulo anterior descreveu
+(\veja{sec:vazamento}).
+
+\section{Documentar o conjunto de dados}
+\label{sec:datasheets}
+
+Um conjunto de dados para treino sem documentação é um risco: ninguém sabe de onde veio, o
+que contém, para que serve e para que não deve ser usado. Em 2018, um grupo de
+pesquisadores propôs que todo conjunto de dados viesse acompanhado de uma ficha técnica, nos
+moldes das fichas de componentes eletrônicos, respondendo a perguntas sobre motivação,
+composição, processo de coleta, pré-processamento, usos recomendados, distribuição e
+manutenção \parencite{gebru2021}. Uma proposta parecida, para os próprios modelos, descreve
+o desempenho de cada modelo em grupos diferentes e as situações em que ele não deve ser
+usado \parencite{mitchell2019}.
+
+Para um time de dados, a ficha não precisa ser longa. Algumas perguntas já evitam a maior
+parte dos problemas: por que este conjunto foi criado, de quais fontes e em que período veio,
+quem rotulou e com que critério, que limpezas foram feitas, o que ele não cobre, e quem é o
+responsável por ele. É o equivalente, para dados de treino, do que a documentação do modelo
+dimensional sempre foi para o BI: o que permite que outra pessoa use o dado sem precisar
+perguntar a quem o fez.
+
+\section{Privacidade, direitos e viés}
+\label{sec:privacidade-vies}
+
+Dado pessoal que entra num treino é difícil de tirar depois, porque o modelo pode ter
+aprendido algo a partir dele. Por isso a limpeza precisa acontecer antes. A Lei Geral de
+Proteção de Dados distingue o dado anonimizado, que deixa de ser considerado dado pessoal
+quando a identificação não é mais possível por meios razoáveis, do dado pseudonimizado, em
+que a identificação continua possível com uma informação adicional guardada à parte
+\parencite{lgpd2018}. Na prática, isso significa que trocar nomes por códigos não é
+suficiente para tratar o dado como não pessoal. \pendente{conferir os artigos da LGPD sobre
+anonimização e pseudonimização e citar os números}
+
+Além da privacidade, há os direitos sobre o conteúdo. Documentos internos, textos de
+clientes, conteúdo de terceiros e dados comprados têm termos de uso, e nem todos permitem o
+uso para treinar ou ajustar modelos. Vale verificar antes, com a área jurídica, e registrar a
+verificação na ficha do conjunto.
+
+Por fim, a representatividade. Um conjunto que só tem exemplos de uma região, de um tipo de
+produto ou de um perfil de cliente ensina o modelo a acertar nesses casos e a errar nos
+outros. Um classificador de solicitações treinado só com dados da matriz pode ir mal nas
+filiais, onde o vocabulário e os problemas são outros. A ficha técnica deve dizer o que o
+conjunto cobre, e a avaliação deve medir o desempenho separadamente em cada grupo relevante,
+e não só na média.
+
+\begin{destaque}
+Os modelos de IA são, em grande parte, aquilo com que foram treinados e avaliados. Cuidar
+desses dados é cuidar do comportamento do modelo.
+\end{destaque}
+
+\rascunho{
+  Relato opcional: uma experiência de montar um conjunto de avaliação ou de ajuste para
+  uma IA usada no trabalho, e o que deu trabalho (rotulagem, casos ambíguos, privacidade).
+}
+
+\begin{leituras}
+  \leitura{gebru2021}{A proposta de documentar cada conjunto de dados como se documenta
+    um componente eletrônico: origem, composição, usos recomendados e limites.}
+  \leitura{mitchell2019}{A proposta equivalente para modelos, com atenção ao desempenho em
+    grupos diferentes.}
+  \leitura{huyen2022}{Os capítulos sobre dados de treino tratam amostragem, rotulagem e
+    desbalanceamento de forma prática.}
+\end{leituras}

@@ -1,0 +1,264 @@
+% Capitulo: Construir a própria aplicação de master data e governança
+\chapter{Construir a própria aplicação de master data e governança}
+\label{cap:aplicacao-propria}
+
+Há muito material sobre ferramentas de mercado para master data e governança, e muito
+pouco sobre o que considerar quando uma empresa decide construir a sua. Até pouco tempo,
+fazia sentido: construir era caro demais para a maioria. Com a IA ajudando a escrever
+código, isso mudou, e mais times vão se perguntar se vale a pena. Este capítulo é um guia
+para essa decisão e para a construção. Não é um tutorial de uma tecnologia específica; é a
+lista de decisões que vale tomar antes de escrever a primeira linha de código.
+
+\section{Construir ou comprar}
+\label{sec:construir-comprar}
+
+A IA baixou muito o custo de construir. Não baixou o custo de manter. Uma aplicação interna
+precisa de alguém que corrija erros, atualize dependências, atenda dúvidas e adapte o
+sistema quando o negócio mudar. A pergunta que decide entre construir e comprar, portanto,
+não é \enquote{conseguimos fazer?}, e sim \enquote{quem vai cuidar disso daqui a dois
+anos?}. A Tabela~\ref{tab:construir-comprar} reúne os outros critérios.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Quando construir e quando comprar uma solução de master data e governança.}
+  \label{tab:construir-comprar}
+  \small
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.17\textwidth}
+      >{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
+    \toprule
+    Critério & Construir faz sentido quando & Comprar faz sentido quando \\
+    \midrule
+    Escopo & Um ou dois domínios, com regras muito próprias do negócio & Muitos domínios e fontes, com regras comuns de mercado \\
+    \addlinespace
+    Equipe & Há quem programe e quem mantenha depois & Não há quem mantenha código interno \\
+    \addlinespace
+    Regulação & Um histórico de mudanças simples basta & Auditoria formal, certificações, setor regulado \\
+    \addlinespace
+    Prazo & É preciso algo em semanas, um domínio por vez & É um programa corporativo de longo prazo \\
+    \addlinespace
+    Custo & A licença é desproporcional ao problema & Manter código próprio custaria mais que a licença \\
+    \addlinespace
+    Integração & É preciso encaixar em fluxos internos específicos & A ferramenta já conecta com toda a pilha de dados \\
+    \bottomrule
+  \end{tabularx}
+  \fonte{elaborado pelo autor.}
+\end{table}
+
+Construir também não precisa ser para sempre. Começar com uma aplicação própria num
+domínio, aprender com ela o que a empresa realmente precisa e migrar para uma ferramenta de
+mercado quando a escala pedir é um caminho legítimo. A condição é desenhar a aplicação de
+forma que os dados saiam fácil: registro mestre, tabela de correspondência e histórico de
+decisões em tabelas simples, num banco de dados comum, e não presos à lógica da aplicação.
+
+\section{Começar pelo problema, não pela plataforma}
+\label{sec:comecar-pequeno}
+
+O erro mais comum de quem decide construir é começar pela plataforma: um sistema genérico de
+master data, que serviria para qualquer domínio, com telas de configuração e regras
+parametrizáveis. Esse caminho reproduz o programa eterno que o capítulo~\ref{cap:master-data}
+criticou, agora com código próprio.
+
+O ponto de partida melhor é um problema concreto, com um domínio, uma regra e um dono.
+Algo como: \enquote{clientes com nomes diferentes no ERP e no CRM, revisados pelo time
+comercial, para o projeto de acompanhamento de carteira}. A plataforma, se vier, nasce do
+segundo e do terceiro problema, quando os padrões começam a se repetir.
+
+O primeiro usuário da aplicação é o projeto de negócio que puxou o domínio
+(\veja{sec:master-data-puxado}). É ele quem diz se a aplicação está resolvendo, e é a
+opinião dele que deve orientar as primeiras melhorias, não uma lista de recursos imaginada
+de antemão.
+
+\section{Uma arquitetura mínima}
+\label{sec:arquitetura-minima}
+
+Uma aplicação de master data e governança, mesmo pequena, tem algumas peças que não podem
+faltar (Figura~\ref{fig:aplicacao-propria}).
+
+\begin{figure}[htbp]
+  \centering
+  \input{figuras/aplicacao-propria}
+  \caption{Uma arquitetura mínima para uma aplicação própria de master data e
+    governança.}
+  \label{fig:aplicacao-propria}
+  \fonte{elaborado pelo autor.}
+\end{figure}
+
+A \textbf{ingestão} traz os registros das fontes. Sempre que possível, ela deve ler da
+camada prata (capítulo~\ref{cap:medalhao}), onde os dados já estão limpos e tipados, em vez
+de ir direto aos sistemas de origem. O \textbf{motor de conciliação} compara os registros e
+atribui a cada par uma nota de confiança. A partir da nota, cada par segue um de três
+caminhos: com confiança alta, vai direto para o registro mestre; com confiança baixa, é
+descartado; no meio, vai para a \textbf{fila de revisão}, onde uma pessoa decide. O
+\textbf{registro mestre}, com a tabela de correspondência, é o produto final, lido pelo BI,
+pelos sistemas e pela IA. As \textbf{notificações} avisam quem precisa decidir ou saber.
+
+A seta tracejada na parte de baixo da figura é a que transforma uma ferramenta em governança:
+as decisões do steward voltam para o motor, como regras novas ou exemplos, e a próxima
+rodada sugere melhor. É o ciclo da Figura~\ref{fig:governanca-ciclo} implementado em
+código.
+
+Para a tecnologia, a recomendação é usar o mínimo que o time já domina. Um banco de dados,
+Python, um agendador que rode o processo depois de cada carga e um canal de mensagens que as
+pessoas já usem resolvem o começo. Complexidade adicional só quando um problema real pedir.
+
+\section{O motor de conciliação}
+\label{sec:motor-conciliacao}
+
+O motor de conciliação funciona melhor em camadas, da comparação mais barata para a mais
+cara. Primeiro, identificadores fortes: se dois cadastros têm o mesmo documento de
+registro da empresa, ou o mesmo código de produto, são a mesma entidade, sem discussão.
+Depois, regras de normalização e similaridade de texto para o que sobrou. Por fim, só para os
+casos que as regras não resolvem, uma sugestão da IA, sempre acompanhada da explicação do
+porquê.
+
+A base teórica dessa comparação é a conciliação probabilística de registros
+\parencite{fellegi1969,christen2012}, e há bibliotecas de código aberto maduras que a
+implementam em escala, como o Splink \parencite{linacre2022}, além de bibliotecas rápidas de
+similaridade de texto. Para começar, porém, a biblioteca padrão do Python é suficiente. O
+trecho abaixo normaliza os nomes (caixa baixa, sem acento, sem pontuação, sem sufixos
+societários) e compara cada par pela similaridade dos textos.
+
+\begin{python}
+import unicodedata
+from difflib import SequenceMatcher
+from itertools import combinations
+
+SUFIXOS = {"ltda", "sa", "me", "eireli"}
+
+def normalizar(nome: str) -> str:
+    """Minúsculas, sem acento, pontuação ou sufixo."""
+    nome = unicodedata.normalize("NFKD", nome)
+    nome = nome.encode("ascii", "ignore").decode().lower()
+    nome = "".join(c for c in nome if c.isalnum() or c == " ")
+    partes = nome.split()
+    return " ".join(p for p in partes if p not in SUFIXOS)
+
+def pares_suspeitos(nomes, limiar=0.85):
+    """Pares de nomes que parecem a mesma entidade."""
+    for a, b in combinations(sorted(set(nomes)), 2):
+        na, nb = normalizar(a), normalizar(b)
+        nota = SequenceMatcher(None, na, nb).ratio()
+        if nota >= limiar:
+            yield a, b, round(nota, 2)
+
+clientes = ["AGRO SILVA LTDA", "Agro Silva", "Agrosilva",
+            "Cerealista Norte S.A."]
+for a, b, nota in pares_suspeitos(clientes):
+    print(f"Revisar: {a!r} x {b!r} ({nota})")
+\end{python}
+
+\begin{terminal}
+Revisar: 'AGRO SILVA LTDA' x 'Agro Silva' (1.0)
+Revisar: 'AGRO SILVA LTDA' x 'Agrosilva' (0.95)
+Revisar: 'Agro Silva' x 'Agrosilva' (0.95)
+\end{terminal}
+
+O resultado encontra as três grafias do mesmo cliente e ignora a empresa diferente. Num
+sistema real, cada par deixaria de ser impresso na tela e viraria um item na fila de revisão,
+com uma mensagem para o dono do domínio. Duas observações importam mais do que o código. A
+primeira: comparar todos os pares entre si cresce rápido demais quando o cadastro tem
+milhares de registros, e é por isso que as técnicas de bloqueio, que só comparam registros
+com alguma característica em comum, existem \parencite{christen2012}. A segunda: o limiar
+de 0,85 é arbitrário. Ele deve ser calibrado com uma amostra revisada pelo negócio e
+ajustado ao longo do tempo com as decisões do steward.
+
+\section{Revisão humana e notificações}
+\label{sec:revisao-notificacao}
+
+A fila de revisão é o coração da aplicação. É ali que a governança acontece, e por isso ela
+precisa ser fácil de usar. Cada item deve mostrar os dois registros lado a lado, a nota de
+confiança, o motivo da sugestão e três ações: aprovar, corrigir ou rejeitar. Uma interface
+simples basta, e existem bibliotecas em Python que permitem montar telas internas desse tipo
+em poucas horas.
+
+As notificações devem ir para quem precisa decidir, pelo canal que a pessoa já usa (e-mail
+ou o chat da empresa), com o link direto para a revisão. Um cuidado: mensagem demais vira
+ruído e passa a ser ignorada. Agrupar as pendências por domínio, num resumo diário ou
+semanal, costuma funcionar melhor do que avisar cada caso.
+
+Por fim, a revisão precisa de um prazo combinado e de um indicador de itens parados. Uma
+fila que ninguém revisa é pior do que nenhuma fila, porque dá a impressão de que o problema
+está sendo cuidado.
+
+\section{Histórico, permissões e privacidade}
+\label{sec:auditoria-privacidade}
+
+Toda mudança no registro mestre precisa ficar registrada: o que mudou, quem decidiu,
+quando e a partir de qual sugestão. Sem esse histórico, a aplicação é só um banco de dados
+editável, e não há governança. Com ele, é possível responder a perguntas que sempre
+aparecem, como \enquote{por que este cliente foi unido àquele?}, e desfazer uma decisão
+errada sem perder o resto.
+
+As permissões devem ser definidas por domínio: quem vê, quem pode sugerir, quem pode
+aprovar. O time comercial aprova clientes; o time de compras aprova fornecedores. E, como
+cadastros costumam ter dados pessoais, o que for enviado a um modelo de IA externo precisa
+ser limpo antes: nomes de pessoas, documentos e contatos não têm por que sair do ambiente da
+empresa para que a IA sugira se duas razões sociais são a mesma (\veja{sec:seguranca}).
+
+\section{Operar como produto}
+\label{sec:operar-produto}
+
+A aplicação de master data é um produto de dados como qualquer outro, e as práticas da
+Parte~\ref{parte:devops} valem para ela: código versionado, testes, entrega contínua e
+monitoramento. Ela também precisa de métricas próprias, que mostram se está funcionando:
+
+\begin{itemize}
+  \item porcentagem de pares conciliados automaticamente;
+  \item tempo médio entre a sugestão e a decisão;
+  \item número de itens parados na fila e há quanto tempo;
+  \item duplicidades encontradas por carga, que devem cair com o tempo;
+  \item custo por execução, inclusive em tokens, se houver IA no motor
+    (capítulo~\ref{cap:custo-consumo}).
+\end{itemize}
+
+E precisa de um dono, separado dos donos dos domínios. O dono do domínio de clientes decide
+quem é cliente; o dono da aplicação garante que ela funciona. Misturar os dois papéis é um
+jeito rápido de ter uma aplicação que ninguém mantém.
+
+\rascunho{
+  Relato opcional: uma aplicação interna desse tipo que eu construí ou acompanhei, o que
+  funcionou e o que eu faria diferente.
+}
+
+\section{Lista de verificação}
+\label{sec:checklist-aplicacao}
+
+A Tabela~\ref{tab:checklist-aplicacao} reúne, como referência rápida, as perguntas que vale
+responder antes de começar. Nenhuma delas é técnica no sentido estrito, e isso diz muito
+sobre onde estão os riscos de um projeto desses.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Perguntas para responder antes de construir a própria aplicação.}
+  \label{tab:checklist-aplicacao}
+  \small
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.22\textwidth}
+      >{\raggedright\arraybackslash}X@{}}
+    \toprule
+    Tema & Pergunta \\
+    \midrule
+    Domínio e dono & Qual domínio vem primeiro, e quem decide as regras dele? \\
+    Fontes & De onde vêm os registros, e com que frequência mudam? \\
+    Identidade & O que faz dois registros serem o mesmo? Existe um identificador forte? \\
+    Limiares & Acima de que nota aprova sozinho? Abaixo de qual descarta? \\
+    Revisão & Quem revisa, em quanto tempo e por qual canal? \\
+    Notificação & Quem precisa saber de cada mudança, e com que frequência? \\
+    Histórico & Toda mudança fica registrada, com quem decidiu e quando? \\
+    Privacidade & O que pode ir para um modelo de IA, e o que precisa ser mascarado? \\
+    Testes & Unicidade, correspondência e regras de negócio rodam a cada carga? \\
+    Custo & Quanto custa cada execução, inclusive em tokens? \\
+    Manutenção & Quem cuida da aplicação daqui a dois anos? \\
+    Saída & Se um dia migrar para uma ferramenta de mercado, os dados saem fácil? \\
+    \bottomrule
+  \end{tabularx}
+  \fonte{elaborado pelo autor.}
+\end{table}
+
+\begin{leituras}
+  \leitura{christen2012}{Para aprofundar o motor de conciliação: normalização,
+    bloqueio, comparação e avaliação dos pares encontrados.}
+  \leitura{linacre2022}{A descrição de uma biblioteca de código aberto de conciliação
+    probabilística usada em escala por órgãos públicos.}
+  \leitura{loshin2009}{Para os componentes de uma solução completa de master data, útil
+    para saber o que se está deixando de fora ao começar pequeno.}
+\end{leituras}

@@ -1,0 +1,112 @@
+% Capitulo: A trilha tradicional
+\chapter{A trilha tradicional}
+\label{cap:trilha-tradicional}
+
+Quem começou a trabalhar com dados antes da IA generativa provavelmente percorreu um
+caminho parecido: planilha, depois SQL, depois uma ferramenta de BI, e, para alguns,
+estatística e programação. Ninguém desenhou essa trilha. Ela surgiu porque cada etapa
+resolvia uma dor concreta que a anterior deixava sem resposta. Este capítulo descreve
+esse caminho, mostra como ele era aprendido na prática e faz um balanço honesto do que
+ele tinha de bom e de ruim. É o ponto de comparação para o próximo capítulo, que
+pergunta o que muda quando a IA está disponível desde o primeiro dia.
+
+\section{A sequência clássica}
+\label{sec:sequencia-classica}
+
+A porta de entrada quase sempre era a planilha. Tabela dinâmica, procura de valores entre
+abas, gráficos, algumas fórmulas condicionais. Com isso já era possível responder boa parte
+das perguntas de uma área: quanto vendemos, quem são os maiores clientes, como estamos em
+relação à meta. A planilha ensinava, sem dizer, as primeiras noções de modelagem: que uma
+tabela precisa de uma linha por registro, que juntar duas listas exige uma chave em comum,
+que somar coisas de níveis diferentes dá errado.
+
+O limite da planilha aparecia quando os dados cresciam ou quando a mesma análise precisava
+ser refeita todo mês. Abrir um arquivo de um milhão de linhas, copiar e colar a extração do
+sistema, refazer as mesmas fórmulas: em algum momento, alguém sugeria \enquote{pedir
+acesso ao banco}. Era a entrada do SQL.
+
+SQL é uma das linguagens mais duráveis da computação. Foi proposta em 1974, com o nome de
+SEQUEL, como uma linguagem de consulta que se parecesse com inglês estruturado
+\parencite{chamberlin1974}, e meio século depois continua sendo a forma padrão de conversar
+com bancos de dados. Aprender \codigo{SELECT}, \codigo{JOIN} e \codigo{GROUP BY} mudava a
+relação do analista com os dados. Ele deixava de depender da extração que alguém fazia e
+passava a buscar exatamente o que precisava, direto na fonte.
+
+O passo seguinte era a ferramenta de BI. Com os dados acessíveis via SQL, o analista
+passava a montar painéis que se atualizavam sozinhos, distribuídos para a área inteira.
+Para muitos, era aqui que a carreira se definia, com cursos e certificações da ferramenta
+escolhida pela empresa.
+
+Estatística vinha depois, quando vinha. Média, mediana, desvio, alguma noção de amostra e de
+teste de hipótese. Muita gente fazia análise de dados por anos sem nunca ter estudado
+estatística formalmente, o que nem sempre aparecia nos resultados, mas às vezes aparecia nas
+conclusões. E, por fim, para quem seguia em direção à ciência ou à engenharia de dados,
+vinha uma linguagem de programação: Python ou R, ou antes delas as macros de planilha.
+Livros como os de \textcite{mckinney2022} e \textcite{wickham2023} formaram uma geração de
+analistas que aprendeu a programar a partir de problemas de dados, e não o contrário.
+
+\section{Aprender no trabalho}
+\label{sec:aprender-no-trabalho}
+
+Pouca gente aprendeu essa trilha numa sala de aula. O mais comum era aprender no trabalho,
+empurrado por um problema: uma consulta que demorava demais, um painel que ninguém
+conseguia manter, um número que não batia com o da outra área. A pessoa pesquisava, perguntava
+para um colega mais experiente, procurava a mesma dúvida em fóruns e, depois de algumas
+horas, resolvia. E, na próxima vez, já sabia.
+
+Esse jeito de aprender tinha uma propriedade que só ficou evidente depois: ele era lento
+de propósito, sem que ninguém tivesse planejado isso. Para resolver o problema, a pessoa
+precisava entender o problema. O erro na consulta obrigava a ler a consulta linha por linha.
+A resposta do fórum raramente servia sem adaptação, e adaptar exigia compreender. A pesquisa
+sobre aprendizagem tem um nome para esse tipo de esforço que parece atrapalhar, mas
+consolida o aprendizado: dificuldades desejáveis \parencite{bjork1994}. O próximo capítulo
+volta a essa ideia, porque é justamente ela que a IA põe em risco.
+
+\rascunho{
+  Relato: como eu aprendi. Por onde entrei na área, qual foi a primeira ferramenta, o
+  problema que me levou ao SQL, o que eu aprendi sozinho e o que aprendi com alguém mais
+  experiente. Curto, um ou dois parágrafos, e com o que eu faria diferente hoje.
+}
+
+\section{Acertos e limites}
+\label{sec:acertos-limites}
+
+A trilha tradicional formou profissionais com fundamentos sólidos. Quem digitou cada
+consulta e depurou cada erro desenvolveu uma intuição difícil de ensinar: olha um resultado
+e desconfia que o total está alto demais, lê uma junção e percebe que ela vai duplicar
+linhas. Também formou paciência com dado sujo, porque não havia atalho para limpar um
+cadastro problemático.
+
+Os limites também eram claros. O primeiro era o tempo: chegar à autonomia levava anos, e
+muito desse tempo era gasto em tarefas repetitivas que não ensinavam nada novo depois da
+décima vez. O segundo era a dependência de ferramenta. Como a formação se organizava em
+torno do produto que a empresa usava, a carreira ficava presa a ele, e trocar de
+ferramenta parecia recomeçar do zero, mesmo quando os conceitos eram os mesmos.
+
+O terceiro limite era a separação entre análise e engenharia. O analista sabia SQL e
+ferramenta de BI, mas raramente sabia versionar código, escrever testes ou automatizar uma
+rotina. O engenheiro sabia montar pipelines, mas raramente entendia a pergunta de negócio
+que os dados iam responder. Essa separação gerava as passagens de bastão que o
+capítulo~\ref{cap:estrutura-times} discute, e foi uma das razões para o surgimento do
+analytics engineer (\veja{sec:elt}).
+
+O quarto limite era o mais silencioso: o conhecimento de negócio era aprendido por acaso.
+Ninguém ensinava como a empresa ganhava dinheiro, quais números a diretoria olhava, onde a
+operação costumava falhar. Quem aprendia isso, aprendia porque estava perto das pessoas
+certas. Como o capítulo~\ref{cap:negocio} vai argumentar, essa é hoje a parte da trilha
+que mais diferencia um profissional, e continua sendo a menos estruturada.
+
+\begin{destaque}
+A trilha tradicional era lenta e presa a ferramentas, mas formava intuição. O desafio de
+hoje é manter a intuição sem manter a lentidão.
+\end{destaque}
+
+\begin{leituras}
+  \leitura{mckinney2022}{Escrito pelo criador da biblioteca pandas, é a referência para
+    aprender Python a partir de problemas de dados.}
+  \leitura{wickham2023}{O equivalente em R, com uma abordagem muito didática do ciclo de
+    importar, arrumar, transformar, visualizar e comunicar dados. Disponível gratuitamente
+    na internet.}
+  \leitura{bjork1994}{Para entender por que o esforço durante o aprendizado, que parece
+    ineficiência, é o que faz o conhecimento ficar.}
+\end{leituras}

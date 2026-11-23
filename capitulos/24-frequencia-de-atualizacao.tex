@@ -1,0 +1,221 @@
+% Capitulo: Com que frequência os dados precisam atualizar?
+\chapter{Com que frequência os dados precisam atualizar?}
+\label{cap:frequencia}
+
+Poucas decisões num projeto de dados são tomadas tão no automático quanto a frequência de
+atualização. O stakeholder pede \enquote{o mais atualizado possível}, o time configura o
+pipeline para rodar de hora em hora porque a ferramenta permite, e ninguém volta ao assunto.
+Meses depois, descobre-se que o painel é aberto uma vez por semana, na reunião de
+segunda-feira, e que todas as outras atualizações consumiram recurso sem que ninguém olhasse
+o resultado.
+
+A regra que este capítulo defende é simples de enunciar: atualizar o mais rápido que as fontes
+permitem, mas só o quanto a decisão de negócio precisa. Aplicá-la exige entender como o
+negócio decide, conhecer os limites das fontes, dividir a responsabilidade entre os papéis
+do time e, principalmente, medir o uso dos próprios produtos de dados, porque a primeira
+definição quase sempre está errada.
+
+\section{O ritmo da decisão}
+\label{sec:ritmo-decisao}
+
+A pergunta \enquote{com que frequência você quer que o dado atualize?} tem uma resposta
+previsível: o mais rápido possível. Ninguém pede dado velho. A pergunta certa é outra:
+\enquote{quando e como você toma a decisão com esse número?}. A resposta a essa pergunta define
+a frequência necessária.
+
+Decisões operacionais, como despachar uma entrega, repor um item que acabou ou bloquear uma
+transação suspeita, acontecem em minutos ou horas, e pedem dados atualizados no mesmo ritmo.
+Decisões táticas, como ajustar a escala da semana ou revisar o preço de uma linha de produtos,
+convivem bem com dados do dia anterior. Decisões estratégicas, como definir metas, aprovar
+orçamento ou planejar uma safra, são tomadas uma vez por mês ou por ano, com dados fechados.
+
+A Figura~\ref{fig:frequencia-consumo} cruza a frequência de atualização com a frequência com
+que alguém realmente olha os números. Nos dois quadrantes alinhados, a atualização acompanha o
+uso. Nos outros dois, há um problema. No quadrante do desperdício, o dado atualiza muito mais do
+que é consultado: recurso gasto sem que ninguém aproveite. No quadrante do risco, muita gente
+decide todo dia com um número que só atualiza de vez em quando, e as decisões são tomadas com
+dado velho sem que ninguém perceba.
+
+\begin{figure}[htbp]
+  \centering
+  \input{figuras/frequencia-consumo}
+  \caption{Frequência de atualização contra frequência de consumo. Nos quadrantes em
+    branco as duas estão alinhadas; nos quadrantes em cinza, não.}
+  \label{fig:frequencia-consumo}
+  \fonte{elaborado pelo autor.}
+\end{figure}
+
+Seja qual for a frequência escolhida, o painel deve mostrar, de forma visível, a data e a hora
+da última atualização. O usuário precisa saber a idade do número que está vendo, e um painel
+que atualiza todo dia às 7 horas, mas que naquele dia falhou, deveria dizer isso em vez de
+mostrar silenciosamente os números de ontem.
+
+\rascunho{
+  Relato de abertura, da minha experiência como gerente: um pedido de \enquote{tempo real}
+  que, olhando o uso, era uma reunião semanal, e o que foi feito a partir disso.
+}
+
+\section{O que as fontes permitem}
+\label{sec:limites-fontes}
+
+Se o ritmo da decisão define a frequência necessária, as fontes definem a frequência possível.
+Alguns sistemas só permitem extrações em janelas noturnas, para não pesar na operação. Algumas
+APIs limitam o número de chamadas por hora. Alguns dados só ficam corretos depois de um
+fechamento: o lançamento contábil do dia pode ser ajustado até o fim do mês. E nem todo sistema
+oferece captura de mudanças, que permite receber só o que mudou em vez de reler tudo.
+
+Atualizar mais rápido que a fonte muda não traz dado novo, só custo. Se o sistema de origem
+consolida as vendas uma vez por dia, rodar o pipeline de hora em hora vai copiar o mesmo dado
+vinte e quatro vezes.
+
+Também vale lembrar que o custo e a complexidade não crescem de forma linear com a frequência.
+Passar de diário para horário costuma ser simples; passar de horário para contínuo, em
+fluxo, exige outra arquitetura, outras ferramentas e outra forma de monitorar
+\parencite{reis2022}. E a forma de carregar pesa tanto quanto a frequência: uma carga
+incremental, que processa só os registros novos ou alterados, pode tornar viável uma
+frequência que seria cara demais com uma carga completa.
+
+\section{O que cada profissional precisa olhar}
+\label{sec:papeis-frequencia}
+
+A frequência não é responsabilidade de um papel só. O gerente decide, mas cada papel enxerga
+uma parte da conta, e a decisão é melhor quando todas as partes chegam até ele. A
+Tabela~\ref{tab:papeis-frequencia} resume o que cada um precisa olhar.
+
+\begin{table}[htbp]
+  \centering
+  \caption{A frequência de atualização vista por cada papel.}
+  \label{tab:papeis-frequencia}
+  \small
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.27\textwidth}
+      >{\raggedright\arraybackslash}X@{}}
+    \toprule
+    Papel & Com o que precisa se preocupar \\
+    \midrule
+    Gerente ou líder de dados & Entender a necessidade real do negócio, negociar a
+      frequência com o stakeholder, equilibrar custo e valor, acompanhar as métricas de
+      uso e revisar a decisão de tempos em tempos. \\
+    \addlinespace
+    Stakeholder (dono do negócio) & Dizer quando e como decide com o número, e aceitar
+      que atualizar mais rápido tem custo. \\
+    \addlinespace
+    Analista ou desenvolvedor de BI & Desenhar o produto para o ritmo de quem consome,
+      mostrar a data da última atualização e não prometer uma frequência que a fonte não
+      sustenta. \\
+    \addlinespace
+    Analytics engineer & Escolher a materialização certa (visão, tabela, incremental)
+      para a frequência combinada e testar a atualização do dado. \\
+    \addlinespace
+    Engenheiro de dados & Conhecer os limites das fontes, o custo de cada execução e
+      monitorar atrasos e falhas de carga. \\
+    \bottomrule
+  \end{tabularx}
+  \fonte{elaborado pelo autor.}
+\end{table}
+
+O papel do gerente merece um destaque. É ele quem precisa traduzir o pedido do stakeholder em
+necessidade real, e quem precisa sustentar a conversa quando a resposta for \enquote{diário é
+suficiente}. Isso exige conhecer o negócio bem o bastante para propor a frequência certa, e não
+só aceitar a pedida (capítulo~\ref{cap:negocio}). E exige números: a conversa fica muito mais
+fácil quando o gerente pode mostrar quantas vezes o painel foi aberto no último mês e quanto
+custou cada atualização.
+
+Uma forma prática de formalizar o combinado é o objetivo de nível de serviço
+(\veja{sec:observabilidade}): \enquote{os dados do dia anterior estarão disponíveis até as 8
+horas em 99\% dos dias úteis}. Ele explicita a frequência e o prazo, e cria uma base objetiva
+para monitorar e para rediscutir \parencite{beyer2016}.
+
+\section{Métricas sobre os próprios produtos de dados}
+\label{sec:metricas-uso}
+
+Para saber se a frequência combinada está certa, é preciso tratar os painéis, tabelas e
+modelos como produtos, com métricas próprias. Algumas das mais úteis:
+
+\begin{itemize}
+  \item número de acessos e de usuários distintos por período;
+  \item data do último acesso;
+  \item número de atualizações por período;
+  \item custo de cada atualização e custo total por produto;
+  \item custo por acesso, ou atualizações por acesso.
+\end{itemize}
+
+A última é a que mais revela desperdício. Um painel que atualiza vinte e quatro vezes por dia
+e é aberto duas vezes por semana tem mais de oitenta atualizações por acesso. Quase toda
+ferramenta de BI e quase todo armazém de dados guarda, de alguma forma, os registros de quem
+acessou o quê e de quanto custou cada execução. A consulta abaixo mostra a ideia, sobre duas
+tabelas de metadados hipotéticas.
+
+\begin{sql}
+-- Atualizações contra acessos de cada produto de dados nos últimos 30 dias
+WITH atualizacoes AS (
+    SELECT produto,
+           COUNT(*)            AS qtd_atualizacoes,
+           SUM(custo_creditos) AS creditos
+    FROM meta_atualizacoes
+    WHERE executado_em >= CURRENT_DATE - INTERVAL '30' DAY
+    GROUP BY produto
+),
+acessos AS (
+    SELECT produto,
+           COUNT(*)                AS qtd_acessos,
+           COUNT(DISTINCT usuario) AS usuarios
+    FROM meta_acessos
+    WHERE acessado_em >= CURRENT_DATE - INTERVAL '30' DAY
+    GROUP BY produto
+)
+SELECT a.produto,
+       a.qtd_atualizacoes,
+       COALESCE(v.qtd_acessos, 0)            AS qtd_acessos,
+       COALESCE(v.usuarios, 0)               AS usuarios,
+       a.creditos,
+       a.creditos / NULLIF(v.qtd_acessos, 0) AS creditos_por_acesso
+FROM atualizacoes AS a
+LEFT JOIN acessos AS v ON v.produto = a.produto
+ORDER BY creditos_por_acesso DESC NULLS FIRST;  -- sem acesso nenhum aparece primeiro
+\end{sql}
+
+O resultado é uma lista priorizada. No topo ficam os produtos que consomem recurso e ninguém
+abre, candidatos a desligar. Logo abaixo, os que atualizam muito mais do que são consultados,
+candidatos a baixar a frequência. A mesma lógica vale para assistentes de IA: tokens gastos por
+resposta efetivamente usada são o equivalente, na era dos modelos de linguagem, dos créditos
+por acesso.
+
+\section{Revisar a definição}
+\label{sec:revisar-frequencia}
+
+A frequência combinada no começo do projeto é uma hipótese. O stakeholder imaginava que
+olharia o painel todo dia; a rotina dele mostrou que olha uma vez por semana. Ou o contrário:
+um painel pensado para a reunião mensal virou ferramenta diária da operação, e agora atualiza
+devagar demais. As métricas de uso dizem qual era a realidade, e a definição precisa ser
+revisada com base nelas.
+
+Um ritual simples resolve: uma vez por mês ou por trimestre, revisar os produtos mais caros e
+os menos acessados, com a lista da seção anterior na mão. Essa revisão cabe naturalmente na
+cadência do Scrum com Kanban (capítulo~\ref{cap:scrumban}), como um item fixo da revisão
+periódica.
+
+Baixar a frequência ou desligar um produto também é entrega, e precisa ser tratado como tal.
+Isso significa conversar com o dono do produto, mostrar os números de uso, combinar a mudança
+e comunicá-la a quem usa. Desligar sem avisar destrói confiança; não desligar nunca destrói
+orçamento. Numa época em que quase tudo é cobrado por uso, em créditos de processamento ou em
+tokens, o custo de errar nessa definição deixou de ser invisível, e é o assunto do próximo
+capítulo.
+
+\begin{destaque}
+Atualize o mais rápido que as fontes permitem, mas só o quanto a decisão precisa. E meça o
+uso, porque a primeira definição quase sempre está errada.
+\end{destaque}
+
+\rascunho{
+  Relato: uma revisão de frequência ou de produtos sem uso, e o que ela economizou. Números
+  só em ordem de grandeza.
+}
+
+\begin{leituras}
+  \leitura{beyer2016}{De onde vem a ideia de objetivo de nível de serviço (SLO). Os
+    capítulos sobre SLOs se aplicam quase sem adaptação a prazos de atualização de dados.}
+  \leitura{moses2022}{Trata a atualização do dado como uma das dimensões da
+    observabilidade e mostra como monitorar atrasos antes do usuário reclamar.}
+  \leitura{reis2022}{Para a discussão de lote contra fluxo contínuo e do custo de cada
+    escolha no ciclo de vida da engenharia de dados.}
+\end{leituras}

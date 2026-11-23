@@ -1,0 +1,174 @@
+% Capitulo: Ainda vale aprender a programar?
+\chapter{Ainda vale aprender a programar?}
+\label{cap:programar}
+
+Se a IA escreve SQL e Python a partir de uma descrição em português, por que alguém
+deveria gastar meses aprendendo essas linguagens? A pergunta é legítima, e a resposta deste
+capítulo é que sim, vale, mas por motivos diferentes dos de antes. Antes, se aprendia a
+programar principalmente para escrever código. Hoje, se aprende principalmente para ler,
+revisar, depurar e decidir sobre código que outra coisa escreveu. Essa diferença muda o
+que estudar e com que profundidade, e é o argumento central deste livro.
+
+\section{Ler antes de assinar}
+\label{sec:ler-antes-assinar}
+
+Quem coloca em produção uma consulta gerada por IA está assinando embaixo dela. Se o
+número do painel estiver errado, a pergunta na reunião não vai ser \enquote{qual modelo
+gerou isso?}, e sim \enquote{quem publicou isso?}. Quem não consegue ler o código que
+publica está assinando sem ler.
+
+Ler código bem é mais difícil do que parece. Brian Kernighan e P. J. Plauger observaram,
+ainda nos anos 1970, que depurar é bem mais difícil do que escrever, e que quem escreve o
+código mais esperto que consegue fica, por definição, sem capacidade de depurá-lo
+\parencite{kernighan1978}. \pendente{conferir a formulação e a página no livro} Com a IA,
+essa observação ganha um sentido novo. O código chega pronto, muitas vezes mais elaborado do
+que a pessoa escreveria sozinha, e precisa ser entendido por alguém que não passou pelo
+processo de escrevê-lo. É depuração desde o primeiro minuto.
+
+O experimento sobre formação de habilidades citado no capítulo anterior encontrou a maior
+perda justamente aí: quem aprendeu com IA foi pior nas questões de depuração
+\parencite{shen2026}. É um círculo vicioso possível. Quem depende da IA para escrever
+aprende menos a depurar, e quem não sabe depurar não consegue revisar o que a IA escreve.
+
+\section{Onde a IA ajuda e onde ela não decide}
+\label{sec:ajuda-nao-decide}
+
+A IA ajuda muito em quase todas as tarefas de código em dados: escrever a primeira versão
+de uma consulta, explicar um plano de execução, sugerir um índice, converter código de um
+dialeto de SQL para outro, propor testes. Mas há uma diferença entre ajudar e decidir, e
+algumas decisões continuam precisando de alguém que entende o que está acontecendo.
+
+Uma é a de desempenho e custo. Num armazém de dados cobrado por uso, a diferença entre uma
+consulta que lê a tabela inteira e uma que lê só a partição necessária pode ser grande na
+fatura do mês. A IA sugere as duas com a mesma confiança. Saber qual é a certa exige
+entender como o banco executa a consulta, o que é uma habilidade de programação, não de
+redação de pedidos.
+
+Outra é a de adequação ao contexto. A IA não sabe que aquela tabela tem duplicidade
+conhecida, que aquele campo deixou de ser preenchido no ano passado, que a área financeira
+fecha o mês com dois dias de atraso. Quem conhece o código e os dados da empresa sabe, e é
+essa pessoa que decide se a solução proposta serve.
+
+E há a decisão de quando parar de pedir e escrever. O estudo com desenvolvedores
+experientes citado no capítulo~\ref{cap:ia} mostrou que, em projetos grandes e bem
+conhecidos, parte do tempo ganho com a IA era perdido revisando e corrigindo sugestões
+\parencite{becker2025}. Para quem sabe programar, às vezes é mais rápido escrever do que
+explicar. Para quem não sabe, essa opção simplesmente não existe.
+
+\section{Segurança e privacidade}
+\label{sec:seguranca}
+
+Código gerado por IA herda os padrões do código com que o modelo foi treinado, inclusive os
+inseguros. Um estudo que analisou programas gerados por um assistente de código em cenários
+sensíveis encontrou vulnerabilidades em cerca de 40\% deles \parencite{pearce2022}. Outro,
+com usuários reais, mostrou um efeito mais preocupante: quem tinha acesso a um assistente
+escreveu código menos seguro do que quem não tinha, e ao mesmo tempo acreditava mais que o
+próprio código era seguro \parencite{perry2023}. O mesmo estudo observou que os
+participantes que desconfiavam mais da IA e trabalhavam mais os próprios pedidos produziam
+código mais seguro.
+
+Em dados, os riscos mais comuns são concretos: consultas montadas pela concatenação de
+texto vindo do usuário, credenciais escritas direto no código, permissões amplas demais
+concedidas \enquote{para funcionar}. E há riscos novos, próprios de sistemas que usam
+modelos de linguagem, como instruções maliciosas escondidas nos dados que o modelo lê, que
+o fazem agir de forma diferente da esperada. A lista de riscos mantida pela OWASP para
+aplicações com modelos de linguagem é um bom ponto de partida \parencite{owasp2025}.
+
+A privacidade merece um cuidado à parte. Tudo o que vai num pedido para um modelo externo
+sai do ambiente da empresa. No Brasil, dado pessoal é protegido pela Lei Geral de Proteção
+de Dados \parencite{lgpd2018}, e mandar um cadastro de clientes para um serviço externo
+pode configurar compartilhamento com terceiro, com as obrigações que isso traz.
+\pendente{conferir com referência jurídica antes de manter a afirmação} A regra prática é
+simples: dado pessoal, credencial e informação sensível do negócio não entram em pedido
+para modelo nenhum sem que a empresa tenha decidido, por escrito, que aquilo é permitido.
+
+\begin{dica}
+Antes de colar qualquer coisa num assistente de IA, pergunte: eu mandaria isso por e-mail
+para alguém de fora da empresa? Se a resposta for não, não cole.
+\end{dica}
+
+\section{A linguagem como forma de pensar}
+\label{sec:linguagem-pensar}
+
+Há um motivo para aprender a programar que não tem a ver com revisar código. Uma
+linguagem de programação é também uma forma de pensar sobre o problema.
+
+Quem aprendeu SQL de verdade pensa em conjuntos: não \enquote{para cada pedido, some os
+itens}, e sim \enquote{agrupe os itens por pedido e some}. Essa forma de pensar ajuda a
+formular perguntas que os dados conseguem responder, a perceber de antemão onde uma junção
+vai multiplicar linhas, a desconfiar de um total que cresceu demais. Quem aprendeu Python
+para dados aprende a decompor um problema em etapas pequenas e verificáveis. São hábitos
+mentais que continuam úteis mesmo quando é a IA que escreve.
+
+E há a questão da durabilidade. SQL tem meio século (\veja{sec:sequencia-classica}) e
+continua sendo a língua franca dos dados. As ferramentas de BI mudam a cada poucos anos, os
+assistentes de IA mudam a cada poucos meses, e o SQL que alguém aprendeu bem há vinte anos
+continua servindo. Poucas coisas na área têm esse retorno sobre o tempo de estudo.
+
+\section{Um exemplo de consulta errada}
+\label{sec:consulta-errada}
+
+Para tornar o argumento concreto, considere um pedido simples a um assistente: \enquote{a
+receita por cliente, incluindo o frete}. Os dados estão em duas tabelas: \codigo{pedidos},
+com uma linha por pedido e o valor do frete, e \codigo{itens\_pedido}, com uma linha por item
+de cada pedido. Uma resposta muito plausível é esta:
+
+\begin{sql}
+-- Receita por cliente, incluindo frete (versão com erro)
+SELECT
+    p.id_cliente,
+    SUM(i.valor_item) + SUM(p.valor_frete) AS receita
+FROM pedidos AS p
+JOIN itens_pedido AS i ON i.id_pedido = p.id_pedido
+GROUP BY p.id_cliente;
+\end{sql}
+
+A consulta roda, devolve um número para cada cliente, e o número parece razoável. Está
+errado. A junção repete cada pedido uma vez por item, e com ele repete o frete. Um pedido
+com três itens e frete de R\$~30 entra na soma com R\$~90 de frete. Quanto mais itens por
+pedido, maior o erro, e ele não aparece em nenhuma mensagem: a consulta simplesmente
+devolve um número alto demais.
+
+A correção é somar os itens no grão do pedido antes de juntar com a tabela de pedidos:
+
+\begin{sql}
+-- Receita por cliente, incluindo frete (versão corrigida)
+WITH itens_por_pedido AS (
+    SELECT id_pedido, SUM(valor_item) AS valor_itens
+    FROM itens_pedido
+    GROUP BY id_pedido
+)
+SELECT
+    p.id_cliente,
+    SUM(COALESCE(i.valor_itens, 0) + p.valor_frete) AS receita
+FROM pedidos AS p
+LEFT JOIN itens_por_pedido AS i ON i.id_pedido = p.id_pedido
+GROUP BY p.id_cliente;
+\end{sql}
+
+Quem percebe o erro na primeira versão não é quem sabe pedir melhor. É quem olha para a
+junção e se pergunta qual é o grão de cada tabela, a pergunta que o
+capítulo~\ref{cap:dw} chamou de a mais importante da modelagem (\veja{sec:modelagem-dimensional}).
+E quem tem o hábito de conferir: o total de frete na consulta é igual ao total de frete na
+tabela de pedidos? Essa conferência leva um minuto e pegaria o erro. Ela também pode virar
+um teste automático, escrito antes da consulta, como propõe o capítulo~\ref{cap:testes}.
+
+\rascunho{
+  Relato opcional: um erro parecido, gerado por IA ou por uma pessoa, que chegou a um
+  painel ou a uma reunião antes de ser percebido.
+}
+
+\begin{destaque}
+Aprender a programar deixou de ser principalmente sobre escrever código. Passou a ser
+sobre saber se o código está certo.
+\end{destaque}
+
+\begin{leituras}
+  \leitura{perry2023}{O estudo que mostra que assistentes de IA podem levar a código menos
+    seguro e a mais confiança nele. Vale ler a parte sobre o comportamento de quem se saiu
+    melhor.}
+  \leitura{owasp2025}{A lista de riscos de segurança específicos de aplicações com modelos
+    de linguagem, mantida e atualizada pela comunidade.}
+  \leitura{kernighan1978}{Um clássico curto sobre escrever código claro. Os exemplos são
+    antigos; as lições não.}
+\end{leituras}

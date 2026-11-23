@@ -1,0 +1,160 @@
+% Capitulo: Testes e qualidade de dados
+\chapter{Testes e qualidade de dados}
+\label{cap:testes}
+
+Todo time de dados já passou por isto: um número errado chega a um painel, alguém da área
+percebe antes do time, e a confiança em todos os outros números cai junto. Testes de dados
+existem para inverter essa ordem, fazendo o time descobrir o problema antes do usuário. Este
+capítulo trata do que testar, de contratos entre quem produz e quem consome dados, e de uma
+mudança que considero das mais importantes trazidas pela IA ao trabalho com dados: escrever
+os testes antes dos modelos deixou de ser uma boa intenção e pode virar requisito.
+
+\section{O que testar}
+\label{sec:o-que-testar}
+
+Um teste de dados é uma verificação automática que roda a cada carga e falha quando uma regra
+é violada. Alguns tipos cobrem a maior parte dos problemas:
+
+\begin{itemize}
+  \item \textbf{Unicidade.} A chave de cada tabela é única. Se o modelo deveria ter uma
+    linha por cliente e tem duas para alguns, toda soma por cliente está errada.
+  \item \textbf{Não nulos.} Campos obrigatórios estão preenchidos. Uma venda sem data ou sem
+    cliente não deveria chegar à camada de consumo.
+  \item \textbf{Integridade referencial.} Toda chave que aponta para outra tabela encontra
+    correspondência. Uma venda de um produto que não existe na dimensão de produtos some dos
+    relatórios por categoria sem avisar ninguém.
+  \item \textbf{Valores aceitos.} Campos com lista fechada de valores (status, tipo, região)
+    só contêm valores conhecidos.
+  \item \textbf{Regras de negócio.} As regras que a área usa para conferir os números: a
+    receita líquida nunca é maior que a bruta, o saldo de estoque nunca é negativo, o total
+    do modelo bate com o total da fonte.
+  \item \textbf{Atualização e volume.} O dado chegou no prazo, e chegou na quantidade
+    esperada. Uma carga que trouxe metade das linhas de sempre passa em todos os outros
+    testes e está errada.
+\end{itemize}
+
+Os quatro primeiros tipos são genéricos e fáceis de aplicar a qualquer tabela; muitas
+ferramentas de transformação já os trazem prontos. Os dois últimos exigem conhecer o negócio
+e o comportamento dos dados, e são os que mais pegam problemas reais. Colunas financeiras
+merecem atenção especial, com testes de faixa e de soma, porque é nelas que um erro custa
+mais caro e é notado mais rápido.
+
+\rascunho{
+  Relato: um erro que chegou à produção e que um teste simples teria pego (qual era o erro,
+  quanto tempo levou para ser percebido, quem percebeu, qual teste passou a existir depois).
+}
+
+\section{Testes antes do modelo}
+\label{sec:tdd}
+
+O desenvolvimento guiado por testes, ou TDD, inverte a ordem habitual de trabalho. Em vez de
+escrever o código e depois testá-lo, primeiro se escreve um teste que descreve o
+comportamento esperado, ele falha porque o código ainda não existe, e então se escreve o
+código mínimo para fazer o teste passar \parencite{beck2003}. Na engenharia de software, a
+prática tem mais de duas décadas. Em dados, sempre foi recomendada e quase nunca praticada. O
+motivo era simples: escrever testes custava tempo que o prazo não dava, e ficava para depois,
+que nunca chegava.
+
+A IA mudou essa conta. A partir de uma regra de negócio descrita em texto, um assistente
+escreve em segundos os testes correspondentes, sugere casos de borda que ninguém tinha
+pensado e monta dados de exemplo para exercitá-los. O custo de escrever testes caiu tanto
+que o TDD em dados pode deixar de ser um diferencial e passar a ser requisito do time.
+
+O fluxo fica assim. Antes de escrever o modelo, escrevem-se os testes que descrevem as regras
+de negócio: \enquote{toda venda cancelada sai da receita}, \enquote{o saldo nunca fica
+negativo}, \enquote{o total do frete bate com o dos pedidos}. Esses testes falham, porque o
+modelo ainda não existe. Depois se escreve o modelo até que todos passem.
+
+A consequência mais interessante não é técnica. Os testes viram a especificação executável da
+regra de negócio. Em vez de validar com o stakeholder cada versão do modelo, o que exige a
+presença dele a cada iteração, a validação acontece uma vez, sobre os casos de teste:
+\enquote{se o pedido for cancelado depois de faturado, ele sai da receita do mês do
+cancelamento ou do mês do faturamento?} Respondida a pergunta, ela vira teste. Daí em diante,
+o time itera sobre o modelo sem depender da agenda do stakeholder, e uma mudança de regra vira
+uma mudança de teste, discutida e aprovada antes de qualquer código.
+
+\begin{destaque}
+Com a IA, escrever testes ficou barato. Os testes viram a especificação da regra de negócio,
+validada uma vez com o stakeholder, e o time passa a iterar sem depender da presença dele.
+\end{destaque}
+
+Há dois papéis nessa divisão de trabalho. O da IA é gerar os testes a partir da regra
+descrita, sugerir casos de borda e montar dados de exemplo. O do profissional é conferir se
+os testes dizem mesmo o que o negócio quer, o que exige conhecer o negócio
+(capítulo~\ref{cap:negocio}). E há um cuidado decisivo: testes gerados depois do modelo, a
+partir do próprio modelo, tendem a confirmar o que ele já faz, inclusive os erros. É por isso
+que a ordem importa. O teste escrito antes, a partir da regra, é uma verificação; o teste
+escrito depois, a partir do código, é uma fotografia.
+
+\rascunho{
+  Relato: um projeto em que os testes foram escritos antes do modelo, com a ajuda da IA, e o
+  efeito no tempo de validação com o stakeholder.
+}
+
+\section{Contratos de dados}
+\label{sec:contratos}
+
+Muitos problemas de dados não nascem no time de dados, e sim na fonte. Um sistema muda o
+formato de um campo, renomeia uma coluna ou passa a registrar algo de outra forma, e o
+pipeline quebra, ou pior, continua rodando com dados errados. Contratos de dados são uma
+tentativa de prevenir isso formalizando o que quem produz o dado se compromete a entregar a
+quem o consome \parencite{jones2023}.
+
+Um contrato costuma definir três coisas. A estrutura: quais campos existem, de que tipo, quais
+são obrigatórios. O significado: o que cada campo representa e quais valores são válidos. E o
+nível de serviço: com que frequência o dado é entregue e com que prazo. Mudanças que quebram o
+contrato precisam ser combinadas antes, com tempo para quem consome se adaptar.
+
+Na prática, um contrato só funciona se for verificado automaticamente. Um documento que
+descreve a estrutura esperada, sem um teste que confira a cada carga se ela foi respeitada,
+envelhece como qualquer documentação. Por isso os contratos e os testes andam juntos: o
+contrato é o acordo entre as partes, e os testes são a forma de saber se ele está sendo
+cumprido.
+
+\section{Um teste em SQL}
+\label{sec:teste-sql}
+
+A forma mais simples e portável de escrever um teste de dados é uma consulta que devolve as
+linhas que violam a regra. Se a consulta não devolve nada, o teste passou. O primeiro exemplo
+verifica a unicidade da chave de um modelo de receita por cliente:
+
+\begin{sql}
+-- Teste: cada cliente aparece uma única vez no modelo
+SELECT id_cliente, COUNT(*) AS ocorrencias
+FROM receita_por_cliente
+GROUP BY id_cliente
+HAVING COUNT(*) > 1;
+\end{sql}
+
+O segundo verifica uma regra de negócio que pegaria o erro do frete multiplicado
+(\veja{sec:consulta-errada}): o frete somado no modelo precisa ser igual ao frete registrado
+nos pedidos.
+
+\begin{sql}
+-- Teste: o frete do modelo bate com o frete dos pedidos
+WITH origem AS (
+    SELECT SUM(valor_frete) AS frete FROM pedidos
+),
+modelo AS (
+    SELECT SUM(frete) AS frete FROM receita_por_cliente
+)
+SELECT o.frete AS frete_origem, m.frete AS frete_modelo
+FROM origem AS o
+CROSS JOIN modelo AS m
+WHERE ABS(o.frete - m.frete) > 0.01;
+\end{sql}
+
+Escrito antes do modelo, esse teste falha até que o modelo calcule o frete no grão certo. É
+exatamente o tipo de regra que um stakeholder da área financeira confirma em um minuto e que
+protege o modelo para sempre. As ferramentas de transformação como código permitem declarar
+testes assim junto aos modelos e rodá-los a cada alteração, o que leva ao assunto do próximo
+capítulo.
+
+\begin{leituras}
+  \leitura{beck2003}{O livro que sistematizou o desenvolvimento guiado por testes. Escrito
+    para software, mas a lógica de escrever o teste primeiro se aplica aos dados.}
+  \leitura{jones2023}{Uma introdução prática aos contratos de dados, com atenção à relação
+    entre quem produz e quem consome.}
+  \leitura{moses2022}{Para levar os testes a uma visão mais ampla de observabilidade e
+    confiabilidade dos dados.}
+\end{leituras}

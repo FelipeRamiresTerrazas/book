@@ -1,0 +1,109 @@
+% Capitulo: Na prática: projetos de engenharia de dados
+\chapter{Na prática: projetos de engenharia de dados}
+\label{cap:proj-engenharia}
+
+Projetos de engenharia de dados têm o problema oposto ao dos projetos de visualização: o
+resultado é pouco visível. Um pipeline novo, uma integração com um sistema de origem ou uma
+melhoria de desempenho na plataforma raramente aparecem numa reunião de diretoria, e por isso
+são difíceis de priorizar, de explicar e de valorizar. Este capítulo mostra como o modelo de
+Scrum com Kanban se aplica a esse tipo de trabalho: como escrever histórias quando o usuário
+é outro sistema, onde colocar o débito técnico e como conciliar projetos novos com a
+sustentação do que já existe.
+
+\section{Histórias quando o usuário é um sistema}
+\label{sec:historias-tecnicas}
+
+O formato tradicional das histórias de usuário (\enquote{como tal pessoa, quero tal coisa,
+para tal objetivo}) funciona mal quando o trabalho é \enquote{ingerir os dados do novo
+sistema de pedidos}. Não há uma pessoa esperando na ponta, e a tentação é escrever histórias
+puramente técnicas, como \enquote{criar tabela de pedidos na camada bronze}, que ninguém de
+fora do time entende nem consegue priorizar.
+
+Duas práticas ajudam. A primeira é amarrar o trabalho técnico ao valor que ele destrava, mesmo
+que esse valor esteja algumas histórias à frente. \enquote{Ingerir os pedidos do novo sistema
+para que o painel de vendas continue atualizado depois da migração} diz por que o trabalho
+importa e quando ele precisa estar pronto. Quando o usuário é de fato outro sistema, a história
+pode ser escrita do ponto de vista dele, com o contrato de dados como critério de aceite
+(\veja{sec:contratos}).
+
+A segunda é cuidar do tamanho. Uma boa história é pequena o bastante para atravessar o quadro
+em poucos dias e independente o bastante para ser entregue sozinha \parencite{cohn2004}.
+Projetos de engenharia tendem a gerar histórias enormes (\enquote{migrar a plataforma}) que
+ficam semanas na coluna \enquote{fazendo}. Quebrá-las em fatias que entregam algo verificável,
+como uma fonte migrada por vez, com os testes comparando o resultado antigo com o novo, torna
+o progresso visível e o risco menor.
+
+Os critérios de aceite de histórias técnicas também podem, e devem, virar testes escritos antes
+(\veja{sec:tdd}): o volume carregado bate com a origem, a atualização acontece dentro do
+prazo, nenhuma chave fica duplicada. Para engenharia, essa é a forma mais concreta de definir
+o que é \enquote{pronto}.
+
+\section{Débito técnico}
+\label{sec:debito-tecnico}
+
+A metáfora do débito técnico foi proposta por Ward Cunningham, em 1992, para explicar a
+pessoas de negócio por que um código precisava ser revisto: entregar algo rápido, com uma
+solução provisória, é como pegar um empréstimo, que acelera hoje e cobra juros depois, até que
+seja pago com a reescrita \parencite{cunningham1992}. Em dados, os juros aparecem como
+pipelines frágeis que quebram toda semana, modelos que ninguém entende e consultas lentas que
+encarecem cada execução.
+
+O débito técnico em si não é o problema. Às vezes faz sentido assumi-lo, de forma consciente,
+para cumprir um prazo de negócio. O problema é o débito invisível, que ninguém registrou e que
+só aparece na forma de incidentes. A prática mais útil é simples: todo débito assumido vira um
+item no quadro, com a descrição do que foi feito de forma provisória e do risco que isso traz.
+Assim, ele pode ser priorizado como qualquer outro trabalho.
+
+Para que o débito seja pago de fato, muitos times reservam uma parte fixa da capacidade de cada
+iteração para reduzi-lo \pendente{confirmar se eu usava uma porcentagem fixa e qual}. Outra
+forma é aproveitar cada história que toca um modelo problemático para melhorá-lo um pouco, em
+vez de deixar a melhoria para um projeto de reescrita que nunca é aprovado. E a IA ajuda
+aqui: refatorar, documentar e acrescentar testes a código antigo é uma das tarefas em que os
+agentes de programação mais economizam tempo, desde que alguém revise.
+
+\section{Projeto e sustentação}
+\label{sec:projeto-sustentacao}
+
+Todo time de engenharia de dados divide a capacidade entre construir coisas novas e manter o
+que já existe. A sustentação (falhas de carga, números estranhos, pedidos de ajuste, dúvidas
+de usuários) chega todos os dias, em quantidade imprevisível, e tem prioridade, porque alguém
+está decidindo com aqueles dados agora. Se ela compete diretamente com os projetos, os projetos
+atrasam sempre, e o time vive a sensação de nunca terminar nada.
+
+Há duas formas principais de organizar essa convivência. A primeira são duas raias no mesmo
+quadro, com uma parte da capacidade reservada para a sustentação
+(Figura~\ref{fig:quadro-scrumban}). A segunda é um rodízio: a cada período, uma pessoa do time
+fica responsável pela sustentação, como um plantão, e o resto do time fica protegido das
+interrupções. Os dois modelos funcionam; a escolha depende do tamanho do time e do volume de
+sustentação. Separar em dois times diferentes também é possível em estruturas grandes, mas cria
+o risco de que quem constrói nunca sinta o custo de manter o que construiu.
+
+\rascunho{
+  Confirmar qual dessas formas eu usava (raias, rodízio, outra) e por quê.
+}
+
+Uma situação recorrente merece atenção à parte: os projetos paralelos puxados por um projeto de
+negócio, como o de master data do capítulo~\ref{cap:master-data}
+(\veja{sec:master-data-puxado}). Eles entram no quadro como um épico próprio, com histórias
+amarradas às do projeto principal, e não como tarefas escondidas dentro dele. Isso dá
+visibilidade ao trabalho, permite medir quanto ele custou e, principalmente, deixa claro para o
+negócio que o domínio entregue vai ser reaproveitado pelos próximos projetos.
+
+Por fim, vale medir a sustentação. Quanto da capacidade do time ela consome, que tipo de
+problema mais aparece, quais produtos geram mais chamados. Esses números mostram onde o débito
+técnico está cobrando juros mais altos e ajudam a justificar o investimento em pagá-lo.
+
+\rascunho{
+  Relato de um projeto real de engenharia de dados, sem nomes de empresa ou cliente: como foi
+  quebrado em histórias, que débito foi assumido e como a sustentação foi organizada durante o
+  projeto.
+}
+
+\begin{leituras}
+  \leitura{cohn2004}{Para escrever histórias pequenas e independentes, inclusive quando o
+    trabalho é técnico.}
+  \leitura{reis2022}{Para a visão completa do ciclo de vida da engenharia de dados, útil para
+    planejar projetos de plataforma.}
+  \leitura{forsgren2018}{Para medir a sustentação e a recuperação de falhas com os mesmos
+    indicadores usados pelos melhores times de software.}
+\end{leituras}

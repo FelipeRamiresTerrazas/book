@@ -1,0 +1,116 @@
+% Capitulo: Integração e entrega contínuas para dados
+\chapter{Integração e entrega contínuas para dados}
+\label{cap:ci-cd}
+
+Versionar o código e escrever testes só resolve metade do problema se alguém precisar se
+lembrar de rodar os testes e publicar as alterações à mão. Mais cedo ou mais tarde, alguém
+esquece, ou publica com pressa numa sexta-feira à tarde. A integração e a entrega contínuas
+automatizam o caminho do código até a produção, de forma que cada alteração seja testada e
+publicada sempre do mesmo jeito. Este capítulo trata desse caminho, do monitoramento depois
+que os dados estão em produção e da documentação que se gera sozinha a partir do código.
+
+\section{Integração contínua}
+\label{sec:ci}
+
+Integração contínua é a prática de integrar as alterações de todo o time ao código principal
+com frequência, cada uma delas verificada automaticamente. Em dados, isso significa que,
+quando alguém abre um pedido de revisão, um processo automático constrói os modelos alterados
+num ambiente isolado, roda os testes e mostra o resultado no próprio pedido. O revisor passa a
+ver não só o código, mas também se ele funciona.
+
+Alguns cuidados tornam essa verificação útil em vez de lenta. O primeiro é construir só o que
+mudou e o que depende disso, em vez do projeto inteiro, o que reduz o tempo e o custo de cada
+verificação. O segundo é usar um ambiente isolado por pedido de revisão, de forma que duas
+alterações em paralelo não interfiram uma na outra (\veja{sec:ambientes}). O terceiro é
+incluir na verificação, além dos testes de dados, as regras de estilo e de boas práticas do
+time: nomes, formatação, proibições como selecionar todas as colunas de uma tabela em modelos
+de consumo. Regras que dependem da boa vontade de cada revisor são esquecidas; regras
+verificadas automaticamente, não.
+
+Com alterações escritas cada vez mais com ajuda de IA, a integração contínua ganha um papel de
+rede de segurança. Ela não substitui a revisão humana, mas garante que nenhuma alteração chegue
+à revisão sem ter passado pelos testes, o que libera o revisor para olhar o que só uma pessoa
+consegue avaliar: se a regra está certa para o negócio.
+
+\section{Entrega contínua}
+\label{sec:cd}
+
+Entrega contínua é o passo seguinte: depois de revisada e integrada, a alteração vai para a
+produção sem nenhum passo manual \parencite{humble2010}. O mesmo processo que construiu e
+testou no ambiente de integração constrói e testa em produção, na mesma ordem e com as mesmas
+verificações.
+
+A principal vantagem não é a velocidade, e sim a segurança. Publicar à mão é uma sequência de
+passos que alguém precisa lembrar, e cada passo esquecido é um risco. Publicar
+automaticamente é sempre igual. E, quando publicar fica fácil, as alterações ficam menores e
+mais frequentes, o que torna cada uma mais fácil de revisar e, se der errado, mais fácil de
+desfazer. Uma grande publicação mensal com trinta alterações é muito mais arriscada do que
+trinta publicações pequenas ao longo do mês.
+
+A pesquisa sobre desempenho de times de software reforça essa intuição. Um estudo de vários
+anos com milhares de profissionais identificou quatro indicadores que distinguem os times de
+melhor desempenho: a frequência com que publicam, o tempo entre uma alteração pronta e a
+produção, a proporção de publicações que causam falha e o tempo para se recuperar de uma
+falha. Os melhores times eram, ao mesmo tempo, mais rápidos e mais estáveis
+\parencite{forsgren2018}. Os quatro indicadores se aplicam a times de dados com poucas
+adaptações, e são um bom ponto de partida para medir a maturidade do processo.
+
+\section{Observabilidade}
+\label{sec:observabilidade}
+
+Testes verificam regras conhecidas no momento da carga. Observabilidade é a capacidade de
+perceber, em produção, quando algo está diferente do normal, inclusive problemas que ninguém
+pensou em testar. A ideia vem do monitoramento de sistemas de software e foi adaptada para
+dados, com atenção a algumas dimensões: se o dado foi atualizado no prazo, se o volume está
+dentro do esperado, se a estrutura mudou, se a distribuição dos valores mudou e de onde cada
+dado veio \parencite{moses2022}.
+
+Um conceito emprestado da engenharia de confiabilidade ajuda a transformar isso em
+compromisso: o objetivo de nível de serviço \parencite{beyer2016}. Em vez de prometer que os
+dados estarão sempre atualizados, o time combina, por exemplo, que o painel de vendas terá
+os dados do dia anterior disponíveis até as 8 horas em pelo menos 99\% dos dias úteis. O
+compromisso fica mensurável, e o monitoramento passa a avisar quando ele está em risco. O
+capítulo~\ref{cap:frequencia} volta a essa ideia ao discutir com que frequência os dados
+precisam atualizar.
+
+O alerta precisa chegar a quem pode agir, e na hora certa. Um alerta que dispara para o time
+inteiro a cada pequena variação vira ruído e passa a ser ignorado; um que só aparece num
+painel que ninguém abre não serve para nada. O objetivo é que o time descubra o problema antes
+do usuário, e que o usuário, quando o problema for inevitável, seja avisado pelo time, e não
+descubra sozinho.
+
+\section{Documentação viva}
+\label{sec:documentacao}
+
+Documentação escrita à parte do código envelhece no dia em que é publicada. A alternativa é
+gerar a documentação a partir do próprio código: as descrições de tabelas e colunas ficam nos
+mesmos arquivos que os modelos, os testes declarados viram parte da documentação, e a
+linhagem, o mapa de quais tabelas alimentam quais, é desenhada automaticamente a partir das
+dependências. Quando o código muda, a documentação muda junto, porque é gerada na mesma
+publicação.
+
+Essa documentação tem hoje três leitores. O analista que precisa entender um modelo antes de
+usá-lo. O revisor que precisa entender o impacto de uma alteração. E, cada vez mais, o
+assistente de IA que responde perguntas sobre os dados (\veja{sec:metadados-contexto}). Para
+os três, uma documentação viva, versionada e gerada a partir do código é muito mais confiável
+do que um documento à parte.
+
+\antesdepois{Publicar era um evento: alguém rodava os scripts na ordem certa, conferia à mão e
+avisava o time. A documentação ficava num documento à parte, quando ficava.}
+{Publicar é rotina: cada alteração revisada passa pelos testes e vai para produção sozinha. A
+documentação é gerada junto e serve de contexto também para a IA.}
+
+\rascunho{
+  Relato: a implantação de um processo de integração e entrega contínuas num time de dados
+  (o que foi automatizado primeiro, que problema deixou de acontecer, como a frequência de
+  publicação mudou).
+}
+
+\begin{leituras}
+  \leitura{humble2010}{O livro que definiu a entrega contínua. Os princípios valem para
+    pipelines de dados tanto quanto para software.}
+  \leitura{forsgren2018}{A pesquisa que mostrou, com dados, que velocidade e estabilidade
+    andam juntas, e os quatro indicadores para medir as duas.}
+  \leitura{beyer2016}{Para o conceito de objetivo de nível de serviço e a cultura de
+    confiabilidade que vem com ele.}
+\end{leituras}

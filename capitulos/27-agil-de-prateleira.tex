@@ -1,0 +1,103 @@
+% Capitulo: Por que o ágil de prateleira não encaixa em dados
+\chapter{Por que o ágil de prateleira não encaixa em dados}
+\label{cap:agil-prateleira}
+
+Muitos times de dados já tentaram adotar o Scrum exatamente como descrito no guia: iterações
+de duração fixa, estimativas em pontos, compromisso com um conjunto de histórias no começo de
+cada ciclo. E muitos descobriram que algo não encaixa. As histórias mudam de tamanho no meio do
+caminho, metade do time é interrompida por demandas urgentes, e a revisão no fim do ciclo
+mostra mais trabalho inacabado do que entregue. Este capítulo explica por que isso acontece e
+o que vale aproveitar de cada método. Não é uma crítica ao ágil, e sim ao ágil aplicado sem
+adaptação.
+
+\section{Descoberta e incerteza}
+\label{sec:descoberta}
+
+O ágil nasceu no desenvolvimento de software, e o manifesto que lhe deu nome valoriza as
+pessoas, o software funcionando, a colaboração com o cliente e a resposta à mudança
+\parencite{agilemanifesto2001}. Nada disso é estranho ao trabalho com dados. O que é diferente
+é a natureza da incerteza.
+
+Num projeto de software típico, a maior parte da incerteza está em como construir. Num projeto
+de dados, uma parte grande está nos próprios dados, e só aparece quando alguém olha para eles.
+Uma história como \enquote{criar o indicador de clientes ativos por região} parece pequena até
+que se descobre que a região não está preenchida para um terço dos clientes, que há dois
+cadastros de região que não batem e que a área comercial e a financeira definem
+\enquote{ativo} de formas diferentes. A tarefa não ficou maior por erro de estimativa; ela
+revelou o seu tamanho real quando os dados foram abertos.
+
+A literatura sobre estimativa de software descreve essa incerteza como um cone: no começo de
+um projeto, as estimativas podem errar por um fator grande para mais ou para menos, e a margem
+só se estreita à medida que o trabalho avança e as incógnitas são resolvidas
+\parencite{mcconnell2006}. Em dados, o cone é mais largo e se estreita mais tarde, porque
+parte das incógnitas só se resolve olhando os dados. Um método que exige compromisso com o
+escopo no começo de cada ciclo, com base em estimativas feitas antes de olhar os dados, está
+pedindo ao time o que ele não tem como dar.
+
+A consequência prática é separar descoberta de entrega. Antes de comprometer uma história de
+construção, uma investigação curta, com prazo fixo, olha os dados e responde às perguntas que
+definem o tamanho do trabalho. Só então a história de construção é refinada e estimada. O
+capítulo~\ref{cap:scrumban} volta a essa separação.
+
+\section{Dependências e sustentação}
+\label{sec:dependencias}
+
+Duas outras características do trabalho com dados atrapalham o ágil de prateleira. A primeira
+são as dependências externas. Um time de dados depende das áreas donas dos sistemas de origem
+para liberar acessos, explicar campos, corrigir cadastros e avisar mudanças, e depende das
+áreas de negócio para definir regras e validar resultados. Nenhuma dessas pessoas está no time,
+e nenhuma segue o ritmo das iterações dele. Uma história pode ficar parada dias esperando uma
+resposta, sem que o time possa fazer nada.
+
+A segunda é a sustentação. Um time de dados mantém em produção tudo o que já entregou:
+pipelines, modelos, painéis. Quando uma carga falha ou um número sai estranho, a correção não
+pode esperar o fim da iteração, porque alguém está decidindo com aquele número agora. Esse
+trabalho não planejado chega todos os dias, em quantidade variável, e consome uma parte da
+capacidade do time que nenhum planejamento consegue prever com precisão.
+
+Num método que mede o sucesso pela entrega do que foi comprometido no começo do ciclo, as
+dependências e a sustentação fazem o time parecer pior do que é. O planejamento fica sempre
+otimista, a revisão mostra sempre trabalho inacabado, e o time passa a desconfiar do próprio
+processo.
+
+\rascunho{
+  Relato: uma experiência com Scrum aplicado ao pé da letra num time de dados, e o que deu
+  errado (histórias que mudavam de tamanho, interrupções de sustentação, revisões frustrantes).
+}
+
+\section{O que aproveitar de cada método}
+\label{sec:aproveitar}
+
+A saída não é abandonar o ágil, e sim combinar o que cada método tem de melhor para o trabalho
+com dados. O Scrum e o Kanban, os dois mais usados, têm forças complementares.
+
+Do Scrum, vale aproveitar as cadências \parencite{scrumguide2020}. Um planejamento periódico
+obriga o time e o negócio a discutir prioridades com regularidade. A revisão, em que o
+trabalho pronto é mostrado a quem pediu, mantém o negócio perto e permite corrigir o rumo cedo.
+A retrospectiva, em que o time discute o próprio processo, é a forma de melhorar
+continuamente. E a definição de pronto, um critério explícito do que precisa estar feito para
+um item ser considerado entregue, evita a entrega que parece terminada e não está.
+
+Do Kanban, vale aproveitar a gestão do fluxo \parencite{anderson2010}. Visualizar todo o
+trabalho num quadro, inclusive a sustentação e as dependências, mostra onde as coisas estão
+paradas. Limitar o trabalho em andamento força o time a terminar antes de começar, o que reduz
+o tempo de cada item no sistema. Tornar as regras explícitas (o que entra em cada coluna,
+quando um item está pronto para a próxima etapa) reduz discussões e mal-entendidos. E medir o
+fluxo, com indicadores como o tempo que cada item leva do começo ao fim, dá uma base objetiva
+para previsões, em vez de estimativas feitas no escuro.
+
+A combinação dos dois, às vezes chamada de Scrumban, foi proposta originalmente como uma forma
+de times acostumados ao Scrum evoluírem em direção a um sistema de fluxo \parencite{ladas2009}.
+Para dados, ela resolve boa parte dos problemas descritos neste capítulo: as cadências mantêm o
+negócio por perto, o fluxo acomoda a descoberta e a sustentação, e os limites de trabalho em
+andamento protegem o time de começar tudo e terminar nada. O próximo capítulo descreve como
+esse modelo pode ser montado na prática.
+
+\begin{leituras}
+  \leitura{anderson2010}{A referência do método Kanban para trabalho intelectual, com as
+    práticas de visualizar, limitar o trabalho em andamento e gerir o fluxo.}
+  \leitura{scrumguide2020}{O guia oficial do Scrum, curto e direto. Vale reler para separar
+    o que o Scrum exige do que foi acrescentado pela prática.}
+  \leitura{mcconnell2006}{Para entender por que estimativas no começo de um projeto erram
+    tanto, e como lidar com a incerteza em vez de ignorá-la.}
+\end{leituras}

@@ -1,0 +1,137 @@
+% Capitulo: Mapas de trilhas
+\chapter{Mapas de trilhas}
+\label{cap:mapas}
+
+Os capítulos anteriores trataram do que estudar em termos gerais. Este fecha a
+Parte~\ref{parte:trilhas} com roteiros mais concretos para três carreiras: analista de
+dados, analytics engineer e engenheiro de dados. Para cada uma, o que continua igual em
+relação à trilha tradicional e o que muda com a IA. No fim, algumas recomendações sobre
+como mostrar o que se sabe, porque, numa época em que qualquer um gera código, um portfólio
+precisa mostrar outra coisa.
+
+\section{Três carreiras}
+\label{sec:tres-carreiras}
+
+As fronteiras entre os papéis variam muito de empresa para empresa, e o
+capítulo~\ref{cap:estrutura-times} discute como elas estão se movendo. Ainda assim, há um
+centro reconhecível em cada um.
+
+O \textbf{analista de dados} está mais perto do negócio. Recebe perguntas, investiga os
+dados, constrói análises e painéis e comunica conclusões. As ferramentas centrais são SQL,
+uma ferramenta de visualização e, cada vez mais, Python. O que define um bom analista é a
+qualidade das perguntas que faz e a clareza com que comunica as respostas.
+
+O \textbf{analytics engineer} fica no meio. Transforma os dados brutos em modelos limpos,
+testados e documentados, que os analistas e as ferramentas consomem
+\parencite{kaminsky2019}. Trabalha com SQL, modelagem dimensional, versionamento, testes e
+ferramentas de transformação como código. O que o define é a capacidade de criar bases
+confiáveis que outras pessoas usam sem precisar perguntar como foram feitas.
+
+O \textbf{engenheiro de dados} está mais perto da infraestrutura. Constrói e mantém a
+ingestão dos dados, as plataformas, a orquestração, o desempenho e o custo do ambiente
+\parencite{reis2022}. Usa Python, SQL, ferramentas de nuvem, orquestradores e as práticas
+de engenharia de software em geral. O que o define é a confiabilidade: os dados chegam,
+chegam no prazo e chegam inteiros.
+
+O cientista de dados, que constrói modelos preditivos e prescritivos, compartilha muito com
+o analista e com o engenheiro, e a forma de organizar dados para o trabalho dele está no
+capítulo~\ref{cap:modelagem-cd}.
+
+\section{Tradicional contra hoje}
+\label{sec:comparativo-trilhas}
+
+A Tabela~\ref{tab:comparativo-trilhas} resume, para cada carreira, o que continua igual e o
+que muda. O padrão é o mesmo nas três: a base técnica continua necessária, porque é o que
+permite revisar o que a IA produz, e o tempo liberado pela IA é cobrado em outras
+habilidades, principalmente modelagem, revisão e negócio.
+
+\begin{table}[htbp]
+  \centering
+  \caption{O que continua e o que muda em cada carreira com a IA.}
+  \label{tab:comparativo-trilhas}
+  \small
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.17\textwidth}
+      >{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
+    \toprule
+    Carreira & O que continua & O que muda com a IA \\
+    \midrule
+    Analista de dados & SQL sólido, visualização, estatística básica, comunicação &
+      Menos tempo montando consultas e painéis; mais tempo formulando perguntas,
+      conferindo resultados e conhecendo o negócio \\
+    \addlinespace
+    Analytics engineer & Modelagem dimensional, SQL, versionamento, testes &
+      Testes escritos antes do modelo viram regra; documentação passa a ser insumo da IA;
+      mais revisão de código gerado \\
+    \addlinespace
+    Engenheiro de dados & Fundamentos de sistemas, Python, SQL, nuvem, orquestração &
+      Mais atenção a custo por consumo, segurança e dados para treino e contexto de IA;
+      agentes executando parte da operação \\
+    \bottomrule
+  \end{tabularx}
+  \fonte{elaborado pelo autor.}
+\end{table}
+
+Duas observações valem para as três carreiras. A primeira é que as fronteiras estão se
+estreitando. O analista que aprende versionamento e testes, ou o engenheiro que aprende a
+conversar com o negócio, ocupa um espaço que antes exigia duas pessoas. A IA facilita
+justamente esse movimento, porque ajuda cada um nas partes que domina menos.
+
+A segunda é que a ordem de estudo do capítulo~\ref{cap:trilha-hoje} vale para as três,
+mudando só a profundidade de cada etapa. O analista vai mais fundo em estatística e
+comunicação; o analytics engineer, em modelagem e testes; o engenheiro, em sistemas e
+infraestrutura. Mas todos passam por SQL à mão, modelagem, Python, práticas de engenharia e
+negócio.
+
+\rascunho{
+  Opcional: o que eu procuro hoje ao contratar para cada um desses papéis, e o que mudou
+  em relação a alguns anos atrás.
+}
+
+\section{Portfólio}
+\label{sec:portfolio}
+
+Durante anos, um bom portfólio de dados mostrava domínio técnico: um painel bonito, um
+modelo com boa acurácia, um pipeline funcionando. Hoje, qualquer pessoa gera algo
+parecido com a ajuda da IA em poucas horas. Um portfólio que se destaca precisa mostrar o
+que a IA não faz sozinha: o raciocínio.
+
+Algumas recomendações práticas:
+
+\begin{itemize}
+  \item \textbf{Começar por uma pergunta, não por um conjunto de dados.} \enquote{Fiz uma
+    análise do conjunto X} diz pouco. \enquote{Queria saber se Y, e o que encontrei foi Z}
+    mostra como a pessoa pensa.
+  \item \textbf{Usar dados públicos e reais.} Órgãos de estatística, bancos centrais,
+    agências reguladoras e portais de dados abertos oferecem dados sujos e incompletos de
+    verdade, que ensinam mais do que os conjuntos limpos de tutorial.
+  \item \textbf{Mostrar as decisões.} Por que este grão, por que esta métrica, por que
+    este gráfico, o que foi descartado e por quê. Um texto curto explicando as escolhas vale
+    mais do que o código.
+  \item \textbf{Ser reprodutível.} Código versionado, instruções para rodar do zero,
+    testes que mostram que os números estão certos. É uma forma de mostrar práticas de
+    engenharia sem precisar dizer que as conhece.
+  \item \textbf{Ser honesto sobre a IA.} Dizer onde e como a IA foi usada, e o que foi
+    revisado. Quem avalia sabe que ela foi usada; o que interessa é se a pessoa sabe
+    avaliar o que ela fez.
+  \item \textbf{Escrever.} Um texto que explica uma análise para um público leigo mostra
+    comunicação e entendimento ao mesmo tempo. É a parte do portfólio que mais diferencia
+    e a que menos gente faz.
+\end{itemize}
+
+Um projeto pequeno, com uma pergunta clara, dados reais, decisões explicadas e números
+conferidos, mostra mais do que dez projetos grandes e genéricos. É, aliás, um bom resumo de
+toda esta parte do livro: técnica suficiente para fazer e para revisar, fundamentos para
+saber se o resultado faz sentido, e entendimento do problema para saber se ele é útil.
+
+A próxima parte muda de assunto e de nível de detalhe. Sai da pergunta \enquote{o que
+estudar} e entra na pergunta \enquote{como organizar os dados}, agora que eles precisam
+servir a muito mais do que painéis.
+
+\begin{leituras}
+  \leitura{reis2022}{A referência mais completa e independente de ferramenta para quem
+    segue em direção à engenharia de dados.}
+  \leitura{kaminsky2019}{Para entender o papel do analytics engineer a partir do texto que
+    o descreveu.}
+  \leitura{provost2013}{Para analistas e cientistas de dados que querem fortalecer o
+    pensamento analítico orientado ao negócio.}
+\end{leituras}

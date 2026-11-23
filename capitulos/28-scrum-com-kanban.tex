@@ -1,0 +1,168 @@
+% Capitulo: Scrum com Kanban: o modelo que usei
+\chapter{Scrum com Kanban: o modelo que usei}
+\label{cap:scrumban}
+
+\rascunho{
+  Este capítulo foi montado a partir dos princípios do Scrum com Kanban e das ideias do
+  livro. Revisar cada seção e substituir as escolhas genéricas pelas que eu de fato usei
+  (duração das iterações, colunas do quadro, limites, ritos), marcadas como pendências.
+}
+
+O capítulo anterior mostrou por que o Scrum aplicado ao pé da letra costuma frustrar times de
+dados, e o que vale aproveitar dele e do Kanban. Este capítulo descreve um modelo que combina
+os dois, aplicado em projetos de visualização e de engenharia de dados. Ele foi pensado para
+ser copiado e adaptado: nenhuma das escolhas abaixo é a única certa, mas cada uma resolve um
+problema concreto, e vale entender o problema antes de mudar a escolha \parencite{ladas2009}.
+
+\section{Cadências}
+\label{sec:cadencias}
+
+Do Scrum, o modelo mantém as cadências, porque são elas que mantêm o negócio por perto e o
+time melhorando. O que muda é o papel delas: em vez de marcar um compromisso fechado de
+escopo, cada cadência é um momento de decisão e de ajuste.
+
+O \textbf{planejamento} acontece no início de cada iteração \pendente{duração das iterações
+no meu modelo}. Nele, o time e quem prioriza o trabalho revisam o que está pronto para entrar
+e escolhem o que puxar primeiro, respeitando os limites de trabalho em andamento. Não há
+compromisso de terminar uma lista fechada; há uma ordem de prioridade e uma previsão baseada
+no histórico do fluxo (\veja{sec:metricas-fluxo}).
+
+O \textbf{alinhamento diário} é curto e olha para o quadro, da direita para a esquerda: o que
+está perto de ficar pronto e o que está travado, antes do que vai começar. A pergunta central
+não é \enquote{o que cada um fez ontem}, e sim \enquote{o que impede o trabalho de fluir}.
+
+A \textbf{revisão} mostra a quem pediu o que ficou pronto, com dados reais, e é o momento de
+validar e de corrigir o rumo. É também o lugar natural para a revisão periódica dos produtos
+de dados em uso, com as métricas de acesso e de custo do capítulo~\ref{cap:frequencia}.
+
+A \textbf{retrospectiva} discute o processo: o que travou, que regra do quadro precisa mudar,
+que tipo de demanda está chegando mal definida. É o rito que faz o modelo evoluir, e o
+primeiro a ser cortado quando o time está sobrecarregado, o que é justamente quando ele mais
+faz falta.
+
+\rascunho{
+  Confirmar quais desses ritos existiam no meu modelo, com que frequência e duração, e se
+  havia algum rito próprio (por exemplo, uma reunião de refinamento com o negócio).
+}
+
+\section{O quadro e o limite de WIP}
+\label{sec:quadro-wip}
+
+Do Kanban, o modelo traz o quadro e a gestão do fluxo \parencite{anderson2010}. A
+Figura~\ref{fig:quadro-scrumban} mostra um exemplo de quadro para um time de dados.
+
+\begin{figure}[htbp]
+  \centering
+  \input{figuras/quadro-scrumban}
+  \caption{Um exemplo de quadro de Scrum com Kanban para um time de dados, com colunas que
+    separam descoberta de construção e raias por classe de serviço. O cartão destacado é
+    urgente.}
+  \label{fig:quadro-scrumban}
+  \fonte{elaborado pelo autor.}
+\end{figure}
+
+Três escolhas do quadro merecem explicação. A primeira é a coluna de \textbf{descoberta},
+separada da construção. É onde ficam as investigações curtas que olham os dados antes de o
+trabalho ser refinado (\veja{sec:descoberta}). Um item só passa para \enquote{pronto para
+fazer} quando as perguntas que definem o tamanho dele foram respondidas.
+
+A segunda é a coluna de \textbf{validação com o negócio}, separada da revisão técnica. A
+revisão confere se o código está certo; a validação confere se o resultado responde à pergunta
+de quem pediu. São coisas diferentes, feitas por pessoas diferentes, e misturá-las numa coluna
+só esconde onde o trabalho está parado.
+
+A terceira são as \textbf{raias por classe de serviço}. Nem todo trabalho tem a mesma
+urgência, e o Kanban propõe tratar cada tipo de forma explícita: itens urgentes, que passam na
+frente e têm limite de quantidade; itens de projeto, que seguem a prioridade normal; e itens
+de sustentação, que precisam de uma parte reservada da capacidade para não competir com os
+projetos a cada dia \parencite{anderson2010}. Visualizar a sustentação no quadro, em vez de
+tratá-la como interrupção invisível, é uma das mudanças que mais ajudam um time de dados.
+
+Os números ao lado das colunas \enquote{fazendo} e \enquote{revisão} são os limites de
+trabalho em andamento. Eles parecem uma restrição, e são. A razão de existirem vem da teoria
+das filas: num sistema estável, o tempo médio que um item leva para atravessar o sistema é
+igual à quantidade média de itens em andamento dividida pela vazão
+\parencite{little1961,reinertsen2009}. Se o time termina, em média, cinco itens por semana, ter
+vinte itens em andamento significa que cada um leva, em média, quatro semanas. Limitar o
+trabalho em andamento é a forma mais direta de encurtar o tempo de cada entrega, e de fazer o
+time terminar antes de começar.
+
+\rascunho{
+  Confirmar as colunas e os limites do meu quadro real, a ferramenta usada e se havia raias
+  ou classes de serviço diferentes das do exemplo.
+}
+
+\section{Refinamento}
+\label{sec:refinamento}
+
+Boa parte dos problemas de um time de dados começa antes do trabalho: pedidos vagos que viram
+histórias vagas. O refinamento é o momento de transformar um pedido em algo que o time
+consegue construir e o negócio consegue validar, e vale ter critérios explícitos para que uma
+história possa entrar na coluna \enquote{pronto para fazer}.
+
+Para histórias de dados, alguns elementos fazem muita diferença. A pergunta de negócio, ou a
+decisão que a entrega vai apoiar, escrita de forma que alguém de fora entenda. A forma
+tradicional das histórias de usuário ajuda: \enquote{como gerente comercial, quero ver a
+margem por vendedor para decidir a revisão das metas} diz mais do que \enquote{painel de
+margem} \parencite{cohn2004}. As fontes envolvidas, já investigadas na descoberta. O dono de
+negócio de cada métrica. A frequência de atualização necessária, definida a partir do ritmo
+da decisão, e não do pedido (\veja{sec:ritmo-decisao}).
+
+E, cada vez mais, os testes de aceite. Com a IA, escrever os testes ficou barato o bastante
+para que eles sejam escritos já no refinamento, junto com o stakeholder, a partir das regras
+de negócio que ele descreve (\veja{sec:tdd}). A história entra no quadro com a regra
+transformada em teste, e o time passa a construir para fazer o teste passar, em vez de
+construir e depois descobrir, na validação, que a regra era outra.
+
+\section{Definição de pronto}
+\label{sec:definicao-pronto}
+
+A definição de pronto é a lista do que precisa estar feito para um item sair da última coluna.
+Ela protege o time da entrega que parece terminada e não está, e protege o negócio do painel
+que funciona hoje e quebra na semana que vem. Para dados, uma definição de pronto útil
+costuma incluir:
+
+\begin{itemize}
+  \item o código revisado por outra pessoa (\veja{sec:revisao-codigo});
+  \item os testes escritos antes, e passando (\veja{sec:tdd});
+  \item as tabelas, colunas e métricas novas documentadas;
+  \item a frequência de atualização combinada e monitorada;
+  \item o painel mostrando a data da última atualização;
+  \item a publicação feita pelo processo automático, e não à mão (capítulo~\ref{cap:ci-cd});
+  \item a validação de quem pediu, com dados reais;
+  \item um dono definido para o produto entregue.
+\end{itemize}
+
+A lista parece longa, mas a maior parte dela é automática quando as práticas da
+Parte~\ref{parte:devops} estão no lugar. E é ela que garante que cada entrega deixe o
+ambiente de dados um pouco melhor, e não um pouco mais frágil.
+
+\section{Métricas do fluxo}
+\label{sec:metricas-fluxo}
+
+O modelo troca as estimativas detalhadas por medição do fluxo real. Quatro indicadores
+bastam para a maior parte das conversas. O \textbf{tempo de ciclo}: quanto tempo um item leva
+do momento em que o trabalho começa até ficar pronto. A \textbf{vazão}: quantos itens ficam
+prontos por semana. O \textbf{trabalho em andamento}: quantos itens estão sendo trabalhados ao
+mesmo tempo. E a \textbf{idade dos itens em andamento}: há quanto tempo cada item está no
+quadro, o que revela cedo o que está travado.
+
+Com o histórico desses indicadores, as previsões ficam mais honestas do que qualquer
+estimativa em pontos. Em vez de \enquote{essa história vale oito pontos}, o time pode dizer
+\enquote{itens desse tipo levam, em 85\% dos casos, até nove dias}. É uma resposta que o
+negócio entende e que incorpora, sem esforço adicional, as dependências, a sustentação e a
+descoberta que as estimativas costumam ignorar.
+
+\rascunho{
+  Relato: como esse modelo foi implantado (o que mudou em relação ao Scrum anterior, como o
+  time e o negócio reagiram, o que melhorou nos indicadores). Números só em ordem de grandeza.
+}
+
+\begin{leituras}
+  \leitura{ladas2009}{O livro que propôs o Scrumban como caminho de evolução do Scrum para um
+    sistema de fluxo.}
+  \leitura{reinertsen2009}{Para entender, com a teoria das filas, por que limitar o trabalho
+    em andamento acelera as entregas.}
+  \leitura{cohn2004}{A referência sobre histórias de usuário, útil para escrever histórias de
+    dados que o negócio entende.}
+\end{leituras}

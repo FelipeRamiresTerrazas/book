@@ -41,6 +41,9 @@ escrito por quem trabalha no meio disso e aplica DevOps e ágil no dia a dia.
   tokens.
 - A estrutura tradicional dos times de dados, como a IA pode reduzi-la e uma previsão
   para o futuro.
+- Os quatro estágios da IA no trabalho com dados: conversa, código, aplicações e IA
+  proativa, em que o dado deixa de ser passivo e a IA decide dentro de alçadas e escala
+  para o humano ("Os quatro estágios da IA no trabalho com dados", fim da Parte I).
 
 ## Estrutura atual (ver `main.tex`; números de capítulo mudam, nomes não)
 
